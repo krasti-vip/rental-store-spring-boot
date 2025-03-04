@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Update User</title>
+</head>
+<body>
+
+<h1>Update User</h1>
+
+<form th:method="POST" th:action="@{/user/{id}(id=${user.id})}" th:object="${user}">
+    <input type="hidden" name="_method" value="patch" />
+
+    <input type="hidden" th:field="*{id}" />
+
+    <label for="user_name">Логин: </label>
+    <input type="text" th:field="*{userName}" id="user_name"/>
+    <br/>
+    <label for="first_name">Фамилия: </label>
+    <input type="text" th:field="*{firstName}" id="first_name"/>
+    <br/>
+    <label for="last_name">Имя: </label>
+    <input type="text" th:field="*{lastName}" id="last_name"/>
+    <br/>
+    <label for="passport">Паспорт: </label>
+    <input type="number" th:field="*{passport}" id="passport"/>
+    <br/>
+    <label for="email">Email: </label>
+    <input type="text" th:field="*{email}" id="email"/>
+    <br/>
+    <label for="bank_card">Банковская карта: </label>
+    <input type="number" th:field="*{bankCard}" id="bank_card"/>
+    <br/>
+
+    <input type="submit" value="Update Car">
+</form>
+
+</body>
+</html>
