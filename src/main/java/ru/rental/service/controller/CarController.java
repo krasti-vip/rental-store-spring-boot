@@ -1,10 +1,12 @@
 package ru.rental.service.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import ru.rental.service.dto.BikeDto;
+import org.springframework.web.server.ResponseStatusException;
 import ru.rental.service.dto.CarDto;
 import ru.rental.service.service.CarService;
 
@@ -30,7 +32,8 @@ public class CarController {
 
     @GetMapping("/{id}")
     public String getCarById(@PathVariable("id") int id, Model model) {
-        var car = carService.get(id).orElseThrow(() -> new IllegalArgumentException("car no found id: " + id));
+        var car = carService.get(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "car no found id: " + id));
         model.addAttribute("car", car);
         return "car/car";
     }
@@ -64,5 +67,10 @@ public class CarController {
         var car = carService.get(id).orElseThrow(() -> new IllegalArgumentException("car no found id: " + id));
         model.addAttribute("car", car);
         return "car/update";
+    }
+
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<String> handleResponseStatusException(ResponseStatusException ex) {
+        return ResponseEntity.status(ex.getStatusCode()).body(ex.getReason());
     }
 }

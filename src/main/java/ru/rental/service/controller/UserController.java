@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import ru.rental.service.dto.CarDto;
 import ru.rental.service.dto.UserDto;
 import ru.rental.service.service.UserService;
 

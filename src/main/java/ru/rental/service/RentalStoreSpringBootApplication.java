@@ -9,5 +9,4 @@ public class RentalStoreSpringBootApplication {
     public static void main(String[] args) {
         SpringApplication.run(RentalStoreSpringBootApplication.class, args);
     }
-
 }

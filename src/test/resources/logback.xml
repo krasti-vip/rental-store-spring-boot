@@ -1,6 +1,6 @@
 <configuration>
     <!-- Определение правила для пользовательского класса -->
-    <conversionRule conversionWord="coloredLevel" converterClass="ru.rental.servic.util.LogbackColor"/>
+    <conversionRule conversionWord="coloredLevel" converterClass="ru.rental.service.util.LogbackColor"/>
 
     <!-- Аппендер для вывода в консоль -->
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
