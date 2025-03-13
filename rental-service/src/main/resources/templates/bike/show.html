@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+  <h3 th:text="${bike.name}">name</h3>
+  <p><strong>Price:</strong> $<span th:text="${bike.price}">0</span></p>
+  <p><strong>Horse Power:</strong> <span th:text="${bike.horsePower}">0</span></p>
+  <p><strong>Volume:</strong> <span th:text="${bike.volume}">0</span>L</p>
+
+  <form th:method="POST" th:action="@{/bike/{id}(id=${bike.id})}">
+      <input type="hidden" name="_method" value="DELETE">
+      <input type="submit" value="Delete">
+  </form>
+</body>
+</html>
