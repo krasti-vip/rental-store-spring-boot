@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+<form th:method="POST" th:action="@{/rental}" th:object="${rental}">
+    <label for="user_id">ID пользователя: </label>
+    <input type="text" th:field="*{userId}" id="user_id" required/>
+    <br/>
+    <label for="car_id">ID машины: </label>
+    <input type="text" th:field="*{carId}" id="car_id"/>
+    <br/>
+    <label for="bike_id">ID мотоцикла: </label>
+    <input type="text" th:field="*{bikeId}" id="bike_id"/>
+    <br/>
+    <label for="start_date">Начало аренды: </label>
+    <input type="datetime-local" th:field="*{startDate}" id="start_date" required/>
+    <br/>
+    <label for="end_date">Окончание аренды: </label>
+    <input type="datetime-local" th:field="*{endDate}" id="end_date" required/>
+    <br/>
+    <label for="rental_amount">Сумма к оплате: </label>
+    <input type="number" step="0.01" th:field="*{rentalAmount}" id="rental_amount" required/>
+    <br/>
+    <label for="is_paid">Статус оплаты: </label>
+    <input type="checkbox" th:field="*{isPaid}" id="is_paid"/>
+    <br/>
+    <input type="submit" value="Create">
+</form>
+
+</body>
+
+</html>

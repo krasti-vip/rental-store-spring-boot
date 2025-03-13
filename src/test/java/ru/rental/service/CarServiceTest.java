@@ -1,4 +1,4 @@
-package rental.service;
+package ru.rental.service;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
