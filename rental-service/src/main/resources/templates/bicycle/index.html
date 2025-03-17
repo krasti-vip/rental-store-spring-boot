@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Аренда велосипедов</title>
+    <link rel="stylesheet" th:href="@{/css/indexBicycle.css}">
+</head>
+<body>
+<header>
+    <h1>Аренда велосипедов</h1>
+    <p>Выбери идеального спутника для своих приключений!</p>
+</header>
+
+<script src="/js/alert.js"></script>
+
+<div class="container">
+    <div class="bicycle-list">
+        <div class="bicycle-card" th:each="bicycle : ${bicycles}">
+            <img src="https://sun9-74.userapi.com/impf/KJ2QGDbLIgwIE4wmvp39hB42WI-qhnQCya3wqA/qAXKM4_OUtk.jpg?size=1818x606&quality=95&crop=390,0,1200,400&sign=f378b38762ccacf8670a951cb4bc2574&type=cover_group"
+                 th:src="'https://sun9-74.userapi.com/impf/KJ2QGDbLIgwIE4wmvp39hB42WI-qhnQCya3wqA/qAXKM4_OUtk.jpg?size=1818x606&quality=95&crop=390,0,1200,400&sign=f378b38762ccacf8670a951cb4bc2574&type=cover_group' +
+
+        ${bicycle.model}" alt="Bicycle Image">
+            <h3 th:text="${bicycle.model}">Bicycle Model</h3>
+            <p><strong>Price:</strong> $<span th:text="${bicycle.price}">0</span></p>
+            <p><strong>Color:</strong> <span th:text="${bicycle.color}">0</span></p>
+            <a th:href="@{/bicycle/{id}(id=${bicycle.id})}">Выбрать эту модель!</a>
+        </div>
+    </div>
+</div>
+<a href="bicycle/create"> Добавить велосипед </a>
+<footer>
+    &copy; 2025 Bicycle Rental. All rights reserved.
+</footer>
+</body>
+</html>

@@ -18,6 +18,8 @@ public class CarController {
 
     private final CarService carService;
 
+    private static final String RETURN_A_CAR = "redirect:/car";
+
     @Autowired
     public CarController(CarService carService) {
         this.carService = carService;
@@ -47,19 +49,19 @@ public class CarController {
     @PostMapping
     public String createCar(@ModelAttribute("car") CarDto carDto) {
         carService.save(carDto);
-        return "redirect:/car";
+        return RETURN_A_CAR;
     }
 
     @DeleteMapping("/{id}")
     public String deleteCarById(@PathVariable("id") int id) {
         carService.delete(id);
-        return "redirect:/car";
+        return RETURN_A_CAR;
     }
 
     @PatchMapping("/{id}")
     public String updateCarById(@PathVariable("id") int id, CarDto carDto) {
         carService.update(id, carDto);
-        return "redirect:/car";
+        return RETURN_A_CAR;
     }
 
     @GetMapping("/{id}/edit")

@@ -1,6 +1,5 @@
 package ru.rental.service.model;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

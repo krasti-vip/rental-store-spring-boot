@@ -36,5 +36,5 @@ logs/
 .DS_Store
 logs/
 /.idea/
-/.idea/
-.idea/
+.idea/compiler.xml
+compiler.xml

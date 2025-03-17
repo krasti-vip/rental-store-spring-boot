@@ -30,4 +30,6 @@ public class User {
     private List<Bike> listBike;
 
     private List<Car> listCar;
+
+    private List<Bicycle> listBicycle;
 }

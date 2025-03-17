@@ -82,15 +82,15 @@ class UserDaoTest extends BaseBd {
     private static Stream<Arguments> sourceUserForFilterTest() {
         return Stream.of(
                 Arguments.of(new User(1, "bill", "Ivanov", "Dima", 456987123,
-                        null, 7896541236547852L, null, null), "bill", "bill"),
+                        null, 7896541236547852L, null, null, null), "bill", "bill"),
                 Arguments.of(new User(2, "tom", "Sidorov", "Pasha", 98741236, null,
-                        987456321458796L, null, null), "tom", "tom"),
+                        987456321458796L, null, null, null), "tom", "tom"),
                 Arguments.of(new User(3, "jerry", "Petrov", "Sasha", 12365478, null,
-                        12589745321698L, null, null), "jerry", "jerry"),
+                        12589745321698L, null, null, null), "jerry", "jerry"),
                 Arguments.of(new User(4, "ozi", "Galcin", "Gena", 56987415,
-                        "gav@mail.ru", 32569874125463L, null, null), "ozi", "ozi"),
+                        "gav@mail.ru", 32569874125463L, null, null, null), "ozi", "ozi"),
                 Arguments.of(new User(5, "eminem", "Pugachev", "Genya", 85297418,
-                        null, 943655557412365L, null, null), "eminem", "eminem")
+                        null, 943655557412365L, null, null, null), "eminem", "eminem")
         );
     }
 
@@ -144,7 +144,8 @@ class UserDaoTest extends BaseBd {
                 sourceUser.getEmail(),
                 sourceUser.getBankCard(),
                 sourceUser.getListBike(),
-                sourceUser.getListCar()
+                sourceUser.getListCar(),
+                sourceUser.getListBicycle()
         );
 
         User nonUser = new User(
@@ -156,7 +157,8 @@ class UserDaoTest extends BaseBd {
                 sourceUser.getEmail(),
                 sourceUser.getBankCard(),
                 sourceUser.getListBike(),
-                sourceUser.getListCar()
+                sourceUser.getListCar(),
+                sourceUser.getListBicycle()
         );
 
         int nonUserId = nonUser.getId();
@@ -194,7 +196,8 @@ class UserDaoTest extends BaseBd {
                 sourceUser.getEmail(),
                 sourceUser.getBankCard(),
                 sourceUser.getListBike(),
-                sourceUser.getListCar()
+                sourceUser.getListCar(),
+                sourceUser.getListBicycle()
         );
 
         User savedUser = userDao.save(userToSave);

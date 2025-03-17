@@ -18,6 +18,8 @@ public class BikeController {
 
     private final BikeService bikeService;
 
+    private static final String RETURN_A_BIKE = "redirect:/bike";
+
     @Autowired
     public BikeController(BikeService bikeService) {
         this.bikeService = bikeService;
@@ -47,19 +49,19 @@ public class BikeController {
     @PostMapping
     public String createBike(@ModelAttribute("bike") BikeDto bikeDto) {
         bikeService.save(bikeDto);
-        return "redirect:/bike";
+        return RETURN_A_BIKE;
     }
 
     @DeleteMapping("/{id}")
     public String deleteBikeById(@PathVariable("id") int id) {
         bikeService.delete(id);
-        return "redirect:/bike";
+        return RETURN_A_BIKE;
     }
 
     @PatchMapping("/{id}")
     public String updateBikeById(@PathVariable("id") int id, BikeDto bikeDto) {
         bikeService.update(id, bikeDto);
-        return "redirect:/bike";
+        return RETURN_A_BIKE;
     }
 
     @GetMapping("/{id}/edit")

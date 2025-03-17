@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Update bicycle</title>
+</head>
+<body>
+
+<h1>Update bicycle</h1>
+
+<form th:method="POST" th:action="@{/bicycle/{id}(id=${bicycle.id})}" th:object="${bicycle}">
+    <input type="hidden" name="_method" value="patch" />
+
+    <input type="hidden" th:field="*{id}" />
+
+    <label for="model">Model: </label>
+    <input type="text" th:field="*{model}" id="model"/>
+    <br/>
+
+    <label for="price">Price: </label>
+    <input type="number" step="0.1" th:field="*{price}" id="price"/>
+    <br/>
+
+    <label for="color">Color: </label>
+    <input type="text" th:field="*{color}" id="color"/>
+    <br/>
+
+    <input type="submit" value="Update bicycle">
+</form>
+
+</body>
+</html>
