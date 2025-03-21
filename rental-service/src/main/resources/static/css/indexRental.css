@@ -1,0 +1,85 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4; /* Запасной цвет фона */
+    background-image: url('https://i.pinimg.com/originals/3b/8a/8d/3b8a8de8f743af09b07b99aadf6cedd6.jpg');
+    background-size: cover; /* Масштабирование изображения */
+    background-position: center; /* Позиция изображения */
+    background-repeat: no-repeat; /* Отключение повторения */
+    color: #333;
+}
+
+header {
+    background-color: rgba(51, 51, 51, 0.8); /* Темный цвет с прозрачностью 80% */
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.7); /* Белый цвет с прозрачностью 70% */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px; /* Скругление углов */
+}
+
+.rental-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.rental-card {
+    flex: 1 1 calc(33.333% - 40px);
+    background-color: rgba(249, 249, 249, 0.8); /* Светло-серый цвет с прозрачностью 80% */
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.rental-card:hover {
+    transform: scale(1.05);
+}
+
+.rental-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.rental-card h3 {
+    margin: 15px 0;
+    font-size: 1.5em;
+    color: #333; /* Темный цвет текста */
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.7); /* Белая тень */
+}
+
+.rental-card p {
+    padding: 0 15px;
+    color: #666;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.7); /* Белая тень */
+}
+
+footer {
+    background-color: rgba(51, 51, 51, 0.8);
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    position: sticky;
+    bottom: 0;
+    width: 100%;
+}
+
+a {
+    color: #007bff; /* Цвет ссылок */
+    text-decoration: none; /* Убираем подчеркивание */
+}
+
+a:hover {
+    text-decoration: underline; /* Подчеркивание при наведении */
+}

@@ -8,12 +8,9 @@
 
 <h1>Update Bike</h1>
 
-<!-- Форма для обновления байка -->
 <form th:method="POST" th:action="@{/bike/{id}(id=${bike.id})}" th:object="${bike}">
-    <!-- Скрытое поле для метода PATCH -->
     <input type="hidden" name="_method" value="patch" />
 
-    <!-- Скрытое поле для ID байка -->
     <input type="hidden" th:field="*{id}" />
 
     <label for="name">Name: </label>
@@ -32,7 +29,6 @@
     <input type="number" th:field="*{volume}" id="volume"/>
     <br/>
 
-    <!-- Кнопка для отправки формы -->
     <input type="submit" value="Update Bike">
 </form>
 

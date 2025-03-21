@@ -15,6 +15,8 @@ public class UserController {
 
     private final UserService userService;
 
+    private static final String RETURN_A_USER = "redirect:/user";
+
     @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
@@ -43,19 +45,19 @@ public class UserController {
     @PostMapping
     public String createUser(@ModelAttribute("user") UserDto userDto) {
         userService.save(userDto);
-        return "redirect:/user";
+        return RETURN_A_USER;
     }
 
     @DeleteMapping("/{id}")
     public String deleteUserById(@PathVariable("id") int id) {
         userService.delete(id);
-        return "redirect:/user";
+        return RETURN_A_USER;
     }
 
     @PatchMapping("/{id}")
     public String updateUserById(@PathVariable("id") int id, UserDto userDto) {
         userService.update(id, userDto);
-        return "redirect:/user";
+        return RETURN_A_USER;
     }
 
     @GetMapping("/{id}/edit")

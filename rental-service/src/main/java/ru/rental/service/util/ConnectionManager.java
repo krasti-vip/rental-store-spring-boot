@@ -7,7 +7,9 @@ import java.sql.SQLException;
 public class ConnectionManager {
 
     private static final String BD_URL = "db.url";
+
     private static final String BD_USERNAME = "db.username";
+
     private static final String BD_PASSWORD = "db.password";
 
     private ConnectionManager() {

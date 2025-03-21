@@ -17,6 +17,8 @@ public class RentalController {
 
     private final RentalService rentalService;
 
+    private static final String RETURN_A_RENTAL = "redirect:/rental";
+
     @Autowired
     public RentalController(RentalService rentalService) {
         this.rentalService = rentalService;
@@ -46,19 +48,19 @@ public class RentalController {
     @PostMapping
     public String createRental(@ModelAttribute("rental") RentalDto rentalDto) {
         rentalService.save(rentalDto);
-        return "redirect:/rental";
+        return RETURN_A_RENTAL;
     }
 
     @DeleteMapping("/{id}")
     public String deleteRentalById(@PathVariable("id") int id) {
         rentalService.delete(id);
-        return "redirect:/rental";
+        return RETURN_A_RENTAL;
     }
 
     @PatchMapping("/{id}")
     public String updateUserById(@PathVariable("id") int id, @ModelAttribute("rental") RentalDto rentalDto) {
         rentalService.update(id, rentalDto);
-        return "redirect:/rental";
+        return RETURN_A_RENTAL;
     }
 
     @GetMapping("/{id}/edit")

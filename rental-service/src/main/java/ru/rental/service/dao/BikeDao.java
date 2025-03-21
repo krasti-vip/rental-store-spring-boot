@@ -38,10 +38,6 @@ public class BikeDao implements DAO<Bike, Integer> {
         this.userDao = userDao;
     }
 
-    private static final String SELECT_BIKE = """
-            SELECT id, name, price, horse_power, volume, user_id FROM bikes WHERE id = ?
-            """;
-
     private static final String CREATE_TABLE = """
             CREATE TABLE IF NOT EXISTS bikes(
                 id SERIAL PRIMARY KEY,
@@ -51,6 +47,10 @@ public class BikeDao implements DAO<Bike, Integer> {
                 volume DOUBLE PRECISION NOT NULL,
                 user_id INT REFERENCES users(id) ON DELETE RESTRICT
             )
+            """;
+
+    private static final String SELECT_BIKE = """
+            SELECT id, name, price, horse_power, volume, user_id FROM bikes WHERE id = ?
             """;
 
     private static final String UPDATE_BIKE = """
@@ -370,7 +370,7 @@ public class BikeDao implements DAO<Bike, Integer> {
                 return null;
             }
         } catch (SQLException e) {
-            throw new IllegalStateException("Ошибка обновления userId машины", e);
+            throw new IllegalStateException("Ошибка обновления userId bike", e);
         }
     }
 

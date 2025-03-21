@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.rental.service.model.Bicycle;
 import ru.rental.service.model.Bike;
 import ru.rental.service.model.Car;
 
@@ -32,4 +33,6 @@ public class UserDto {
     private List<Bike> listBike;
 
     private List<Car> listCar;
+
+    private List<Bicycle> listBicycle;
 }

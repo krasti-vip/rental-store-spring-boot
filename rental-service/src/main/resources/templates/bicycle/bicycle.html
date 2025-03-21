@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Motorcycle Rental</title>
+    <link rel="stylesheet" th:href="@{/css/bicycle.css}">
+</head>
+<body>
+<header>
+    <h1>Motorcycle Rental</h1>
+    <p>Find the perfect bicycle for your adventure!</p>
+</header>
+
+<div class="container">
+    <div class="bicycle-list">
+        <img src="https://gyroperm.ru/upload/iblock/bac/06.jpg"
+             th:src="'https://gyroperm.ru/upload/iblock/bac/06.jpg'"
+             alt="Bicycle Image">
+
+        <p><strong>Модель:</strong> <span th:text="${bicycle.model}">0</span></p>
+        <p><strong>Price:</strong> $<span th:text="${bicycle.price}">0</span></p>
+        <p><strong>Цвет:</strong> <span th:text="${bicycle.color}">0</span></p>
+
+        <div class="actions">
+            <a th:href="@{/bicycle/{id}/edit(id=${bicycle.id})}">Edit Bicycle</a>
+
+            <form th:method="POST" th:action="@{/bicycle/{id}(id=${bicycle.id})}">
+                <input type="hidden" name="_method" value="DELETE">
+                <input type="submit" value="Delete">
+            </form>
+        </div>
+    </div>
+</div>
+
+<footer>
+    &copy; 2025 Bicycle Rental. All rights reserved.
+</footer>
+</body>
+</html>

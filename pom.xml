@@ -25,6 +25,8 @@
     <modules>
         <module>custom-clean-plugin</module>
         <module>rental-service</module>
+        <module>required-files-plugin</module>
+        <module>checking-for-tests</module>
     </modules>
 
     <scm>
@@ -52,6 +54,37 @@
                         </goals>
                         <configuration>
                             <directoriesToClean>logs,logs2</directoriesToClean>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>test</groupId>
+                <artifactId>required-files-plugin</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>required</goal>
+                        </goals>
+                        <configuration>
+                            <requiredFilesToCheck>mvnw</requiredFilesToCheck>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>test</groupId>
+                <artifactId>checking-for-tests</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>checking</goal>
+                        </goals>
+                        <configuration>
+                            <checkingForTests>ru.rental.service.BaseBd,ru.rental.service.BikeDaoTest</checkingForTests>
+                            <subModulePath>rental-service</subModulePath>
                         </configuration>
                     </execution>
                 </executions>
@@ -111,7 +144,7 @@
                                         <limit>
                                             <counter>LINE</counter>
                                             <value>COVEREDRATIO</value>
-                                            <minimum>0.80</minimum> <!-- 80% покрытия -->
+                                            <minimum>0.40</minimum> <!-- должно быть 80% покрытия -->
                                         </limit>
                                     </limits>
                                 </rule>

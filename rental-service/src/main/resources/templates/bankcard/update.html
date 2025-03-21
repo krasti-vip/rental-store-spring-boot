@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Обновление банковских карт</title>
+</head>
+<body>
+
+<h1>Обновление банковских карт</h1>
+
+<form th:method="POST" th:action="@{/bankcard/{id}(id=${bankcard.id})}" th:object="${bankcard}">
+    <input type="hidden" name="_method" value="patch" />
+
+    <input type="hidden" th:field="*{id}" />
+
+    <label for="userId">User ID: </label>
+    <input type="number" th:field="*{userId}" id="userId"/>
+    <br/>
+    <label for="numberCard">Number Card: </label>
+    <input type="number" th:field="*{numberCard}" id="numberCard"/>
+    <br/>
+    <label for="expirationDate">Срок действия: </label>
+    <input type="text" th:field="*{expirationDate}" id="expirationDate"/>
+    <br/>
+    <label for="secretCode">SecretCode: </label>
+    <input type="number" th:field="*{secretCode}" id="secretCode"/>
+    <br/>
+
+    <input type="submit" value="Update Bike">
+</form>
+
+</body>
+</html>
