@@ -1,10 +1,13 @@
 package ru.rental.service;
 
+import io.qameta.allure.Description;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import ru.rental.service.dao.RentalDao;
 import ru.rental.service.model.Rental;
 
@@ -15,9 +18,12 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SpringBootTest
+@DisplayName("Тест RentalDao")
 class RentalDaoTest extends BaseBd {
 
-    private static final RentalDao RENTAL_DAO = new RentalDao();
+    @Autowired
+    private RentalDao rentalDao;
 
     private static Stream<Arguments> sourceRental() {
         return Stream.of(
@@ -82,28 +88,31 @@ class RentalDaoTest extends BaseBd {
     }
 
     @Test
-    @DisplayName("Test create table rentals")
-    void createTableTest() {
-        RENTAL_DAO.createTable();
-        boolean tableExists = RENTAL_DAO.checkIfTableExists("rentals");
-        assertTrue(tableExists, "Таблица rentals должна быть создана");
+    @Description(value = "Тест проверяет возвращение всей аренды")
+    @DisplayName("Тест возвращения всей аренды")
+    void getAllRentalsTest() {
+        List<Rental> rentals = rentalDao.getAll();
+        assertTrue(rentals.size() > 0, "Должен быть хотя бы один rental в базе");
     }
 
     @Test
-    @DisplayName("Test check table existence")
-    void checkIfTableExistsTest() {
-        boolean tableExists = RENTAL_DAO.checkIfTableExists("rentals");
+    @Description(value = "Тест проверяет была ли создана таблица аренды")
+    @DisplayName("Тест существования таблицы аренды")
+    void createTableTest() {
+        rentalDao.createTable();
+        boolean tableExists = rentalDao.checkIfTableExists("rentals");
         assertTrue(tableExists, "Таблица rentals должна существовать");
 
-        boolean tableNotExists = RENTAL_DAO.checkIfTableExists("non_existing_table");
+        boolean tableNotExists = rentalDao.checkIfTableExists("non_existing_table");
         assertFalse(tableNotExists, "Несуществующая таблица должна возвращать false");
     }
 
     @ParameterizedTest
     @MethodSource("sourceRental")
+    @Description(value = "Тест проверяет возвращения аренды и что у нее правильные поля")
     @DisplayName("Test getRental")
     void getRentalTest(Rental sourceRental) {
-        final var rental = RENTAL_DAO.get(sourceRental.getId());
+        final var rental = rentalDao.get(sourceRental.getId());
 
         assertAll(
                 () -> assertEquals(rental.getId(), sourceRental.getId()),
@@ -119,7 +128,8 @@ class RentalDaoTest extends BaseBd {
 
     @ParameterizedTest
     @MethodSource("sourceRental")
-    @DisplayName("Test update rental")
+    @Description(value = "Тест проверяет обновление аренды, а так же все ее поля на соответствие изменений")
+    @DisplayName("Тест обновления аренды    ")
     void updateRentalTest(Rental sourceRental) {
         Rental updatedRental = Rental.builder()
                 .id(sourceRental.getId())
@@ -132,7 +142,7 @@ class RentalDaoTest extends BaseBd {
                 .isPaid(true)
                 .build();
 
-        Rental updatedRentalFromDb = RENTAL_DAO.update(sourceRental.getId(), updatedRental);
+        Rental updatedRentalFromDb = rentalDao.update(sourceRental.getId(), updatedRental);
 
         assertAll(
                 () -> assertEquals(updatedRentalFromDb.getId(), updatedRental.getId()),
@@ -143,31 +153,27 @@ class RentalDaoTest extends BaseBd {
 
     @ParameterizedTest
     @MethodSource("sourceRental")
+    @Description(value = "Тест проверяет сохранение аренды, а затем ее удаление и что количество аренды сначала " +
+                         "изменилось, а потом вернулась")
     @DisplayName("Test save and delete rental")
     void saveAndDeleteRentalTest(Rental sourceRental) {
-        Rental savedRental = RENTAL_DAO.save(sourceRental);
+        Rental savedRental = rentalDao.save(sourceRental);
 
         assertNotNull(savedRental, "Аренда должна быть успешно сохранена");
 
-        Rental rentalFromDb = RENTAL_DAO.get(savedRental.getId());
+        Rental rentalFromDb = rentalDao.get(savedRental.getId());
         assertEquals(savedRental.getId(), rentalFromDb.getId(), "ID аренды должен совпадать");
 
-        assertTrue(RENTAL_DAO.delete(savedRental.getId()), "Аренда должна быть успешно удалена");
-        assertFalse(RENTAL_DAO.delete(999), "Попытка удаления несуществующей аренды должна вернуть false");
+        assertTrue(rentalDao.delete(savedRental.getId()), "Аренда должна быть успешно удалена");
+        assertFalse(rentalDao.delete(999), "Попытка удаления несуществующей аренды должна вернуть false");
     }
 
-    @Test
-    @DisplayName("Test get all rentals")
-    void getAllRentalsTest() {
-        List<Rental> rentals = RENTAL_DAO.getAll();
-        assertTrue(rentals.size() > 0, "Должен быть хотя бы один rental в базе");
-    }
 
     @ParameterizedTest
     @MethodSource("sourceRentalForFilterTest")
+    @Description(value = "Тест проверяет фильтрацию базы аренды по предикату")
     @DisplayName("Test filterRental")
     void filterRentalTest(Predicate<Rental> predicate, int expectedCount) {
-        final var rentalDao = RENTAL_DAO;
         List<Rental> filteredRentals = rentalDao.filterBy(predicate);
         assertEquals(expectedCount, filteredRentals.size(), "Количество отфильтрованных rentals должно быть " + expectedCount);
         assertTrue(filteredRentals.stream().allMatch(predicate), "Все отфильтрованные записи должны соответствовать предикату");

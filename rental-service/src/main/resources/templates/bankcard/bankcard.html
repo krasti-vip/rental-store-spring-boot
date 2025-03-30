@@ -13,9 +13,9 @@
 
 <div class="container">
     <div class="bankcard-list">
-        <img src="https://i0.wp.com/www.bestprepaiddebitcards.com/wp-content/uploads/2013/04/girl-holding-debit-card-in-outstretched-hand-sm.jpg"
-             th:src="'https://i0.wp.com/www.bestprepaiddebitcards.com/wp-content/uploads/2013/04/girl-holding-debit-card-in-outstretched-hand-sm.jpg'"
-             alt="bankcard Image">
+        <img alt="bankcard Image"
+             src="https://i0.wp.com/www.bestprepaiddebitcards.com/wp-content/uploads/2013/04/girl-holding-debit-card-in-outstretched-hand-sm.jpg"
+             th:src="'https://i0.wp.com/www.bestprepaiddebitcards.com/wp-content/uploads/2013/04/girl-holding-debit-card-in-outstretched-hand-sm.jpg'">
 
         <p><strong>ID пользователя:</strong> <span th:text="${bankcard.userId}">0</span></p>
         <p><strong>Номер карты:</strong> $<span th:text="${bankcard.numberCard}">0</span></p>
@@ -25,8 +25,8 @@
         <div class="actions">
             <a th:href="@{/bankcard/{id}/edit(id=${bankcard.id})}">Edit bankcard</a>
 
-            <form th:method="POST" th:action="@{/bankcard/{id}(id=${bankcard.id})}">
-                <input type="hidden" name="_method" value="DELETE">
+            <form th:action="@{/bankcard/{id}(id=${bankcard.id})}" th:method="POST">
+                <input name="_method" type="hidden" value="DELETE">
                 <input type="submit" value="Delete">
             </form>
         </div>

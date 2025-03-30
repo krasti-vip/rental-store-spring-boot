@@ -5,15 +5,18 @@ body {
     background-color: #f4f4f4;
     color: #333;
 }
+
 header {
     background-color: #333;
     color: #fff;
     padding: 20px;
     text-align: center;
 }
+
 .container {
     padding: 20px;
 }
+
 .user-list {
     background-color: #fff;
     padding: 20px;
@@ -21,6 +24,7 @@ header {
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
+
 .actions {
     margin-top: 10px;
     display: flex;
@@ -28,6 +32,7 @@ header {
     gap: 10px; /* Расстояние между кнопками */
     align-items: flex-start; /* Выравнивание кнопок по левому краю */
 }
+
 .actions a, .actions input[type="submit"] {
     padding: 10px 20px;
     text-decoration: none;
@@ -39,9 +44,11 @@ header {
     text-align: center;
     width: 150px; /* Фиксированная ширина кнопок */
 }
+
 .actions input[type="submit"] {
     background-color: #dc3545;
 }
+
 footer {
     background-color: #333;
     color: #fff;

@@ -8,24 +8,21 @@
 </head>
 
 <body>
-<form th:method="POST" th:action="@{/user}" th:object="${user}">
+<form th:action="@{/user}" th:method="POST" th:object="${user}">
     <label for="user_name">Логин: </label>
-    <input type="text" th:field="*{userName}" id="user_name"/>
+    <input id="user_name" th:field="*{userName}" type="text"/>
     <br/>
     <label for="first_name">Фамилия: </label>
-    <input type="text" th:field="*{firstName}" id="first_name"/>
+    <input id="first_name" th:field="*{firstName}" type="text"/>
     <br/>
     <label for="last_name">Имя: </label>
-    <input type="text" th:field="*{lastName}" id="last_name"/>
+    <input id="last_name" th:field="*{lastName}" type="text"/>
     <br/>
     <label for="passport">Паспорт: </label>
-    <input type="number" th:field="*{passport}" id="passport"/>
+    <input id="passport" th:field="*{passport}" type="number"/>
     <br/>
     <label for="email">Email: </label>
-    <input type="text" th:field="*{email}" id="email"/>
-    <br/>
-    <label for="bank_card">Банковская карта: </label>
-    <input type="number" th:field="*{bankCard}" id="bank_card"/>
+    <input id="email" th:field="*{email}" type="text"/>
     <br/>
     <input type="submit" value="Create">
 </form>

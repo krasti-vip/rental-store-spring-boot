@@ -1,10 +1,10 @@
 package ru.rental.service.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import ru.rental.service.dto.BikeDto;
@@ -16,9 +16,8 @@ import java.util.List;
 @RequestMapping("/bike")
 public class BikeController {
 
-    private final BikeService bikeService;
-
     private static final String RETURN_A_BIKE = "redirect:/bike";
+    private final BikeService bikeService;
 
     @Autowired
     public BikeController(BikeService bikeService) {

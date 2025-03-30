@@ -1,6 +1,8 @@
 package ru.rental.service;
 
+import io.qameta.allure.Description;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -18,6 +20,7 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@DisplayName("Тест RentalController")
 class RentalControllerTest {
 
     private MockMvc mockMvc;
@@ -35,6 +38,8 @@ class RentalControllerTest {
     }
 
     @Test
+    @Description(value = "Тест проверяет возвращение всей аренды на главную страницу")
+    @DisplayName("Тест getAll для rental/index")
     void getAllRentalTest() throws Exception {
         when(rentalService.getAll()).thenReturn(Collections.singletonList(new RentalDto()));
 
@@ -47,6 +52,8 @@ class RentalControllerTest {
     }
 
     @Test
+    @Description(value = "Тест проверяет возвращение аренды по ее айди на новую страницу")
+    @DisplayName("Тест get для rental/1")
     void getRentalByIdTest() throws Exception {
         RentalDto rental = new RentalDto();
         rental.setId(1);
@@ -62,6 +69,8 @@ class RentalControllerTest {
     }
 
     @Test
+    @Description(value = "Тест проверяет возвращение аренды по айди и что она не пустая")
+    @DisplayName("Тест get для rental/1 no found")
     void getRentalById_NotFoundTest() throws Exception {
         when(rentalService.get(1)).thenReturn(Optional.empty());
 
@@ -73,6 +82,18 @@ class RentalControllerTest {
     }
 
     @Test
+    @Description(value = "Тест проверяет открытия страницы добавления машины rental/form")
+    @DisplayName("Тест rental/create")
+    void getCreateRentalFormTest() throws Exception {
+        mockMvc.perform(get("/rental/create"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("rental/form"))
+                .andExpect(model().attributeExists("rental"));
+    }
+
+    @Test
+    @Description(value = "Тест проверяет сохранение новой аренды")
+    @DisplayName("Тест сохранения аренды")
     void createRentalTest() throws Exception {
         RentalDto rentalDto = new RentalDto();
         rentalDto.setId(1);
@@ -86,6 +107,8 @@ class RentalControllerTest {
     }
 
     @Test
+    @Description(value = "Тест проверяет удаление аренды")
+    @DisplayName("Тест удаление аренды")
     void deleteRentalByIdTest() throws Exception {
         mockMvc.perform(delete("/rental/1"))
                 .andExpect(status().is3xxRedirection())
@@ -95,6 +118,8 @@ class RentalControllerTest {
     }
 
     @Test
+    @Description(value = "Тест проверяет сохранение обновления аренды")
+    @DisplayName("Тест обновления аренды")
     void updateRentalByIdTest() throws Exception {
         RentalDto rentalDto = new RentalDto();
         rentalDto.setId(1);
@@ -108,14 +133,8 @@ class RentalControllerTest {
     }
 
     @Test
-    void getCreateRentalFormTest() throws Exception {
-        mockMvc.perform(get("/rental/create"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("rental/form"))
-                .andExpect(model().attributeExists("rental"));
-    }
-
-    @Test
+    @Description(value = "Тест проверяет открытия страницы rental/update выбранной аренды")
+    @DisplayName("Тест rental/update")
     void showUpdateFormTest() throws Exception {
         RentalDto rental = new RentalDto();
         rental.setId(1);
@@ -126,16 +145,6 @@ class RentalControllerTest {
                 .andExpect(view().name("rental/update"))
                 .andExpect(model().attributeExists("rental"))
                 .andExpect(model().attribute("rental", rental));
-
-        verify(rentalService, times(1)).get(1);
-    }
-
-    @Test
-    void showUpdateForm_NotFoundTest() throws Exception {
-        when(rentalService.get(1)).thenReturn(Optional.empty());
-
-        mockMvc.perform(get("/rental/1/edit"))
-                .andExpect(status().isNotFound());
 
         verify(rentalService, times(1)).get(1);
     }

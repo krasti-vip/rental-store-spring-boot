@@ -58,9 +58,9 @@ public class UserService implements Service<UserDto, Integer> {
                 .lastName(obj.getLastName())
                 .passport(obj.getPassport())
                 .email(obj.getEmail())
-                .bankCard(obj.getBankCard())
                 .listBike(obj.getListBike())
                 .listCar(obj.getListCar())
+                .listBicycle(obj.getListBicycle())
                 .build();
 
         var updated = userDao.update(id, updatedUser);
@@ -76,7 +76,6 @@ public class UserService implements Service<UserDto, Integer> {
                 .lastName(obj.getLastName())
                 .passport(obj.getPassport())
                 .email(obj.getEmail())
-                .bankCard(obj.getBankCard())
                 .build();
 
         var savedUser = userDao.save(newUser);

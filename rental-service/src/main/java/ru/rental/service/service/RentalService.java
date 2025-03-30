@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import ru.rental.service.dao.RentalDao;
 import ru.rental.service.dto.RentalDto;
 import ru.rental.service.model.Rental;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;

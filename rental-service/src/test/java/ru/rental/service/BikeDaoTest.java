@@ -1,10 +1,13 @@
 package ru.rental.service;
 
+import io.qameta.allure.Description;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import ru.rental.service.dao.BikeDao;
 import ru.rental.service.dao.UserDao;
 import ru.rental.service.model.Bike;
@@ -16,9 +19,12 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SpringBootTest
+@DisplayName("Тест BikeDao")
 class BikeDaoTest extends BaseBd {
 
-    private static final BikeDao BIKE_DAO = new BikeDao(new UserDao());
+    @Autowired
+    private BikeDao bikeDao;
 
     private static Stream<Arguments> sourceBike() {
         return Stream.of(
@@ -81,27 +87,30 @@ class BikeDaoTest extends BaseBd {
     }
 
     @Test
+    @Description(value = "Тест проверяет возвращения всех мотоциклов")
     @DisplayName("Test getAllBike")
     void bikeDaoGetAll() {
-        final var allBikes = BIKE_DAO.getAll();
+        final var allBikes = bikeDao.getAll();
         assertEquals(5, allBikes.size());
     }
 
     @Test
-    @DisplayName("Test creat Table Bike")
+    @Description(value = "Тест проверяет была ли создана таблица bikes")
+    @DisplayName("Test создания Table Bike")
     void createTableTest() {
-        BIKE_DAO.createTable();
-        boolean creatTrue = BIKE_DAO.checkIfTableExists("bikes");
+        bikeDao.createTable();
+        boolean creatTrue = bikeDao.checkIfTableExists("bikes");
         assertTrue(creatTrue);
-        boolean noCreat = BIKE_DAO.checkIfTableExists("test");
+        boolean noCreat = bikeDao.checkIfTableExists("test");
         assertFalse(noCreat);
     }
 
     @ParameterizedTest
     @MethodSource("sourceBike")
+    @Description(value = "Тест проверяет возвращения байков и что у них правильные поля")
     @DisplayName("Test getBike")
     void getBikeTest(Bike sourceBike) {
-        final var bike = BIKE_DAO.get(sourceBike.getId());
+        final var bike = bikeDao.get(sourceBike.getId());
 
         assertAll(
                 () -> assertEquals(bike.getId(), sourceBike.getId()),
@@ -113,8 +122,9 @@ class BikeDaoTest extends BaseBd {
     }
 
     @ParameterizedTest
-    @DisplayName("Test update bike")
     @MethodSource("sourceBike")
+    @Description(value = "Тест проверяет обновление байков, а так же все их поля на соответствие изменений")
+    @DisplayName("Тест обновления мотоциклов")
     void updateBikerTest(Bike sourceBike) {
 
         Bike updatedBike = new Bike(
@@ -137,8 +147,8 @@ class BikeDaoTest extends BaseBd {
 
         int nonBikeId = nonBike.getId();
 
-        final var updatedBikeBd = BIKE_DAO.update(sourceBike.getId(), updatedBike);
-        final var bikeUpdate = BIKE_DAO.get(updatedBikeBd.getId());
+        final var updatedBikeBd = bikeDao.update(sourceBike.getId(), updatedBike);
+        final var bikeUpdate = bikeDao.get(updatedBikeBd.getId());
 
         assertAll(
                 () -> assertEquals(bikeUpdate.getId(), updatedBike.getId()),
@@ -147,17 +157,17 @@ class BikeDaoTest extends BaseBd {
                 () -> assertEquals(bikeUpdate.getHorsePower(), updatedBike.getHorsePower()),
                 () -> assertEquals(bikeUpdate.getVolume(), updatedBike.getVolume()),
                 () -> assertThrows(IllegalStateException.class, () -> {
-                    BIKE_DAO.update(nonBikeId, updatedBike);
+                    bikeDao.update(nonBikeId, updatedBike);
                 }, "Expected update to throw an exception as the bike does not exist")
         );
     }
 
     @ParameterizedTest
     @MethodSource("sourceBike")
-    @DisplayName("Test save and delete bike")
+    @Description(value = "Тест проверяет сохранение мотоцикла, а затем его удаление и что количество мотоциклов сначала " +
+                         "изменилось, а потом вернулась")
+    @DisplayName("Тест сохранения и удаления мотоцикла")
     void saveAndDeleteBikeTest(Bike sourceBike) {
-        final var bikeDao = BIKE_DAO;
-
         Bike bikeToSave = new Bike(
                 -896,
                 sourceBike.getName(),
@@ -188,9 +198,9 @@ class BikeDaoTest extends BaseBd {
 
     @ParameterizedTest
     @MethodSource("sourceBikeForFilterTest")
-    @DisplayName("Test filterBike")
+    @Description(value = "Тест проверяет фильтрацию базы мотоциклов по предикату")
+    @DisplayName("Тест фильтрации мотоциклов")
     void filtrBikeTest(Bike sourceBikeForFilterTest, String filterKeyword, String expectedName) {
-        final var bikeDao = BIKE_DAO;
 
         Predicate<Bike> predicate = bike -> bike.getName().contains(filterKeyword);
 
@@ -201,12 +211,15 @@ class BikeDaoTest extends BaseBd {
     }
 
     @Test
+    @Description(value = "Тест проверяет обновление списка мотоциклов у пользователя, а так же что данный мотоцикл принадлежит" +
+                         "определенному пользователю")
+    @DisplayName("Тест добавление аренды мотоцикла")
     void updateUserId() {
         UserDao userDao = new UserDao();
-        BIKE_DAO.updateUserId(2, 5);
+        bikeDao.updateUserId(2, 5);
         User user = userDao.get(5);
         assertNotNull(user, "Пользователь с ID 5 не найден");
-        List<Bike> userBikes = BIKE_DAO.getAllByUserId(user.getId());
+        List<Bike> userBikes = bikeDao.getAllByUserId(user.getId());
         assertNotNull(userBikes, "Список байков у пользователя не должен быть null");
         assertFalse(userBikes.isEmpty(), "Список bikes у пользователя не должен быть пустым");
         for (Bike bike : userBikes) {

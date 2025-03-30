@@ -14,22 +14,21 @@
 <div class="container">
     <div class="user-list">
 
-        <img src="https://avatars.mds.yandex.net/i?id=e9ff67fb285fded714c1b843580a192a_l-5142520-images-thumbs&n=13"
-             th:src="'https://avatars.mds.yandex.net/i?id=e9ff67fb285fded714c1b843580a192a_l-5142520-images-thumbs&n=13' +
-                  ${user.userName}" alt="User Image">
+        <img alt="User Image"
+             src="https://avatars.mds.yandex.net/i?id=e9ff67fb285fded714c1b843580a192a_l-5142520-images-thumbs&n=13" th:src="'https://avatars.mds.yandex.net/i?id=e9ff67fb285fded714c1b843580a192a_l-5142520-images-thumbs&n=13' +
+                  ${user.userName}">
 
         <p><strong>Логин:</strong> <span th:text="${user.userName}">0</span></p>
         <p><strong>Фамилия:</strong> <span th:text="${user.firstName}">0</span></p>
         <p><strong>Имя:</strong> <span th:text="${user.lastName}">0</span></p>
         <p><strong>Паспорт:</strong> <span th:text="${user.passport}">0</span></p>
         <p><strong>Email:</strong> <span th:text="${user.email}">0</span></p>
-        <p><strong>Банковская карта:</strong> <span th:text="${user.bankCard}">0</span></p>
 
         <div class="actions">
             <a th:href="@{/user/{id}/edit(id=${user.id})}">Edit User</a>
 
-            <form th:method="POST" th:action="@{/user/{id}(id=${user.id})}">
-                <input type="hidden" name="_method" value="DELETE">
+            <form th:action="@{/user/{id}(id=${user.id})}" th:method="POST">
+                <input name="_method" type="hidden" value="DELETE">
                 <input type="submit" value="Delete">
             </form>
         </div>

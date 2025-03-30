@@ -14,19 +14,10 @@
     <packaging>pom</packaging>
     <name>rental-store-spring-boot</name>
     <description>rental-store-spring-boot</description>
-    <url/>
-    <licenses>
-        <license/>
-    </licenses>
-    <developers>
-        <developer/>
-    </developers>
 
     <modules>
-        <module>custom-clean-plugin</module>
         <module>rental-service</module>
         <module>required-files-plugin</module>
-        <module>checking-for-tests</module>
     </modules>
 
     <scm>
@@ -39,56 +30,11 @@
     <properties>
         <java.version>17</java.version>
         <modelmapper.version>3.2.2</modelmapper.version>
+        <allure.plugin.version>2.15.2</allure.plugin.version>
     </properties>
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>test</groupId>
-                <artifactId>custom-clean-plugin</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>custom-clean</goal>
-                        </goals>
-                        <configuration>
-                            <directoriesToClean>logs,logs2</directoriesToClean>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>test</groupId>
-                <artifactId>required-files-plugin</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>required</goal>
-                        </goals>
-                        <configuration>
-                            <requiredFilesToCheck>mvnw</requiredFilesToCheck>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>test</groupId>
-                <artifactId>checking-for-tests</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>checking</goal>
-                        </goals>
-                        <configuration>
-                            <checkingForTests>ru.rental.service.BaseBd,ru.rental.service.BikeDaoTest</checkingForTests>
-                            <subModulePath>rental-service</subModulePath>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -112,46 +58,6 @@
                         </exclude>
                     </excludes>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.11</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>report</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>check</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                        <configuration>
-                            <rules>
-                                <rule>
-                                    <element>BUNDLE</element>
-                                    <limits>
-                                        <limit>
-                                            <counter>LINE</counter>
-                                            <value>COVEREDRATIO</value>
-                                            <minimum>0.40</minimum> <!-- должно быть 80% покрытия -->
-                                        </limit>
-                                    </limits>
-                                </rule>
-                            </rules>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

@@ -1,10 +1,13 @@
 package ru.rental.service;
 
+import io.qameta.allure.Description;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import ru.rental.service.dao.CarDao;
 import ru.rental.service.dao.UserDao;
 import ru.rental.service.model.Car;
@@ -16,9 +19,12 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SpringBootTest
+@DisplayName("Тест CarDao")
 class CarDaoTest extends BaseBd {
 
-    private static final CarDao CAR_DAO = new CarDao(new UserDao());
+    @Autowired
+    private CarDao carDao;
 
     private static Stream<Arguments> sourceCar() {
         return Stream.of(
@@ -91,27 +97,30 @@ class CarDaoTest extends BaseBd {
     }
 
     @Test
-    @DisplayName("Test getAllCar")
-    void carDaoGetAll() {
-        final var allCars = CAR_DAO.getAll();
+    @Description(value = "Тест проверяет возвращения всех машин")
+    @DisplayName("Тест возвращения всех машин")
+    void carDaoGetAllTest() {
+        final var allCars = carDao.getAll();
         assertEquals(5, allCars.size());
     }
 
     @Test
-    @DisplayName("Test creat Table Cars")
+    @Description(value = "Тест проверяет была ли создана таблица cars")
+    @DisplayName("Тест существования таблицы машин")
     void createTableTest() {
-        CAR_DAO.createTable();
-        boolean creatTrue = CAR_DAO.checkIfTableExists("cars");
+        carDao.createTable();
+        boolean creatTrue = carDao.checkIfTableExists("cars");
         assertTrue(creatTrue);
-        boolean noCreat = CAR_DAO.checkIfTableExists("test");
+        boolean noCreat = carDao.checkIfTableExists("test");
         assertFalse(noCreat);
     }
 
     @ParameterizedTest
     @MethodSource("sourceCar")
-    @DisplayName("Test getCar")
+    @Description(value = "Тест проверяет возвращения машин и что у них правильные поля")
+    @DisplayName("Тест getCar")
     void getBikeTest(Car sourceCar) {
-        final var car = CAR_DAO.get(sourceCar.getId());
+        final var car = carDao.get(sourceCar.getId());
 
         assertAll(
                 () -> assertEquals(car.getId(), sourceCar.getId()),
@@ -124,8 +133,9 @@ class CarDaoTest extends BaseBd {
     }
 
     @ParameterizedTest
-    @DisplayName("Test update car")
     @MethodSource("sourceCar")
+    @Description(value = "Тест проверяет обновление машин, а так же все их поля на соответствие изменений")
+    @DisplayName("Тест обновления машины")
     void updateCarTest(Car sourceCar) {
 
         Car updatedCar = new Car(
@@ -149,8 +159,8 @@ class CarDaoTest extends BaseBd {
         );
 
         int nonCarId = nonCar.getId();
-        final var updatedCarBd = CAR_DAO.update(sourceCar.getId(), updatedCar);
-        final var carUpdate = CAR_DAO.get(updatedCarBd.getId());
+        final var updatedCarBd = carDao.update(sourceCar.getId(), updatedCar);
+        final var carUpdate = carDao.get(updatedCarBd.getId());
         assertAll(
                 () -> assertEquals(carUpdate.getId(), updatedCar.getId()),
                 () -> assertEquals(carUpdate.getTitle(), updatedCar.getTitle()),
@@ -159,17 +169,17 @@ class CarDaoTest extends BaseBd {
                 () -> assertEquals(carUpdate.getVolume(), updatedCar.getVolume()),
                 () -> assertEquals(carUpdate.getColor(), updatedCar.getColor()),
                 () -> assertThrows(IllegalStateException.class, () -> {
-                    CAR_DAO.update(nonCarId, updatedCar);
+                    carDao.update(nonCarId, updatedCar);
                 }, "Expected update to throw an exception as the car does not exist")
         );
     }
 
     @ParameterizedTest
     @MethodSource("sourceCar")
-    @DisplayName("Test save and delete car")
+    @Description(value = "Тест проверяет сохранение машины, а затем его удаление и что количество машин сначала " +
+                         "изменилось, а потом вернулась")
+    @DisplayName("Тест сохранения и удаление машины")
     void saveAndDeleteCarTest(Car sourceCar) {
-        final var carDao = CAR_DAO;
-
         Car carToSave = new Car(
                 6,
                 sourceCar.getTitle(),
@@ -202,10 +212,9 @@ class CarDaoTest extends BaseBd {
 
     @ParameterizedTest
     @MethodSource("sourceCarForFilterTest")
-    @DisplayName("Test filterBike")
+    @Description(value = "Тест проверяет фильтрацию базы машин по предикату")
+    @DisplayName("Тест фильтрации машин")
     void filtrCarTest(Car sourceCarForFilterTest, String filterKeyword, String expectedName) {
-        final var carDao = CAR_DAO;
-
         Predicate<Car> predicate = car -> car.getTitle().contains(filterKeyword);
 
         List<Car> filteredCars = carDao.filterBy(predicate);
@@ -215,12 +224,15 @@ class CarDaoTest extends BaseBd {
     }
 
     @Test
+    @Description(value = "Тест проверяет обновление списка машин у пользователя, а так же что данная машина принадлежит" +
+                         "определенному пользователю")
+    @DisplayName("Тест добавление аренды машины")
     void updateUserId() {
         UserDao userDao = new UserDao();
-        CAR_DAO.updateUserId(3, 1);
+        carDao.updateUserId(3, 1);
         User user = userDao.get(1);
         assertNotNull(user, "Пользователь с ID 1 не найден");
-        List<Car> userCar = CAR_DAO.getAllByUserId(user.getId());
+        List<Car> userCar = carDao.getAllByUserId(user.getId());
         assertNotNull(userCar, "Список car у пользователя не должен быть null");
         assertFalse(userCar.isEmpty(), "Список cars у пользователя не должен быть пустым");
         for (Car car : userCar) {

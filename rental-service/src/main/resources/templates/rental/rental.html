@@ -14,9 +14,9 @@
 <div class="container">
     <div class="rental-list">
 
-        <img src="https://avatars.mds.yandex.net/i?id=e9ff67fb285fded714c1b843580a192a_l-5142520-images-thumbs&n=13"
-             th:src="'https://avatars.mds.yandex.net/i?id=e9ff67fb285fded714c1b843580a192a_l-5142520-images-thumbs&n=13' +
-                  ${rental.userId}" alt="Rental Image">
+        <img alt="Rental Image"
+             src="https://avatars.mds.yandex.net/i?id=e9ff67fb285fded714c1b843580a192a_l-5142520-images-thumbs&n=13" th:src="'https://avatars.mds.yandex.net/i?id=e9ff67fb285fded714c1b843580a192a_l-5142520-images-thumbs&n=13' +
+                  ${rental.userId}">
 
         <p><strong>UserID:</strong> <span th:text="${rental.userId}">0</span></p>
         <p><strong>Арендованная машина:</strong> <span th:text="${rental.carId}">0</span></p>
@@ -33,8 +33,8 @@
         <div class="actions">
             <a th:href="@{/rental/{id}/edit(id=${rental.id})}">Edit Rental</a>
 
-            <form th:method="POST" th:action="@{/rental/{id}(id=${rental.id})}">
-                <input type="hidden" name="_method" value="DELETE">
+            <form th:action="@{/rental/{id}(id=${rental.id})}" th:method="POST">
+                <input name="_method" type="hidden" value="DELETE">
                 <input type="submit" value="Delete">
             </form>
         </div>

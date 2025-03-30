@@ -3,28 +3,28 @@
 
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Title</title>
+    <meta charset="UTF-8">
+    <title>Title</title>
 </head>
 
 <body>
-<form th:method="POST" th:action="@{/car}" th:object="${car}">
-  <label for="title">Title: </label>
-  <input type="text" th:field="*{title}" id="title"/>
-  <br/>
-  <label for="price">Price: </label>
-  <input type="number" step="0.1" th:field="*{price}" id="price"/>
-  <br/>
-  <label for="horsePower">Horse Power: </label>
-  <input type="number" th:field="*{horsePower}" id="horsePower"/>
-  <br/>
-  <label for="color">Color: </label>
-  <input type="text" th:field="*{color}" id="color"/>
-  <br/>
-  <label for="volume">Volume: </label>
-  <input type="number" th:field="*{volume}" id="volume"/>
-  <br/>
-  <input type="submit" value="Create">
+<form th:action="@{/car}" th:method="POST" th:object="${car}">
+    <label for="title">Title: </label>
+    <input id="title" th:field="*{title}" type="text"/>
+    <br/>
+    <label for="price">Price: </label>
+    <input id="price" step="0.1" th:field="*{price}" type="number"/>
+    <br/>
+    <label for="horsePower">Horse Power: </label>
+    <input id="horsePower" th:field="*{horsePower}" type="number"/>
+    <br/>
+    <label for="color">Color: </label>
+    <input id="color" th:field="*{color}" type="text"/>
+    <br/>
+    <label for="volume">Volume: </label>
+    <input id="volume" th:field="*{volume}" type="number"/>
+    <br/>
+    <input type="submit" value="Create">
 </form>
 
 </body>

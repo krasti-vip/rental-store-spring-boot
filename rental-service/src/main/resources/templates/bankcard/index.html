@@ -16,11 +16,12 @@
 <div class="container">
     <div class="bankcard-list">
         <div class="bankcard-card" th:each="bankcard : ${bankcards}">
-            <img src="https://blizko.by/system/notes/imagefbs/000/038/881/original/karta_%285%29.jpg?1668070571"
-                 th:src="'https://blizko.by/system/notes/imagefbs/000/038/881/original/karta_%285%29.jpg?1668070571' +
+            <img alt="bankcard Image"
+                 src="https://blizko.by/system/notes/imagefbs/000/038/881/original/karta_%285%29.jpg?1668070571" th:src="'https://blizko.by/system/notes/imagefbs/000/038/881/original/karta_%285%29.jpg?1668070571' +
 
-        ${bankcard.userId}" alt="bankcard Image">
-            <h3 th:text="${bankcard.userId}">User ID</h3>
+        ${bankcard.userId}">
+            <h3 th:text="${bankcard.id}">ID</h3>
+            <p><strong>User ID:</strong> <span th:text="${bankcard.userId}">0</span></p>
             <p><strong>Номер карты:</strong> <span th:text="${bankcard.numberCard}">0</span></p>
             <p><strong>Срок годности:</strong> <span th:text="${bankcard.expirationDate}">0</span></p>
             <p><strong>Трех значный код:</strong> <span th:text="${bankcard.secretCode}">0</span></p>

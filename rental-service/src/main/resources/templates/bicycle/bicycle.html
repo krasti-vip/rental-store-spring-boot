@@ -13,9 +13,9 @@
 
 <div class="container">
     <div class="bicycle-list">
-        <img src="https://gyroperm.ru/upload/iblock/bac/06.jpg"
-             th:src="'https://gyroperm.ru/upload/iblock/bac/06.jpg'"
-             alt="Bicycle Image">
+        <img alt="Bicycle Image"
+             src="https://gyroperm.ru/upload/iblock/bac/06.jpg"
+             th:src="'https://gyroperm.ru/upload/iblock/bac/06.jpg'">
 
         <p><strong>Модель:</strong> <span th:text="${bicycle.model}">0</span></p>
         <p><strong>Price:</strong> $<span th:text="${bicycle.price}">0</span></p>
@@ -24,8 +24,8 @@
         <div class="actions">
             <a th:href="@{/bicycle/{id}/edit(id=${bicycle.id})}">Edit Bicycle</a>
 
-            <form th:method="POST" th:action="@{/bicycle/{id}(id=${bicycle.id})}">
-                <input type="hidden" name="_method" value="DELETE">
+            <form th:action="@{/bicycle/{id}(id=${bicycle.id})}" th:method="POST">
+                <input name="_method" type="hidden" value="DELETE">
                 <input type="submit" value="Delete">
             </form>
         </div>

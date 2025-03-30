@@ -6,13 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.rental.service.model.Bike;
 import ru.rental.service.util.ConnectionManager;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
-
 
 @Component
 public class BikeDao implements DAO<Bike, Integer> {
@@ -30,14 +30,6 @@ public class BikeDao implements DAO<Bike, Integer> {
     private static final String USER_ID = "user_id";
 
     private static final Logger log = LoggerFactory.getLogger(BikeDao.class);
-
-    private final UserDao userDao;
-
-    @Autowired
-    public BikeDao(UserDao userDao) {
-        this.userDao = userDao;
-    }
-
     private static final String CREATE_TABLE = """
             CREATE TABLE IF NOT EXISTS bikes(
                 id SERIAL PRIMARY KEY,
@@ -48,11 +40,9 @@ public class BikeDao implements DAO<Bike, Integer> {
                 user_id INT REFERENCES users(id) ON DELETE RESTRICT
             )
             """;
-
     private static final String SELECT_BIKE = """
             SELECT id, name, price, horse_power, volume, user_id FROM bikes WHERE id = ?
             """;
-
     private static final String UPDATE_BIKE = """
             UPDATE bikes 
             SET
@@ -62,41 +52,40 @@ public class BikeDao implements DAO<Bike, Integer> {
                 volume = ?
             WHERE id = ?
             """;
-
     private static final String INSERT_BIKE = """
             INSERT INTO bikes (name, price, horse_power, volume)
             VALUES (?, ?, ?, ?)
             """;
-
     private static final String DELETE_BIKE = """
             DELETE FROM bikes WHERE id = ?
             """;
-
     private static final String SELECT_ALL_BIKES = """
             SELECT id, name, price, horse_power, volume, user_id FROM bikes
             """;
-
     private static final String UPDATE_BIKE_USER = """
                 UPDATE bikes
                 SET user_id = ?
                 WHERE id = ?
             """;
-
     private static final String SELECT_BIKE_BY_USER_ID = """
             SELECT id, name, price, horse_power, volume, user_id FROM bikes 
             WHERE user_id = ?
             """;
-
     private static final String CHECK_TABLE = """
             SELECT EXISTS (
                     SELECT FROM information_schema.tables 
                     WHERE table_name = ?
             )
             """;
-
     private static final String CHECK_BIKE_ID = """
             SELECT 1 FROM bikes WHERE id = ?
             """;
+    private final UserDao userDao;
+
+    @Autowired
+    public BikeDao(UserDao userDao) {
+        this.userDao = userDao;
+    }
 
     /**
      * Метод проверяет по переданному названию таблицы, ее существование, вернет или True, или False

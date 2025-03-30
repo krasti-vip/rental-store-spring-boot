@@ -1,6 +1,8 @@
 package ru.rental.service;
 
+import io.qameta.allure.Description;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -18,6 +20,7 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@DisplayName("Тест BikeController")
 class BikeControllerTest {
 
     private MockMvc mockMvc;
@@ -35,6 +38,8 @@ class BikeControllerTest {
     }
 
     @Test
+    @Description(value = "Тест проверяет возвращение всех байков на главную страницу")
+    @DisplayName("Тест getAll для bike/index")
     void getAllBikes_ShouldReturnBikesTest() throws Exception {
         when(bikeService.getAll()).thenReturn(Collections.singletonList(new BikeDto()));
 
@@ -47,6 +52,8 @@ class BikeControllerTest {
     }
 
     @Test
+    @Description(value = "Тест проверяет возвращение байка по его айди на новую страницу")
+    @DisplayName("Тест get для bike/1")
     void getBikeById_ShouldReturnBikeTest() throws Exception {
         BikeDto bike = new BikeDto();
         bike.setId(1);
@@ -62,6 +69,8 @@ class BikeControllerTest {
     }
 
     @Test
+    @Description(value = "Тест проверяет возвращение байка по айди и что он не пустой")
+    @DisplayName("Тест get для bike/1 no found")
     void getBikeByIdTest() throws Exception {
         when(bikeService.get(1)).thenReturn(Optional.empty());
 
@@ -73,6 +82,8 @@ class BikeControllerTest {
     }
 
     @Test
+    @Description(value = "Тест проверяет открытия страницы добавления байка bike/form")
+    @DisplayName("Тест bike/create")
     void getCreateBikeFormTest() throws Exception {
         mockMvc.perform(get("/bike/create"))
                 .andExpect(status().isOk())
@@ -81,6 +92,8 @@ class BikeControllerTest {
     }
 
     @Test
+    @Description(value = "Тест проверяет сохранение нового байка")
+    @DisplayName("Тест сохранения байка")
     void createBikeTest() throws Exception {
         BikeDto bikeDto = new BikeDto();
         bikeDto.setId(1);
@@ -94,6 +107,8 @@ class BikeControllerTest {
     }
 
     @Test
+    @Description(value = "Тест проверяет удаление байка")
+    @DisplayName("Тест удаление байка")
     void deleteBikeByIdTest() throws Exception {
         mockMvc.perform(delete("/bike/1"))
                 .andExpect(status().is3xxRedirection())
@@ -103,6 +118,8 @@ class BikeControllerTest {
     }
 
     @Test
+    @Description(value = "Тест проверяет сохранение обновления байка")
+    @DisplayName("Тест обновления байка")
     void updateBikeByIdTest() throws Exception {
         BikeDto bikeDto = new BikeDto();
         bikeDto.setId(1);
@@ -116,6 +133,8 @@ class BikeControllerTest {
     }
 
     @Test
+    @Description(value = "Тест проверяет открытия страницы bike/update выбранного мотоцикла")
+    @DisplayName("Тест bike/update")
     void showUpdateFormTest() throws Exception {
         BikeDto bike = new BikeDto();
         bike.setId(1);

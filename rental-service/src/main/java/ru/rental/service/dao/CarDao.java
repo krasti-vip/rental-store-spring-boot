@@ -30,22 +30,11 @@ public class CarDao implements DAO<Car, Integer> {
     private static final String COLOR = "color";
 
     private static final String USER_ID = "user_id";
-
-    private final UserDao userDao;
-
     private static final Logger log = LoggerFactory.getLogger(CarDao.class);
-
     private static final String CAR_UPDATE = "Car with id {} has been updated!";
-
-    @Autowired
-    public CarDao(UserDao userDao) {
-        this.userDao = userDao;
-    }
-
     private static final String SELECT_CAR = """
             SELECT id, title, price, horse_power, volume, color, user_id FROM cars WHERE id = ?
             """;
-
     private static final String CREATE_TABLE = """
             CREATE TABLE IF NOT EXISTS cars(
                 id SERIAL PRIMARY KEY,
@@ -57,7 +46,6 @@ public class CarDao implements DAO<Car, Integer> {
                 userId INT REFERENCES users(id) ON DELETE RESTRICT
             )
             """;
-
     private static final String UPDATE_CAR = """
             UPDATE cars 
             SET
@@ -68,41 +56,40 @@ public class CarDao implements DAO<Car, Integer> {
                 color = ?
             WHERE id = ?
             """;
-
     private static final String INSERT_CAR = """
             INSERT INTO cars (title, price, horse_power, volume, color)
             VALUES (?, ?, ?, ?, ?)
             """;
-
     private static final String DELETE_CAR = """
             DELETE FROM cars WHERE id = ?
             """;
-
     private static final String SELECT_ALL_CARS = """
             SELECT id, title, price, horse_power, volume, color, user_id FROM cars
             """;
-
     private static final String UPDATE_CAR_USER = """
                 UPDATE cars
                 SET user_id = ?
                 WHERE id = ?
             """;
-
     private static final String SELECT_CARS_BY_USER_ID = """
             SELECT id, title, price, horse_power, volume, color, user_id FROM cars 
             WHERE user_id = ?
             """;
-
     private static final String CHECK_CARE_ID = """
             SELECT id FROM cars WHERE id = ?
             """;
-
     private static final String CHECK_TABLE = """
             SELECT EXISTS (
                     SELECT FROM information_schema.tables 
                     WHERE table_name = ?
             )
             """;
+    private final UserDao userDao;
+
+    @Autowired
+    public CarDao(UserDao userDao) {
+        this.userDao = userDao;
+    }
 
     /**
      * Метод проверяет по переданному названию таблицы, ее существование, вернет или True, или False

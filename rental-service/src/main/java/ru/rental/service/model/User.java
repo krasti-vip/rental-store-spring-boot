@@ -25,8 +25,6 @@ public class User {
 
     private String email;
 
-    private long bankCard;
-
     private List<Bike> listBike;
 
     private List<Car> listCar;

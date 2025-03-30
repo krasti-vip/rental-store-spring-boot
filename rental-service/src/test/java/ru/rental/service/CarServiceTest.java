@@ -1,10 +1,10 @@
 package ru.rental.service;
 
+import io.qameta.allure.Description;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.modelmapper.ModelMapper;
-import ru.rental.service.dao.CarDao;
-import ru.rental.service.dao.UserDao;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import ru.rental.service.dto.CarDto;
 import ru.rental.service.service.CarService;
 
@@ -13,12 +13,16 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SpringBootTest
+@DisplayName("Тест CarService")
 class CarServiceTest extends BaseBd {
 
-    private final CarService carService = new CarService(new CarDao(new UserDao()), new ModelMapper());
+    @Autowired
+    private CarService carService;
 
     @Test
-    @DisplayName("Test get")
+    @Description(value = "Тест проверяет существование машины, затем что возвращается правильная машина по айди")
+    @DisplayName("Тест get")
     void getTest() {
         Integer carId = carService.getAll().get(3).getId();
         Optional<CarDto> carDto = carService.get(carId);
@@ -30,7 +34,8 @@ class CarServiceTest extends BaseBd {
     }
 
     @Test
-    @DisplayName("Test update")
+    @Description(value = "Тест проверяет обновление машины, а также соответствие полей после обновления")
+    @DisplayName("Тест обновления машины")
     void updateTest() {
         Integer carId = carService.getAll().get(3).getId();
         CarDto carDto = CarDto.builder()
@@ -45,7 +50,9 @@ class CarServiceTest extends BaseBd {
     }
 
     @Test
-    @DisplayName("Test save and delete")
+    @Description(value = "Тест проверяет сохранение машины, а затем ее удаление и что количество машин сначала " +
+                         "изменилось, а потом вернулась")
+    @DisplayName("Тест сохранения и удаления")
     void saveAndDeleteTest() {
         CarDto carDto = CarDto.builder()
                 .title("Renault")
@@ -69,14 +76,16 @@ class CarServiceTest extends BaseBd {
     }
 
     @Test
-    @DisplayName("Test getAllBike")
+    @Description(value = "Тест проверяет возвращение всех машин")
+    @DisplayName("Тест возвращения всех машин")
     void getAllTest() {
         List<CarDto> cars = carService.getAll();
         assertTrue(cars.size() > 4);
     }
 
     @Test
-    @DisplayName("Test filter")
+    @Description(value = "Тест проверяет фильтрацию машин по предикату")
+    @DisplayName("Тест фильтрации")
     void filterTest() {
         List<CarDto> carFilter = carService.filterBy(u -> u.getTitle().equals("HYUNDAI"));
         assertTrue(carFilter.size() > 0);
@@ -84,7 +93,9 @@ class CarServiceTest extends BaseBd {
     }
 
     @Test
-    @DisplayName("Test updateUserId")
+    @Description(value = "Тест проверяет обновление списка аренды машин у пользователя и что определенная машина " +
+                         "принадлежит определенному пользователю")
+    @DisplayName("Тест обновления аренды машины")
     void updateUserIdTest() {
         Integer carId = carService.getAll().get(2).getId();
         Integer newUserId = 3;

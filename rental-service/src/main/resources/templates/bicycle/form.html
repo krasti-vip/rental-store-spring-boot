@@ -8,15 +8,15 @@
 </head>
 
 <body>
-<form th:method="POST" th:action="@{/bicycle}" th:object="${bicycle}">
+<form th:action="@{/bicycle}" th:method="POST" th:object="${bicycle}">
     <label for="model">Model: </label>
-    <input type="text" th:field="*{model}" id="model"/>
+    <input id="model" th:field="*{model}" type="text"/>
     <br/>
     <label for="price">Price: </label>
-    <input type="number" step="0.1" th:field="*{price}" id="price"/>
+    <input id="price" step="0.1" th:field="*{price}" type="number"/>
     <br/>
     <label for="color">Color: </label>
-    <input type="text" th:field="*{color}" id="color"/>
+    <input id="color" th:field="*{color}" type="text"/>
     <br/>
     <input type="submit" value="Create">
 </form>

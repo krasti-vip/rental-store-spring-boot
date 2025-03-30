@@ -6,9 +6,10 @@ import org.springframework.stereotype.Component;
 import ru.rental.service.model.BankCard;
 import ru.rental.service.util.ConnectionManager;
 
-import java.sql.*;
-import java.time.YearMonth;
-import java.time.format.DateTimeFormatter;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
