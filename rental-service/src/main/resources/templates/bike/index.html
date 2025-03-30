@@ -16,10 +16,10 @@
 <div class="container">
     <div class="bike-list">
         <div class="bike-card" th:each="bike : ${bikes}">
-            <img src="https://avatars.mds.yandex.net/i?id=1254ba5e8975e27386206c4db6474b16_l-9854613-images-thumbs&n=13"
-                 th:src="'https://avatars.mds.yandex.net/i?id=1254ba5e8975e27386206c4db6474b16_l-9854613-images-thumbs&n=13' +
+            <img alt="Bike Image"
+                 src="https://avatars.mds.yandex.net/i?id=1254ba5e8975e27386206c4db6474b16_l-9854613-images-thumbs&n=13" th:src="'https://avatars.mds.yandex.net/i?id=1254ba5e8975e27386206c4db6474b16_l-9854613-images-thumbs&n=13' +
 
-        ${bike.name}" alt="Bike Image">
+        ${bike.name}">
             <h3 th:text="${bike.name}">Bike Name</h3>
             <p><strong>Price:</strong> $<span th:text="${bike.price}">0</span></p>
             <p><strong>Horse Power:</strong> <span th:text="${bike.horsePower}">0</span></p>

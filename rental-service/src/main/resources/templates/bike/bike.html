@@ -13,9 +13,9 @@
 
 <div class="container">
     <div class="bike-list">
-        <img src="https://sun9-25.userapi.com/SElDbawfkZkU3xaSvfrsPdltsH17THbqgaWH3A/Y6WgmqDqPJA.jpg"
-             th:src="'https://sun9-25.userapi.com/SElDbawfkZkU3xaSvfrsPdltsH17THbqgaWH3A/Y6WgmqDqPJA.jpg'"
-             alt="Bike Image">
+        <img alt="Bike Image"
+             src="https://sun9-25.userapi.com/SElDbawfkZkU3xaSvfrsPdltsH17THbqgaWH3A/Y6WgmqDqPJA.jpg"
+             th:src="'https://sun9-25.userapi.com/SElDbawfkZkU3xaSvfrsPdltsH17THbqgaWH3A/Y6WgmqDqPJA.jpg'">
 
         <p><strong>Модель:</strong> <span th:text="${bike.name}">0</span></p>
         <p><strong>Price:</strong> $<span th:text="${bike.price}">0</span></p>
@@ -28,8 +28,8 @@
             <a th:href="@{/bike/{id}/edit(id=${bike.id})}">Edit Bike</a>
 
             <!-- Форма для удаления байка -->
-            <form th:method="POST" th:action="@{/bike/{id}(id=${bike.id})}">
-                <input type="hidden" name="_method" value="DELETE">
+            <form th:action="@{/bike/{id}(id=${bike.id})}" th:method="POST">
+                <input name="_method" type="hidden" value="DELETE">
                 <input type="submit" value="Delete">
             </form>
         </div>

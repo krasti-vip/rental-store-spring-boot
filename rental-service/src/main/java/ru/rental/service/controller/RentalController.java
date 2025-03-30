@@ -9,15 +9,15 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import ru.rental.service.dto.RentalDto;
 import ru.rental.service.service.RentalService;
+
 import java.util.List;
 
 @Controller
 @RequestMapping("/rental")
 public class RentalController {
 
-    private final RentalService rentalService;
-
     private static final String RETURN_A_RENTAL = "redirect:/rental";
+    private final RentalService rentalService;
 
     @Autowired
     public RentalController(RentalService rentalService) {

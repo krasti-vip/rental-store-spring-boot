@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import ru.rental.service.model.Rental;
 import ru.rental.service.util.ConnectionManager;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;

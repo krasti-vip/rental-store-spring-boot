@@ -16,9 +16,8 @@ import java.util.List;
 @RequestMapping("/bicycle")
 public class BicycleController {
 
-    private final BicycleService bicycleService;
-
     private static final String RETURN_A_BICYCLE = "redirect:/bicycle";
+    private final BicycleService bicycleService;
 
     @Autowired
     public BicycleController(BicycleService bicycleService) {

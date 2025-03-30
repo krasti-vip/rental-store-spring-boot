@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import ru.rental.service.dao.BicycleDao;
 import ru.rental.service.dto.BicycleDto;
 import ru.rental.service.model.Bicycle;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

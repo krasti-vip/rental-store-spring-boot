@@ -16,10 +16,10 @@
 <div class="container">
     <div class="rental-list">
         <div class="rental-card" th:each="rental : ${rentals}">
-            <img src="https://avatars.mds.yandex.net/i?id=374628b11f3b50bc0923a238081a3828_l-8498443-images-thumbs&n=13"
-                 th:src="'https://avatars.mds.yandex.net/i?id=374628b11f3b50bc0923a238081a3828_l-8498443-images-thumbs&n=13' +
+            <img alt="Rental Image"
+                 src="https://avatars.mds.yandex.net/i?id=374628b11f3b50bc0923a238081a3828_l-8498443-images-thumbs&n=13" th:src="'https://avatars.mds.yandex.net/i?id=374628b11f3b50bc0923a238081a3828_l-8498443-images-thumbs&n=13' +
 
-        ${rental.userId}" alt="Rental Image">
+        ${rental.userId}">
             <h3 th:text="${rental.userId}">Rental userId</h3>
             <p><strong>Арендованная машина:</strong> <span th:text="${rental.carId}">0</span></p>
             <p><strong>Арендованный мотоцикл:</strong> <span th:text="${rental.bikeId}">0</span></p>

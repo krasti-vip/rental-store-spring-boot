@@ -3,6 +3,7 @@ package ru.rental.service.dao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import ru.rental.service.model.Bicycle;
 import ru.rental.service.model.Bike;
 import ru.rental.service.model.Car;
 import ru.rental.service.model.User;
@@ -24,8 +25,18 @@ public class UserDao implements DAO<User, Integer> {
 
     private static final String USER_FOUND = "Users loaded: {}";
 
+    private static final String ID = "id";
+
+    private static final String MODEL = "model";
+
+    private static final String PRICE = "price";
+
+    private static final String COLOR = "color";
+
+    private static final String USER_ID = "user_id";
+
     private static final String SELECT_USER = """
-            SELECT id, user_name, first_name, last_name, passport, email, bank_card 
+            SELECT id, user_name, first_name, last_name, passport, email
             FROM users 
             WHERE id = ?
             """;
@@ -37,8 +48,7 @@ public class UserDao implements DAO<User, Integer> {
                 first_name VARCHAR(50) NOT NULL,
                 last_name VARCHAR(50) NOT NULL,
                 passport int8 NOT NULL,
-                email VARCHAR(50),
-                bank_card VARCHAR(50) NOT NULL
+                email VARCHAR(50)
             )
             """;
 
@@ -49,21 +59,20 @@ public class UserDao implements DAO<User, Integer> {
                 first_name = ?,
                 last_name = ?,
                 passport = ?,
-                email = ?,
-                bank_card = ?
+                email = ?
             WHERE id = ?
             """;
 
     private static final String INSERT_USER = """
-            INSERT INTO users (user_name, first_name, last_name, passport, email, bank_card)
-            VALUES (?, ?, ?, ?, ?, ?)
+            INSERT INTO users (user_name, first_name, last_name, passport, email)
+            VALUES (?, ?, ?, ?, ?)
             """;
 
     private static final String DELETE_USER =
             "DELETE FROM users WHERE id = ?";
 
     private static final String SELECT_ALL_USERS =
-            "SELECT id, user_name, first_name, last_name, passport, email, bank_card FROM users";
+            "SELECT id, user_name, first_name, last_name, passport, email FROM users";
 
     private static final String CHECK_TABLE = """
             SELECT EXISTS (
@@ -80,6 +89,9 @@ public class UserDao implements DAO<User, Integer> {
 
     private static final String QUERY_CAR =
             "SELECT id, title, price, horse_power, volume, color, user_id FROM cars WHERE user_id = ?";
+
+    private static final String QUERY_BICYCLE =
+            "SELECT id, model, price, color, user_id FROM bicycles WHERE user_id = ?";
 
     /**
      * Метод проверяет по переданному названию таблицы, ее существование, вернет или True, или False
@@ -154,9 +166,9 @@ public class UserDao implements DAO<User, Integer> {
                         .lastName(resultSet.getString("last_name"))
                         .passport(resultSet.getInt("passport"))
                         .email(resultSet.getString("email"))
-                        .bankCard(resultSet.getLong("bank_card"))
                         .listBike(getUserBikes(id))
                         .listCar(getUserCars(id))
+                        .listBicycle(getUserBicycle(id))
                         .build();
             } else {
                 log.warn(NO_USER_FOUND, id);
@@ -196,8 +208,7 @@ public class UserDao implements DAO<User, Integer> {
                 preparedStatement.setString(3, obj.getLastName());
                 preparedStatement.setInt(4, obj.getPassport());
                 preparedStatement.setString(5, obj.getEmail());
-                preparedStatement.setLong(6, obj.getBankCard());
-                preparedStatement.setInt(7, id);
+                preparedStatement.setInt(6, id);
 
                 int rowsAffected = preparedStatement.executeUpdate();
 
@@ -235,7 +246,6 @@ public class UserDao implements DAO<User, Integer> {
             preparedStatement.setString(3, obj.getLastName());
             preparedStatement.setInt(4, obj.getPassport());
             preparedStatement.setString(5, obj.getEmail());
-            preparedStatement.setLong(6, obj.getBankCard());
 
             int rowsAffected = preparedStatement.executeUpdate();
 
@@ -307,7 +317,6 @@ public class UserDao implements DAO<User, Integer> {
                         .lastName(resultSet.getString("last_name"))
                         .passport(resultSet.getInt("passport"))
                         .email(resultSet.getString("email"))
-                        .bankCard(resultSet.getLong("bank_card"))
                         .build();
                 log.info("User with id {} loaded", user.getId());
                 users.add(user);
@@ -387,5 +396,29 @@ public class UserDao implements DAO<User, Integer> {
         }
         log.info(USER_FOUND, cars);
         return cars;
+    }
+
+    public List<Bicycle> getUserBicycle(int userId) {
+        List<Bicycle> bicycles = new ArrayList<>();
+
+        try (final var connection = ConnectionManager.getConnection();
+             final var preparedStatement = connection.prepareStatement(QUERY_BICYCLE)) {
+
+            preparedStatement.setInt(1, userId);
+            final var resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                bicycles.add(Bicycle.builder()
+                        .id(resultSet.getInt(ID))
+                        .model(resultSet.getString(MODEL))
+                        .price(resultSet.getDouble(PRICE))
+                        .color(resultSet.getString(COLOR))
+                        .userId(resultSet.getInt(USER_ID))
+                        .build());
+            }
+        } catch (SQLException e) {
+            throw new IllegalStateException("Ошибка получения списка bicycles пользователя", e);
+        }
+        return bicycles;
     }
 }

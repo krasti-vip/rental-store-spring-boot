@@ -16,9 +16,8 @@ import java.util.List;
 @RequestMapping("/car")
 public class CarController {
 
-    private final CarService carService;
-
     private static final String RETURN_A_CAR = "redirect:/car";
+    private final CarService carService;
 
     @Autowired
     public CarController(CarService carService) {

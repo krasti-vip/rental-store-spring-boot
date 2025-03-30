@@ -13,9 +13,8 @@ import java.util.List;
 @RequestMapping("/user")
 public class UserController {
 
-    private final UserService userService;
-
     private static final String RETURN_A_USER = "redirect:/user";
+    private final UserService userService;
 
     @Autowired
     public UserController(UserService userService) {

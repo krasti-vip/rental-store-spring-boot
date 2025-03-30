@@ -1,6 +1,8 @@
 package ru.rental.service;
 
+import io.qameta.allure.Description;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -18,6 +20,7 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@DisplayName("Тест CarController")
 class CarControllerTest {
 
     private MockMvc mockMvc;
@@ -35,7 +38,9 @@ class CarControllerTest {
     }
 
     @Test
-    void getAllCars_ShouldReturnCarsTest() throws Exception {
+    @Description(value = "Тест проверяет возвращение всех машин на главную страницу")
+    @DisplayName("Тест getAll для car/index")
+    void getAllCarsTest() throws Exception {
         when(carService.getAll()).thenReturn(Collections.singletonList(new CarDto()));
 
         mockMvc.perform(get("/car"))
@@ -47,7 +52,9 @@ class CarControllerTest {
     }
 
     @Test
-    void getCarById_ShouldReturnCarTest() throws Exception {
+    @Description(value = "Тест проверяет возвращение машины по его айди на новую страницу")
+    @DisplayName("Тест get для car/1")
+    void getCarById_ReturnCarTest() throws Exception {
         CarDto car = new CarDto();
         car.setId(1);
         when(carService.get(1)).thenReturn(Optional.of(car));
@@ -62,6 +69,8 @@ class CarControllerTest {
     }
 
     @Test
+    @Description(value = "Тест проверяет возвращение машины по айди и что он не пустой")
+    @DisplayName("Тест get для car/1 no found")
     void getCarByIdTest() throws Exception {
         when(carService.get(1)).thenReturn(Optional.empty());
 
@@ -73,6 +82,8 @@ class CarControllerTest {
     }
 
     @Test
+    @Description(value = "Тест проверяет открытия страницы добавления машины car/form")
+    @DisplayName("Тест car/create")
     void getCreateCarFormTest() throws Exception {
         mockMvc.perform(get("/car/create"))
                 .andExpect(status().isOk())
@@ -81,6 +92,8 @@ class CarControllerTest {
     }
 
     @Test
+    @Description(value = "Тест проверяет сохранение новой машины")
+    @DisplayName("Тест сохранения машины")
     void createCarTest() throws Exception {
         CarDto carDto = new CarDto();
         carDto.setId(1);
@@ -94,6 +107,8 @@ class CarControllerTest {
     }
 
     @Test
+    @Description(value = "Тест проверяет удаление машины")
+    @DisplayName("Тест удаление машины")
     void deleteCarByIdTest() throws Exception {
         mockMvc.perform(delete("/car/1"))
                 .andExpect(status().is3xxRedirection())
@@ -103,6 +118,8 @@ class CarControllerTest {
     }
 
     @Test
+    @Description(value = "Тест проверяет сохранение обновления машины")
+    @DisplayName("Тест обновления машины")
     void updateCarByIdTest() throws Exception {
         CarDto carDto = new CarDto();
         carDto.setId(1);
@@ -116,6 +133,8 @@ class CarControllerTest {
     }
 
     @Test
+    @Description(value = "Тест проверяет открытия страницы car/update выбранного мотоцикла")
+    @DisplayName("Тест car/update")
     void showUpdateFormTest() throws Exception {
         CarDto car = new CarDto();
         car.setId(1);

@@ -8,27 +8,27 @@
 </head>
 
 <body>
-<form th:method="POST" th:action="@{/rental}" th:object="${rental}">
+<form th:action="@{/rental}" th:method="POST" th:object="${rental}">
     <label for="user_id">ID пользователя: </label>
-    <input type="text" th:field="*{userId}" id="user_id" required/>
+    <input id="user_id" required th:field="*{userId}" type="text"/>
     <br/>
     <label for="car_id">ID машины: </label>
-    <input type="text" th:field="*{carId}" id="car_id"/>
+    <input id="car_id" th:field="*{carId}" type="text"/>
     <br/>
     <label for="bike_id">ID мотоцикла: </label>
-    <input type="text" th:field="*{bikeId}" id="bike_id"/>
+    <input id="bike_id" th:field="*{bikeId}" type="text"/>
     <br/>
     <label for="start_date">Начало аренды: </label>
-    <input type="datetime-local" th:field="*{startDate}" id="start_date" required/>
+    <input id="start_date" required th:field="*{startDate}" type="datetime-local"/>
     <br/>
     <label for="end_date">Окончание аренды: </label>
-    <input type="datetime-local" th:field="*{endDate}" id="end_date" required/>
+    <input id="end_date" required th:field="*{endDate}" type="datetime-local"/>
     <br/>
     <label for="rental_amount">Сумма к оплате: </label>
-    <input type="number" step="0.01" th:field="*{rentalAmount}" id="rental_amount" required/>
+    <input id="rental_amount" required step="0.01" th:field="*{rentalAmount}" type="number"/>
     <br/>
     <label for="is_paid">Статус оплаты: </label>
-    <input type="checkbox" th:field="*{isPaid}" id="is_paid"/>
+    <input id="is_paid" th:field="*{isPaid}" type="checkbox"/>
     <br/>
     <input type="submit" value="Create">
 </form>

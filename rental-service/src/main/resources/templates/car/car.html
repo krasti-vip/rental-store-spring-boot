@@ -14,9 +14,9 @@
 <div class="container">
     <div class="car-list">
 
-        <img src="https://avatars.mds.yandex.net/i?id=1c457cfb35107bb2cb11deeca1c646ed_l-4012386-images-thumbs&n=13"
-             th:src="'https://avatars.mds.yandex.net/i?id=1c457cfb35107bb2cb11deeca1c646ed_l-4012386-images-thumbs&n=13' +
-                  ${car.title}" alt="Car Image">
+        <img alt="Car Image"
+             src="https://avatars.mds.yandex.net/i?id=1c457cfb35107bb2cb11deeca1c646ed_l-4012386-images-thumbs&n=13" th:src="'https://avatars.mds.yandex.net/i?id=1c457cfb35107bb2cb11deeca1c646ed_l-4012386-images-thumbs&n=13' +
+                  ${car.title}">
 
         <p><strong>Модель:</strong> <span th:text="${car.title}">0</span></p>
         <p><strong>Цена:</strong> $<span th:text="${car.price}">0</span></p>
@@ -27,8 +27,8 @@
         <div class="actions">
             <a th:href="@{/car/{id}/edit(id=${car.id})}">Edit Car</a>
 
-            <form th:method="POST" th:action="@{/car/{id}(id=${car.id})}">
-                <input type="hidden" name="_method" value="DELETE">
+            <form th:action="@{/car/{id}(id=${car.id})}" th:method="POST">
+                <input name="_method" type="hidden" value="DELETE">
                 <input type="submit" value="Delete">
             </form>
         </div>
