@@ -10,14 +10,13 @@
     </parent>
     <groupId>com.example</groupId>
     <artifactId>rental-store-spring-boot</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <packaging>pom</packaging>
     <name>rental-store-spring-boot</name>
     <description>rental-store-spring-boot</description>
 
     <modules>
         <module>rental-service</module>
-        <module>required-files-plugin</module>
     </modules>
 
     <scm>
@@ -61,5 +60,15 @@
             </plugin>
         </plugins>
     </build>
+    <distributionManagement>
+        <repository>
+            <id>maven-releases</id>
+            <url>http://localhost:8081/repository/maven-releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>maven-snapshots</id>
+            <url>http://localhost:8081/repository/maven-snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
 
 </project>

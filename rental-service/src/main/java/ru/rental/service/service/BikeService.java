@@ -108,7 +108,9 @@ public class BikeService implements Service<BikeDto, Integer> {
             return new ArrayList<>();
         }
         log.info("Bikes found");
-        return bikeDao.getAll().stream().map(e -> modelMapper.map(e, BikeDto.class)).toList();
+        return bikeDao.getAll().stream()
+                .map(e -> modelMapper.map(e, BikeDto.class))
+                .toList();
     }
 
     public List<BikeDto> getAllByUserId(int userId) {

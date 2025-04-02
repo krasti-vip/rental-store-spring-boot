@@ -1,9 +1,12 @@
 package ru.rental.service.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import ru.rental.service.dto.UserDto;
 import ru.rental.service.service.UserService;
 
@@ -30,7 +33,8 @@ public class UserController {
 
     @GetMapping("/{id}")
     public String getUserById(@PathVariable("id") int id, Model model) {
-        var user = userService.get(id).orElseThrow(() -> new IllegalArgumentException("user no found id: " + id));
+        var user = userService.get(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "user no found id: " + id));
         model.addAttribute("user", user);
         return "user/user";
     }
@@ -64,5 +68,10 @@ public class UserController {
         var user = userService.get(id).orElseThrow(() -> new IllegalArgumentException("user no found id: " + id));
         model.addAttribute("user", user);
         return "user/update";
+    }
+
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<String> handleResponseStatusException(ResponseStatusException ex) {
+        return ResponseEntity.status(ex.getStatusCode()).body(ex.getReason());
     }
 }

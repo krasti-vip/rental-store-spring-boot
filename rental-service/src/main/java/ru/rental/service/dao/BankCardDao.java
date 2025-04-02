@@ -107,6 +107,10 @@ public class BankCardDao implements DAO<BankCard, Integer> {
 
     @Override
     public BankCard get(Integer id) {
+        if (id == null) {
+            throw new IllegalArgumentException("ID cannot be null");
+        }
+
         try (final var connection = ConnectionManager.getConnection();
              final var preparedStatement = connection.prepareStatement(SELECT_BC)) {
 
@@ -139,8 +143,7 @@ public class BankCardDao implements DAO<BankCard, Integer> {
                 log.info("BankCard with id {} updated successfully!", id);
                 return obj;
             } else {
-                log.info("BankCard with id {} not updated!", id);
-                return null;
+                throw new IllegalStateException("BankCard not found with id: " + id);  // Кидаем исключение!
             }
         } catch (SQLException e) {
             throw new IllegalStateException("Ошибка обновления записи банковской карты", e);

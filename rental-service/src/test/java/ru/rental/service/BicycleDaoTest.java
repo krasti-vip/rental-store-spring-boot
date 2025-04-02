@@ -85,7 +85,7 @@ class BicycleDaoTest extends BaseBd {
     @Test
     @Description(value = "Тест проверяет возвращения всех велосипедов")
     @DisplayName("Test getAllBicycle")
-    void bicycleDaoGetAll() {
+    void bicycleDaoGetAllTest() {
         final var allBicycle = bicycleDao.getAll();
         assertEquals(5, allBicycle.size());
     }
