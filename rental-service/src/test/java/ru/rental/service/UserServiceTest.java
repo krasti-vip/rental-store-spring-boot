@@ -68,7 +68,7 @@ class UserServiceTest extends BaseBd {
         assertEquals("vandervud", userService.get(userDtoId).get().getUserName());
         assertEquals(6, userService.getAll().size());
 
-        Integer userId = userService.getAll().get(4).getId();
+        Integer userId = userService.getAll().get(5).getId();
         assertTrue(userService.get(userId).isPresent());
         assertEquals(6, userService.getAll().size());
         userService.delete(userId);

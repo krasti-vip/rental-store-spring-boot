@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  app:
+    image: app:0.3
+    depends_on:
+      - rental
+    ports:
+      - "8080:8080"
+    networks:
+      vaganda:
+  rental:
+    image: postgres:17.4
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - data:/var/lib/postgresql/data
+    networks:
+      vaganda:
+  nexus:
+    image: sonatype/nexus3:3.78.2-java17-alpine
+    ports:
+      - "8081:8081"
+    volumes:
+      - nexus-data:/nexus-data
+    environment:
+      INSTALL4J_ADD_VM_PARAMS: -Xms2703m -Xmx2703m -XX:MaxDirectMemorySize=2703m -Djava.util.prefs.userRoot=/some-other-dir
+    networks:
+      vaganda:
+  jencins:
+    image: jenkins/jenkins:2.504-jdk21
+    ports:
+      - "8082:8080"
+    volumes:
+      - jenkins_data:/var/jenkins_home
+    networks:
+      vaganda:
+volumes:
+  data:
+  nexus-data:
+  jenkins_data:
+networks:
+  vaganda:
+
+  #меняй версию образа докера перед запуском
+  #vaganda название сети связи докера между приложениями(контейнерами)
+
+
+
+

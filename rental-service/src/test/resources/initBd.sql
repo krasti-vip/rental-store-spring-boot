@@ -37,7 +37,6 @@ VALUES ('BMW', 2000, 200, 1.0, null),
        ('YAMAHA', 40000, 400, 1.0, null),
        ('URAL', 2000, 200, 1.0, null),
        ('HONDA', 2000, 200, 1.0, null);
-
 --- Удаление таблицы bicycles
 DROP TABLE IF EXISTS bicycles CASCADE;
 --- Создание таблицы bicycles
@@ -56,7 +55,6 @@ VALUES ('Mongust', 2000, 'blue', null),
        ('Aist', 1500, 'white', null),
        ('BMX', 2500, 'blue', null),
        ('Mochina', 1200, 'red', null);
-
 --- Удаление таблицы cars
 DROP TABLE IF EXISTS cars CASCADE;
 --- Создание таблицы cars
@@ -77,10 +75,8 @@ VALUES ('MERCEDES', 655.30, 250, 3.5, 'black', null),
        ('HYUNDAI', 320.90, 156, 2.0, 'white', null),
        ('BMW', 640.50, 450, 5.0, 'blue', null),
        ('OPEL', 210.90, 110, 1.8, 'gold', null);
-
 --- Удаление таблицы rental
 DROP TABLE IF EXISTS rentals CASCADE;
-
 --- Создание таблицы rental
 CREATE TABLE IF NOT EXISTS rentals
 (
@@ -93,10 +89,27 @@ CREATE TABLE IF NOT EXISTS rentals
     rental_amount DOUBLE PRECISION NOT NULL,
     is_paid       BOOLEAN DEFAULT FALSE
 );
-
 --- Инициализация таблицы rental
 INSERT INTO rentals (user_id, car_id, bike_id, start_date, end_date, rental_amount, is_paid)
 VALUES (1, 2, NULL, '2025-03-01 10:00:00', '2025-03-07 12:00:00', 5000.00, TRUE),
        (2, 1, NULL, '2025-03-05 14:00:00', '2025-03-10 09:00:00', 4500.50, FALSE),
        (3, NULL, 2, '2025-02-20 09:00:00', NULL, 12000.00, FALSE),
        (4, 4, NULL, '2025-03-03 15:30:00', '2025-03-08 18:00:00', 7800.75, TRUE);
+--- Удаление таблицы bank_cards
+DROP TABLE IF EXISTS bank_cards CASCADE;
+--- Создание таблицы bank_cards
+CREATE TABLE IF NOT EXISTS bank_cards
+(
+    id            SERIAL PRIMARY KEY,
+    user_id     INT NOT NULL REFERENCES users (id) ON DELETE RESTRICT,
+    number_card VARCHAR(20) NOT NULL,
+    expiration_date VARCHAR(20) NOT NULL,
+    secret_code VARCHAR(20) NOT NULL
+    );
+--- Инициализация таблицы bank_cards
+INSERT INTO bank_cards (user_id, number_card, expiration_date, secret_code)
+VALUES (1, '1234567809876543', '12/25', '123'),
+       (2, '4564567809876543', '12/26', '345'),
+       (3, '9874567809876543', '12/43', '543'),
+       (4, '7654567809876543', '12/32', '567'),
+       (5, '6544567809876543', '11/25', '346');
