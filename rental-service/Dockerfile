@@ -5,8 +5,8 @@ LABEL authors="dmitriyboyko"
 
 WORKDIR /app
 
-COPY rental-service/target/rental-service-0.0.1-SNAPSHOT.jar .
+COPY rental-service/target/rental-service-0.2.0.jar .
 
 EXPOSE 8080
 
-CMD ["java", "-jar", "rental-service-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-jar", "rental-service-0.2.0.jar"]
