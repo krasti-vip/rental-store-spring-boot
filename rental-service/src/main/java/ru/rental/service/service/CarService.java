@@ -1,132 +1,95 @@
 package ru.rental.service.service;
 
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import ru.rental.service.dao.CarDao;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.rental.service.dto.CarDto;
-import ru.rental.service.model.Car;
+import ru.rental.service.entity.Car;
+import ru.rental.service.repository.CarRepository;
+import ru.rental.service.repository.UserRepository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
 
-@Component
-public class CarService implements Service<CarDto, Integer> {
+@Service
+@Transactional
+@RequiredArgsConstructor
+public class CarService {
 
-    private static final Logger log = LoggerFactory.getLogger(CarService.class);
+    private final CarRepository carRepository;
 
-    private static final String NO_CAR_FOUND = "Care with id {} not found";
+    private final UserRepository userRepository;
 
     private final ModelMapper modelMapper;
 
-    private final CarDao carDao;
-
-    @Autowired
-    public CarService(CarDao carDao, ModelMapper modelMapper) {
-        this.modelMapper = modelMapper;
-        this.carDao = carDao;
+    @Transactional(readOnly = true)
+    public Optional<CarDto> findById(Integer id) {
+        return carRepository.findById(id)
+                .map(this::convertToDtoWithUser);
     }
 
-    @Override
-    public Optional<CarDto> get(Integer id) {
-        final var maybeCar = carDao.get(id);
-
-        if (maybeCar == null) {
-            log.warn("Car with id {} not found", id);
-            return Optional.empty();
-        } else {
-            log.info("Car with id {} found", id);
-            return Optional.of(modelMapper.map(maybeCar, CarDto.class));
-        }
+    @Transactional
+    public CarDto create(CarDto carDto) {
+        Car car = modelMapper.map(carDto, Car.class);
+        setUserIfExists(car, carDto.getUserId());
+        Car savedCar = carRepository.save(car);
+        return convertToDto(savedCar);
     }
 
-    @Override
-    public Optional<CarDto> update(Integer id, CarDto obj) {
-        var maybeCar = carDao.get(id);
-
-        if (maybeCar == null) {
-            log.warn(NO_CAR_FOUND, id);
-            return Optional.empty();
-        }
-
-        var updatedCar = Car.builder()
-                .id(maybeCar.getId())
-                .title(obj.getTitle())
-                .price(obj.getPrice())
-                .horsePower(obj.getHorsePower())
-                .volume(obj.getVolume())
-                .color(obj.getColor())
-                .userId(obj.getUserId())
-                .build();
-
-        var updated = carDao.update(id, updatedCar);
-        log.info("Car with id {} updated", id);
-        return Optional.of(modelMapper.map(updated, CarDto.class));
+    @Transactional
+    public Optional<CarDto> update(Integer id, CarDto carDto) {
+        return carRepository.findById(id)
+                .map(existingCar -> {
+                    updateCarFields(existingCar, carDto);
+                    setUserIfExists(existingCar, carDto.getUserId());
+                    Car updatedCar = carRepository.save(existingCar);
+                    return convertToDtoWithUser(updatedCar);
+                });
     }
 
-    @Override
-    public CarDto save(CarDto obj) {
-        var newCar = Car.builder()
-                .title(obj.getTitle())
-                .price(obj.getPrice())
-                .horsePower(obj.getHorsePower())
-                .volume(obj.getVolume())
-                .color(obj.getColor())
-                .userId(obj.getUserId())
-                .build();
-
-        var savedCar = carDao.save(newCar);
-        log.info("Car with id {} saved", savedCar.getId());
-        return modelMapper.map(savedCar, CarDto.class);
-    }
-
-    @Override
+    @Transactional
     public boolean delete(Integer id) {
-        var maybeCar = carDao.get(id);
-
-        if (maybeCar == null) {
-            log.warn(NO_CAR_FOUND, id);
-            return false;
+        if (carRepository.existsById(id)) {
+            carRepository.deleteById(id);
+            return true;
         }
-        log.info("Car with id {} deleted", id);
-        return carDao.delete(id);
+        return false;
     }
 
-    @Override
-    public List<CarDto> filterBy(Predicate<CarDto> predicate) {
-        log.info("filterBy");
-        return carDao.getAll().stream()
-                .map(e -> modelMapper.map(e, CarDto.class))
-                .filter(predicate)
+    @Transactional(readOnly = true)
+    public List<CarDto> findAll() {
+        return ((List<Car>) carRepository.findAll()).stream()
+                .map(this::convertToDto)
                 .toList();
     }
 
-    @Override
-    public List<CarDto> getAll() {
-        log.info("getAll");
-        return carDao.getAll().stream().map(e -> modelMapper.map(e, CarDto.class)).toList();
-    }
-
-    public List<CarDto> getAllByUserId(int userId) {
-        log.info("Fetching cars for user with id {}", userId);
-        return carDao.getAllByUserId(userId).stream()
-                .map(e -> modelMapper.map(e, CarDto.class))
+    @Transactional(readOnly = true)
+    public List<CarDto> findByUserId(Integer userId) {
+        return carRepository.findById(userId).stream()
+                .map(this::convertToDto)
                 .toList();
     }
 
-    public Optional<CarDto> updateUserId(Integer carId, Integer userId) {
+    private CarDto convertToDto(Car car) {
+        return modelMapper.map(car, CarDto.class);
+    }
 
-        var updatedCar = carDao.updateUserId(carId, userId);
-
-        if (updatedCar != null) {
-            log.info("Car with id {} successfully updated with userId {}", carId, userId);
-            return Optional.of(modelMapper.map(updatedCar, CarDto.class));
+    private CarDto convertToDtoWithUser(Car car) {
+        CarDto dto = convertToDto(car);
+        if (car.getUser() != null) {
+            dto.setUserId(car.getUser().getId());
         }
+        return dto;
+    }
 
-        log.warn("Car with id {} was not updated!", carId);
-        return Optional.empty();
+    private void updateCarFields(Car car, CarDto dto) {
+        modelMapper.map(dto, car);
+    }
+
+    private void setUserIfExists(Car car, Integer userId) {
+        if (userId != null) {
+            userRepository.findById(userId).ifPresent(car::setUser);
+        }
     }
 }

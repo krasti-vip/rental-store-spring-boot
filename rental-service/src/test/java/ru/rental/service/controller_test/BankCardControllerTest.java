@@ -1,4 +1,4 @@
-package ru.rental.service;
+package ru.rental.service.controller_test;
 
 import io.qameta.allure.Description;
 import org.junit.jupiter.api.BeforeEach;
@@ -58,7 +58,7 @@ class BankCardControllerTest {
     void getBankCardById_ShouldReturnTest() throws Exception {
         BankCardDto bankCardDto = new BankCardDto();
         bankCardDto.setId(1);
-        when(bankCardService.get(1)).thenReturn(Optional.of(bankCardDto));
+        when(bankCardService.findById(1)).thenReturn(Optional.of(bankCardDto));
 
         mockMvc.perform(get("/bankcard/1"))
                 .andExpect(status().isOk())
@@ -66,20 +66,20 @@ class BankCardControllerTest {
                 .andExpect(model().attributeExists("bankcard"))
                 .andExpect(model().attribute("bankcard", bankCardDto));
 
-        verify(bankCardService, times(1)).get(1);
+        verify(bankCardService, times(1)).findById(1);
     }
 
     @Test
     @Description(value = "Тест проверяет возвращение банковской карты по айди и что он не пустой")
     @DisplayName("Тест get для bankcard/1 no found")
     void getBankCardByIdTest() throws Exception {
-        when(bankCardService.get(1)).thenReturn(Optional.empty());
+        when(bankCardService.findById(1)).thenReturn(Optional.empty());
 
         mockMvc.perform(get("/bankcard/1"))
                 .andExpect(status().isNotFound())
                 .andExpect(content().string("bankCard no found id: 1"));
 
-        verify(bankCardService, times(1)).get(1);
+        verify(bankCardService, times(1)).findById(1);
     }
 
     @Test
@@ -104,7 +104,7 @@ class BankCardControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/bankcard"));
 
-        verify(bankCardService, times(1)).save(bankCardDto);
+        verify(bankCardService, times(1)).create(bankCardDto);
     }
 
     @Test
@@ -139,7 +139,7 @@ class BankCardControllerTest {
     void showUpdateFormTest() throws Exception {
         BankCardDto bankCardDto = new BankCardDto();
         bankCardDto.setId(1);
-        when(bankCardService.get(1)).thenReturn(Optional.of(bankCardDto));
+        when(bankCardService.findById(1)).thenReturn(Optional.of(bankCardDto));
 
         mockMvc.perform(get("/bankcard/1/edit"))
                 .andExpect(status().isOk())
@@ -147,6 +147,6 @@ class BankCardControllerTest {
                 .andExpect(model().attributeExists("bankcard"))
                 .andExpect(model().attribute("bankcard", bankCardDto));
 
-        verify(bankCardService, times(1)).get(1);
+        verify(bankCardService, times(1)).findById(1);
     }
 }

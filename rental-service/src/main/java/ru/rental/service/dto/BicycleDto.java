@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class BicycleDto {
 
-    private int id;
+    private Integer id;
 
     private String model;
 

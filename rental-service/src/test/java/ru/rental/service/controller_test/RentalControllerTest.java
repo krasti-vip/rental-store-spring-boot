@@ -1,4 +1,4 @@
-package ru.rental.service;
+package ru.rental.service.controller_test;
 
 import io.qameta.allure.Description;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,14 +41,14 @@ class RentalControllerTest {
     @Description(value = "Тест проверяет возвращение всей аренды на главную страницу")
     @DisplayName("Тест getAll для rental/index")
     void getAllRentalTest() throws Exception {
-        when(rentalService.getAll()).thenReturn(Collections.singletonList(new RentalDto()));
+        when(rentalService.findAll()).thenReturn(Collections.singletonList(new RentalDto()));
 
         mockMvc.perform(get("/rental"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("rental/index"))
                 .andExpect(model().attributeExists("rentals"));
 
-        verify(rentalService, times(1)).getAll();
+        verify(rentalService, times(1)).findAll();
     }
 
     @Test
@@ -57,7 +57,7 @@ class RentalControllerTest {
     void getRentalByIdTest() throws Exception {
         RentalDto rental = new RentalDto();
         rental.setId(1);
-        when(rentalService.get(1)).thenReturn(Optional.of(rental));
+        when(rentalService.findById(1)).thenReturn(Optional.of(rental));
 
         mockMvc.perform(get("/rental/1"))
                 .andExpect(status().isOk())
@@ -65,20 +65,20 @@ class RentalControllerTest {
                 .andExpect(model().attributeExists("rental"))
                 .andExpect(model().attribute("rental", rental));
 
-        verify(rentalService, times(1)).get(1);
+        verify(rentalService, times(1)).findById(1);
     }
 
     @Test
     @Description(value = "Тест проверяет возвращение аренды по айди и что она не пустая")
     @DisplayName("Тест get для rental/1 no found")
     void getRentalById_NotFoundTest() throws Exception {
-        when(rentalService.get(1)).thenReturn(Optional.empty());
+        when(rentalService.findById(1)).thenReturn(Optional.empty());
 
         mockMvc.perform(get("/rental/1"))
                 .andExpect(status().isNotFound())
                 .andExpect(content().string("rental no found id: 1"));
 
-        verify(rentalService, times(1)).get(1);
+        verify(rentalService, times(1)).findById(1);
     }
 
     @Test
@@ -103,7 +103,7 @@ class RentalControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/rental"));
 
-        verify(rentalService, times(1)).save(rentalDto);
+        verify(rentalService, times(1)).create(rentalDto);
     }
 
     @Test
@@ -138,7 +138,7 @@ class RentalControllerTest {
     void showUpdateFormTest() throws Exception {
         RentalDto rental = new RentalDto();
         rental.setId(1);
-        when(rentalService.get(1)).thenReturn(Optional.of(rental));
+        when(rentalService.findById(1)).thenReturn(Optional.of(rental));
 
         mockMvc.perform(get("/rental/1/edit"))
                 .andExpect(status().isOk())
@@ -146,6 +146,6 @@ class RentalControllerTest {
                 .andExpect(model().attributeExists("rental"))
                 .andExpect(model().attribute("rental", rental));
 
-        verify(rentalService, times(1)).get(1);
+        verify(rentalService, times(1)).findById(1);
     }
 }

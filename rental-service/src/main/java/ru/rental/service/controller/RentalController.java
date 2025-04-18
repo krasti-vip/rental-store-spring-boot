@@ -17,6 +17,7 @@ import java.util.List;
 public class RentalController {
 
     private static final String RETURN_A_RENTAL = "redirect:/rental";
+
     private final RentalService rentalService;
 
     @Autowired
@@ -26,14 +27,14 @@ public class RentalController {
 
     @GetMapping
     public String getAllRental(Model model) {
-        List<RentalDto> rentals = rentalService.getAll();
+        List<RentalDto> rentals = rentalService.findAll();
         model.addAttribute("rentals", rentals);
         return "rental/index";
     }
 
     @GetMapping("/{id}")
     public String getRentalById(@PathVariable("id") int id, Model model) {
-        var rental = rentalService.get(id)
+        var rental = rentalService.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "rental no found id: " + id));
         model.addAttribute("rental", rental);
         return "rental/rental";
@@ -47,7 +48,7 @@ public class RentalController {
 
     @PostMapping
     public String createRental(@ModelAttribute("rental") RentalDto rentalDto) {
-        rentalService.save(rentalDto);
+        rentalService.create(rentalDto);
         return RETURN_A_RENTAL;
     }
 
@@ -65,7 +66,7 @@ public class RentalController {
 
     @GetMapping("/{id}/edit")
     public String showUpdateForm(@PathVariable("id") int id, Model model) {
-        var rental = rentalService.get(id)
+        var rental = rentalService.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "car no found id: " + id));
         model.addAttribute("rental", rental);
         return "rental/update";

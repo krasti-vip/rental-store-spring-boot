@@ -1,4 +1,4 @@
-package ru.rental.service;
+package ru.rental.service.controller_test;
 
 import io.qameta.allure.Description;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,7 +57,7 @@ class BikeControllerTest {
     void getBikeById_ShouldReturnBikeTest() throws Exception {
         BikeDto bike = new BikeDto();
         bike.setId(1);
-        when(bikeService.get(1)).thenReturn(Optional.of(bike));
+        when(bikeService.findById(1)).thenReturn(Optional.of(bike));
 
         mockMvc.perform(get("/bike/1"))
                 .andExpect(status().isOk())
@@ -65,20 +65,20 @@ class BikeControllerTest {
                 .andExpect(model().attributeExists("bike"))
                 .andExpect(model().attribute("bike", bike));
 
-        verify(bikeService, times(1)).get(1);
+        verify(bikeService, times(1)).findById(1);
     }
 
     @Test
     @Description(value = "Тест проверяет возвращение байка по айди и что он не пустой")
     @DisplayName("Тест get для bike/1 no found")
     void getBikeByIdTest() throws Exception {
-        when(bikeService.get(1)).thenReturn(Optional.empty());
+        when(bikeService.findById(1)).thenReturn(Optional.empty());
 
         mockMvc.perform(get("/bike/1"))
                 .andExpect(status().isNotFound())
                 .andExpect(content().string("bike no found id: 1"));
 
-        verify(bikeService, times(1)).get(1);
+        verify(bikeService, times(1)).findById(1);
     }
 
     @Test
@@ -103,7 +103,7 @@ class BikeControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/bike"));
 
-        verify(bikeService, times(1)).save(bikeDto);
+        verify(bikeService, times(1)).create(bikeDto);
     }
 
     @Test
@@ -138,7 +138,7 @@ class BikeControllerTest {
     void showUpdateFormTest() throws Exception {
         BikeDto bike = new BikeDto();
         bike.setId(1);
-        when(bikeService.get(1)).thenReturn(Optional.of(bike));
+        when(bikeService.findById(1)).thenReturn(Optional.of(bike));
 
         mockMvc.perform(get("/bike/1/edit"))
                 .andExpect(status().isOk())
@@ -146,6 +146,6 @@ class BikeControllerTest {
                 .andExpect(model().attributeExists("bike"))
                 .andExpect(model().attribute("bike", bike));
 
-        verify(bikeService, times(1)).get(1);
+        verify(bikeService, times(1)).findById(1);
     }
 }

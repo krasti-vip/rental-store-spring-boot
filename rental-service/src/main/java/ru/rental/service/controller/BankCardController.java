@@ -17,6 +17,7 @@ import java.util.List;
 public class BankCardController {
 
     private static final String RETURN_A_BANK_CARD = "redirect:/bankcard";
+
     private final BankCardService bankCardService;
 
     @Autowired
@@ -33,7 +34,7 @@ public class BankCardController {
 
     @GetMapping("/{id}")
     public String getBCById(@PathVariable("id") int id, Model model) {
-        var bankcard = bankCardService.get(id)
+        var bankcard = bankCardService.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "bankCard no found id: " + id));
         model.addAttribute("bankcard", bankcard);
         return "bankcard/bankcard";
@@ -47,7 +48,7 @@ public class BankCardController {
 
     @PostMapping
     public String createBC(@ModelAttribute("bankcard") BankCardDto bankCardDto) {
-        bankCardService.save(bankCardDto);
+        bankCardService.create(bankCardDto);
         return RETURN_A_BANK_CARD;
     }
 
@@ -65,7 +66,7 @@ public class BankCardController {
 
     @GetMapping("/{id}/edit")
     public String showUpdateForm(@PathVariable("id") int id, Model model) {
-        var bankcard = bankCardService.get(id).orElseThrow(() -> new IllegalArgumentException("bankcard no found id: " + id));
+        var bankcard = bankCardService.findById(id).orElseThrow(() -> new IllegalArgumentException("bankcard no found id: " + id));
         model.addAttribute("bankcard", bankcard);
         return "bankcard/update";
     }

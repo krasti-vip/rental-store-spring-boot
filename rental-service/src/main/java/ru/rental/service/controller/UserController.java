@@ -26,14 +26,14 @@ public class UserController {
 
     @GetMapping
     public String getAllUsers(Model model) {
-        List<UserDto> users = userService.getAll();
+        List<UserDto> users = userService.findAll();
         model.addAttribute("users", users);
         return "user/index";
     }
 
     @GetMapping("/{id}")
     public String getUserById(@PathVariable("id") int id, Model model) {
-        var user = userService.get(id)
+        var user = userService.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "user no found id: " + id));
         model.addAttribute("user", user);
         return "user/user";
@@ -47,7 +47,7 @@ public class UserController {
 
     @PostMapping
     public String createUser(@ModelAttribute("user") UserDto userDto) {
-        userService.save(userDto);
+        userService.create(userDto);
         return RETURN_A_USER;
     }
 
@@ -65,7 +65,7 @@ public class UserController {
 
     @GetMapping("/{id}/edit")
     public String showUpdateForm(@PathVariable("id") int id, Model model) {
-        var user = userService.get(id).orElseThrow(() -> new IllegalArgumentException("user no found id: " + id));
+        var user = userService.findById(id).orElseThrow(() -> new IllegalArgumentException("user no found id: " + id));
         model.addAttribute("user", user);
         return "user/update";
     }

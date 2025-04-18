@@ -25,11 +25,11 @@ class BikeServiceTest extends BaseBd {
     @DisplayName("Тест получения мотоцикла по ID")
     void getTest() {
         Integer bikeId = bikeService.getAll().get(3).getId();
-        Optional<BikeDto> bikeDto = bikeService.get(bikeId);
+        Optional<BikeDto> bikeDto = bikeService.findById(bikeId);
         assertTrue(bikeDto.isPresent(), "bike с bikeId должен существовать");
-        assertEquals("URAL", bikeService.get(bikeId).get().getName());
+        assertEquals("URAL", bikeService.findById(bikeId).get().getName());
         assertThrows(IllegalArgumentException.class, () -> {
-            bikeService.get(null);
+            bikeService.findById(null);
         });
     }
 
@@ -45,7 +45,7 @@ class BikeServiceTest extends BaseBd {
                 .volume(0.75)
                 .build();
         bikeService.update(bikeId, bikeDto);
-        assertEquals(0.75, bikeService.get(bikeId).get().getVolume());
+        assertEquals(0.75, bikeService.findById(bikeId).get().getVolume());
     }
 
     @Test
@@ -60,15 +60,15 @@ class BikeServiceTest extends BaseBd {
                 .volume(0.5)
                 .build();
 
-        int bikeDtoId = bikeService.save(bikeDto).getId();
-        assertEquals("Planet", bikeService.get(bikeDtoId).get().getName());
+        int bikeDtoId = bikeService.create(bikeDto).getId();
+        assertEquals("Planet", bikeService.findById(bikeDtoId).get().getName());
         assertEquals(6, bikeService.getAll().size());
 
         Integer bikeId = bikeService.getAll().get(4).getId();
-        assertTrue(bikeService.get(bikeId).isPresent());
+        assertTrue(bikeService.findById(bikeId).isPresent());
         assertEquals(6, bikeService.getAll().size());
         bikeService.delete(bikeId);
-        Optional<BikeDto> bike = bikeService.get(bikeId);
+        Optional<BikeDto> bike = bikeService.findById(bikeId);
         assertTrue(bike.isEmpty());
         assertEquals(5, bikeService.getAll().size());
     }
@@ -79,43 +79,5 @@ class BikeServiceTest extends BaseBd {
     void getAllTest() {
         List<BikeDto> bikes = bikeService.getAll();
         assertTrue(bikes.size() > 4);
-    }
-
-    @Test
-    @Description(value = "Тест проверяет фильтрацию мотоциклов по предикату")
-    @DisplayName("Тест фильтрации")
-    void filterTest() {
-        List<BikeDto> bikeFilter = bikeService.filterBy(u -> u.getName().equals("SUZUKI"));
-        assertTrue(bikeFilter.size() > 0);
-        assertEquals("SUZUKI", bikeFilter.get(0).getName());
-    }
-
-    @Test
-    @Description(value = "Тест проверяет обновление списка аренды мотоциклов у пользователя и что определенный мотоцикл " +
-                         "принадлежит определенному пользователю")
-    @DisplayName("Тест обновления аренды мотоцикла")
-    void updateUserIdTest() {
-        Integer bikeId = bikeService.getAll().get(2).getId();
-        Integer newUserId = 3;
-
-        Optional<BikeDto> updatedBike = bikeService.updateUserId(bikeId, newUserId);
-
-        assertNotNull(updatedBike.get().getUserId());
-        System.out.println(updatedBike.get().getUserId());
-
-        assertTrue(updatedBike.isPresent(), "Обновленный bike должен быть не null");
-        assertEquals(newUserId, updatedBike.get().getUserId(), "userId bike должен обновиться");
-
-        BikeDto actualBike = bikeService.get(bikeId).orElseThrow(() -> new IllegalStateException("Bike not found"));
-        assertEquals(newUserId, actualBike.getUserId(), "userId в базе данных должен совпадать");
-
-        List<BikeDto> userBike = bikeService.getAllByUserId(newUserId);
-
-        assertNotNull(userBike, "Список bikes пользователя не должен быть null");
-        assertFalse(userBike.isEmpty(), "Список bikes пользователя не должен быть пустым");
-
-        for (BikeDto bike : userBike) {
-            assertEquals(newUserId, bike.getUserId(), "Все bikes должны принадлежать пользователю с ID " + newUserId);
-        }
     }
 }

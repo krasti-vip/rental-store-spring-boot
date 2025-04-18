@@ -1,4 +1,4 @@
-package ru.rental.service;
+package ru.rental.service.controller_test;
 
 import io.qameta.allure.Description;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,14 +41,14 @@ class CarControllerTest {
     @Description(value = "Тест проверяет возвращение всех машин на главную страницу")
     @DisplayName("Тест getAll для car/index")
     void getAllCarsTest() throws Exception {
-        when(carService.getAll()).thenReturn(Collections.singletonList(new CarDto()));
+        when(carService.findAll()).thenReturn(Collections.singletonList(new CarDto()));
 
         mockMvc.perform(get("/car"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("car/index"))
                 .andExpect(model().attributeExists("cars"));
 
-        verify(carService, times(1)).getAll();
+        verify(carService, times(1)).findAll();
     }
 
     @Test
@@ -57,7 +57,7 @@ class CarControllerTest {
     void getCarById_ReturnCarTest() throws Exception {
         CarDto car = new CarDto();
         car.setId(1);
-        when(carService.get(1)).thenReturn(Optional.of(car));
+        when(carService.findById(1)).thenReturn(Optional.of(car));
 
         mockMvc.perform(get("/car/1"))
                 .andExpect(status().isOk())
@@ -65,20 +65,20 @@ class CarControllerTest {
                 .andExpect(model().attributeExists("car"))
                 .andExpect(model().attribute("car", car));
 
-        verify(carService, times(1)).get(1);
+        verify(carService, times(1)).findById(1);
     }
 
     @Test
     @Description(value = "Тест проверяет возвращение машины по айди и что он не пустой")
     @DisplayName("Тест get для car/1 no found")
     void getCarByIdTest() throws Exception {
-        when(carService.get(1)).thenReturn(Optional.empty());
+        when(carService.findById(1)).thenReturn(Optional.empty());
 
         mockMvc.perform(get("/car/1"))
                 .andExpect(status().isNotFound())
                 .andExpect(content().string("car no found id: 1"));
 
-        verify(carService, times(1)).get(1);
+        verify(carService, times(1)).findById(1);
     }
 
     @Test
@@ -103,7 +103,7 @@ class CarControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/car"));
 
-        verify(carService, times(1)).save(carDto);
+        verify(carService, times(1)).create(carDto);
     }
 
     @Test
@@ -138,7 +138,7 @@ class CarControllerTest {
     void showUpdateFormTest() throws Exception {
         CarDto car = new CarDto();
         car.setId(1);
-        when(carService.get(1)).thenReturn(Optional.of(car));
+        when(carService.findById(1)).thenReturn(Optional.of(car));
 
         mockMvc.perform(get("/car/1/edit"))
                 .andExpect(status().isOk())
@@ -146,6 +146,6 @@ class CarControllerTest {
                 .andExpect(model().attributeExists("car"))
                 .andExpect(model().attribute("car", car));
 
-        verify(carService, times(1)).get(1);
+        verify(carService, times(1)).findById(1);
     }
 }

@@ -11,13 +11,13 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CarDto {
 
-    private int id;
+    private Integer id;
 
     private String title;
 
     private double price;
 
-    private int horsePower;
+    private Integer horsePower;
 
     private double volume;
 

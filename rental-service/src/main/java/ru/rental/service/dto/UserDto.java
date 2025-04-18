@@ -4,9 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.rental.service.model.Bicycle;
-import ru.rental.service.model.Bike;
-import ru.rental.service.model.Car;
+import ru.rental.service.entity.Bicycle;
+import ru.rental.service.entity.Bike;
+import ru.rental.service.entity.Car;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ import java.util.List;
 @Builder
 public class UserDto {
 
-    private int id;
+    private Integer id;
 
     private String userName;
 
@@ -24,13 +24,13 @@ public class UserDto {
 
     private String lastName;
 
-    private int passport;
+    private Integer passport;
 
     private String email;
 
-    private List<Bike> listBike;
+    private List<BikeDto> bikes;
 
-    private List<Car> listCar;
+    private List<CarDto> cars;
 
-    private List<Bicycle> listBicycle;
+    private List<BicycleDto> bicycles;
 }

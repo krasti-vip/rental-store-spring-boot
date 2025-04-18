@@ -1,4 +1,4 @@
-package ru.rental.service;
+package ru.rental.service.controller_test;
 
 
 import io.qameta.allure.Description;
@@ -60,7 +60,7 @@ class BicycleControllerTest {
     void getBicycleById_ShouldReturnTest() throws Exception {
         BicycleDto bicycleDto = new BicycleDto();
         bicycleDto.setId(1);
-        when(bicycleService.get(1)).thenReturn(Optional.of(bicycleDto));
+        when(bicycleService.findById(1)).thenReturn(Optional.of(bicycleDto));
 
         mockMvc.perform(get("/bicycle/1"))
                 .andExpect(status().isOk())
@@ -68,20 +68,20 @@ class BicycleControllerTest {
                 .andExpect(model().attributeExists("bicycle"))
                 .andExpect(model().attribute("bicycle", bicycleDto));
 
-        verify(bicycleService, times(1)).get(1);
+        verify(bicycleService, times(1)).findById(1);
     }
 
     @Test
     @Description(value = "Тест проверяет возвращение велосипеда по айди и что он не пустой")
     @DisplayName("Тест get для bicycle/1 no found")
     void getBicycleByIdTest() throws Exception {
-        when(bicycleService.get(1)).thenReturn(Optional.empty());
+        when(bicycleService.findById(1)).thenReturn(Optional.empty());
 
         mockMvc.perform(get("/bicycle/1"))
                 .andExpect(status().isNotFound())
                 .andExpect(content().string("bicycle no found id: 1"));
 
-        verify(bicycleService, times(1)).get(1);
+        verify(bicycleService, times(1)).findById(1);
     }
 
     @Test
@@ -106,7 +106,7 @@ class BicycleControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/bicycle"));
 
-        verify(bicycleService, times(1)).save(bicycleDto);
+        verify(bicycleService, times(1)).create(bicycleDto);
     }
 
     @Test
@@ -141,7 +141,7 @@ class BicycleControllerTest {
     void showUpdateFormTest() throws Exception {
         BicycleDto bicycleDto = new BicycleDto();
         bicycleDto.setId(1);
-        when(bicycleService.get(1)).thenReturn(Optional.of(bicycleDto));
+        when(bicycleService.findById(1)).thenReturn(Optional.of(bicycleDto));
 
         mockMvc.perform(get("/bicycle/1/edit"))
                 .andExpect(status().isOk())
@@ -149,6 +149,6 @@ class BicycleControllerTest {
                 .andExpect(model().attributeExists("bicycle"))
                 .andExpect(model().attribute("bicycle", bicycleDto));
 
-        verify(bicycleService, times(1)).get(1);
+        verify(bicycleService, times(1)).findById(1);
     }
 }

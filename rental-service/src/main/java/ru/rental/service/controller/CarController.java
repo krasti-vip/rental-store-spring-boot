@@ -17,6 +17,7 @@ import java.util.List;
 public class CarController {
 
     private static final String RETURN_A_CAR = "redirect:/car";
+
     private final CarService carService;
 
     @Autowired
@@ -26,14 +27,14 @@ public class CarController {
 
     @GetMapping
     public String getAllCars(Model model) {
-        List<CarDto> cars = carService.getAll();
+        List<CarDto> cars = carService.findAll();
         model.addAttribute("cars", cars);
         return "car/index";
     }
 
     @GetMapping("/{id}")
     public String getCarById(@PathVariable("id") int id, Model model) {
-        var car = carService.get(id)
+        var car = carService.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "car no found id: " + id));
         model.addAttribute("car", car);
         return "car/car";
@@ -47,7 +48,7 @@ public class CarController {
 
     @PostMapping
     public String createCar(@ModelAttribute("car") CarDto carDto) {
-        carService.save(carDto);
+        carService.create(carDto);
         return RETURN_A_CAR;
     }
 
@@ -65,7 +66,7 @@ public class CarController {
 
     @GetMapping("/{id}/edit")
     public String showUpdateForm(@PathVariable("id") int id, Model model) {
-        var car = carService.get(id).orElseThrow(() -> new IllegalArgumentException("car no found id: " + id));
+        var car = carService.findById(id).orElseThrow(() -> new IllegalArgumentException("car no found id: " + id));
         model.addAttribute("car", car);
         return "car/update";
     }

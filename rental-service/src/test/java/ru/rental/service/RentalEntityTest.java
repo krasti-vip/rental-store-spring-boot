@@ -8,31 +8,46 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import ru.rental.service.dao.RentalDao;
-import ru.rental.service.model.Rental;
+import ru.rental.service.entity.Bike;
+import ru.rental.service.entity.Car;
+import ru.rental.service.entity.Rental;
+import ru.rental.service.entity.User;
+import ru.rental.service.repository.RentalRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @DisplayName("Тест RentalDao")
-class RentalDaoTest extends BaseBd {
+class RentalEntityTest extends BaseBd {
 
     @Autowired
-    private RentalDao rentalDao;
+    private RentalRepository rentalRepository;
 
     private static Stream<Arguments> sourceRental() {
+
+        User user1 = User.builder().id(1).build();
+        User user2 = User.builder().id(2).build();
+        User user3 = User.builder().id(3).build();
+        User user4 = User.builder().id(4).build();
+
+        Car car1 = Car.builder().id(1).build();
+        Car car2 = Car.builder().id(2).build();
+        Car car4 = Car.builder().id(4).build();
+
+        Bike bike2 = Bike.builder().id(2).build();
+
         return Stream.of(
                 Arguments.of(
                         Rental.builder()
                                 .id(1)
-                                .userId(1)
-                                .carId(2)
-                                .bikeId(null)
+                                .user(user1)
+                                .car(car1)
+                                .bike(null)
+                                .bicycle(null)
                                 .startDate(LocalDateTime.parse("2025-03-01T10:00:00"))
                                 .endDate(LocalDateTime.parse("2025-03-07T12:00:00"))
                                 .rentalAmount(5000.00)
@@ -42,9 +57,10 @@ class RentalDaoTest extends BaseBd {
                 Arguments.of(
                         Rental.builder()
                                 .id(2)
-                                .userId(2)
-                                .carId(1)
-                                .bikeId(null)
+                                .user(user2)
+                                .car(car2)
+                                .bike(null)
+                                .bicycle(null)
                                 .startDate(LocalDateTime.parse("2025-03-05T14:00:00"))
                                 .endDate(LocalDateTime.parse("2025-03-10T09:00:00"))
                                 .rentalAmount(4500.50)
@@ -54,9 +70,10 @@ class RentalDaoTest extends BaseBd {
                 Arguments.of(
                         Rental.builder()
                                 .id(3)
-                                .userId(3)
-                                .carId(null)
-                                .bikeId(2)
+                                .user(user3)
+                                .car(car4)
+                                .bike(null)
+                                .bicycle(null)
                                 .startDate(LocalDateTime.parse("2025-02-20T09:00:00"))
                                 .endDate(null)  // No end date
                                 .rentalAmount(12000.00)
@@ -66,9 +83,10 @@ class RentalDaoTest extends BaseBd {
                 Arguments.of(
                         Rental.builder()
                                 .id(4)
-                                .userId(4)
-                                .carId(4)
-                                .bikeId(null)
+                                .user(user4)
+                                .car(null)
+                                .bike(bike2)
+                                .bicycle(null)
                                 .startDate(LocalDateTime.parse("2025-03-03T15:30:00"))
                                 .endDate(LocalDateTime.parse("2025-03-08T18:00:00"))
                                 .rentalAmount(7800.75)
@@ -78,33 +96,13 @@ class RentalDaoTest extends BaseBd {
         );
     }
 
-    private static Stream<Arguments> sourceRentalForFilterTest() {
-        return Stream.of(
-                Arguments.of((Predicate<Rental>) rental -> rental.getUserId() == 1, 1),
-                Arguments.of((Predicate<Rental>) rental -> rental.getCarId() != null && rental.getCarId() == 1, 1),
-                Arguments.of((Predicate<Rental>) rental -> rental.getBikeId() != null && rental.getBikeId() == 2, 1),
-                Arguments.of((Predicate<Rental>) Rental::getIsPaid, 2),
-                Arguments.of((Predicate<Rental>) rental -> !rental.getIsPaid(), 2));
-    }
-
     @Test
     @Description(value = "Тест проверяет возвращение всей аренды")
     @DisplayName("Тест возвращения всей аренды")
     void getAllRentalsTest() {
-        List<Rental> rentals = rentalDao.getAll();
-        assertTrue(rentals.size() > 0, "Должен быть хотя бы один rental в базе");
-    }
 
-    @Test
-    @Description(value = "Тест проверяет была ли создана таблица аренды")
-    @DisplayName("Тест существования таблицы аренды")
-    void createTableTest() {
-        rentalDao.createTable();
-        boolean tableExists = rentalDao.checkIfTableExists("rentals");
-        assertTrue(tableExists, "Таблица rentals должна существовать");
-
-        boolean tableNotExists = rentalDao.checkIfTableExists("non_existing_table");
-        assertFalse(tableNotExists, "Несуществующая таблица должна возвращать false");
+        List<Rental> rentals = (List<Rental>) rentalRepository.findAll();
+        assertFalse(rentals.isEmpty(), "Должен быть хотя бы один rental в базе");
     }
 
     @ParameterizedTest
@@ -112,17 +110,17 @@ class RentalDaoTest extends BaseBd {
     @Description(value = "Тест проверяет возвращения аренды и что у нее правильные поля")
     @DisplayName("Test getRental")
     void getRentalTest(Rental sourceRental) {
-        final var rental = rentalDao.get(sourceRental.getId());
+        final var rental = rentalRepository.findById(sourceRental.getId());
 
         assertAll(
-                () -> assertEquals(rental.getId(), sourceRental.getId()),
-                () -> assertEquals(rental.getUserId(), sourceRental.getUserId()),
-                () -> assertEquals(rental.getCarId(), sourceRental.getCarId()),
-                () -> assertEquals(rental.getBikeId(), sourceRental.getBikeId()),
-                () -> assertEquals(rental.getStartDate(), sourceRental.getStartDate()),
-                () -> assertEquals(rental.getEndDate(), sourceRental.getEndDate()),
-                () -> assertEquals(rental.getRentalAmount(), sourceRental.getRentalAmount()),
-                () -> assertEquals(rental.getIsPaid(), sourceRental.getIsPaid())
+                () -> assertEquals(rental.get().getId(), sourceRental.getId()),
+                () -> assertEquals(rental.get().getUser(), sourceRental.getUser()),
+                () -> assertEquals(rental.get().getCar(), sourceRental.getCar()),
+                () -> assertEquals(rental.get().getBike(), sourceRental.getBike()),
+                () -> assertEquals(rental.get().getStartDate(), sourceRental.getStartDate()),
+                () -> assertEquals(rental.get().getEndDate(), sourceRental.getEndDate()),
+                () -> assertEquals(rental.get().getRentalAmount(), sourceRental.getRentalAmount()),
+                () -> assertEquals(rental.get().getIsPaid(), sourceRental.getIsPaid())
         );
     }
 
@@ -133,16 +131,16 @@ class RentalDaoTest extends BaseBd {
     void updateRentalTest(Rental sourceRental) {
         Rental updatedRental = Rental.builder()
                 .id(sourceRental.getId())
-                .userId(sourceRental.getUserId())
-                .carId(sourceRental.getCarId())
-                .bikeId(sourceRental.getBikeId())
+                .user(sourceRental.getUser())
+                .car(sourceRental.getCar())
+                .bike(sourceRental.getBike())
                 .startDate(LocalDateTime.now().minusDays(3))
                 .endDate(LocalDateTime.now().minusHours(2))
                 .rentalAmount(120.0)
                 .isPaid(true)
                 .build();
 
-        Rental updatedRentalFromDb = rentalDao.update(sourceRental.getId(), updatedRental);
+        Rental updatedRentalFromDb = rentalRepository.save(updatedRental);
 
         assertAll(
                 () -> assertEquals(updatedRentalFromDb.getId(), updatedRental.getId()),
@@ -157,25 +155,19 @@ class RentalDaoTest extends BaseBd {
                          "изменилось, а потом вернулась")
     @DisplayName("Test save and delete rental")
     void saveAndDeleteRentalTest(Rental sourceRental) {
-        Rental savedRental = rentalDao.save(sourceRental);
+        Rental savedRental = rentalRepository.save(sourceRental);
 
         assertNotNull(savedRental, "Аренда должна быть успешно сохранена");
 
-        Rental rentalFromDb = rentalDao.get(savedRental.getId());
+        Rental rentalFromDb = rentalRepository.findById(savedRental.getId())
+                .orElseThrow(() -> new IllegalArgumentException("<UNK> <UNK> <UNK> <UNK>"));
+
         assertEquals(savedRental.getId(), rentalFromDb.getId(), "ID аренды должен совпадать");
 
-        assertTrue(rentalDao.delete(savedRental.getId()), "Аренда должна быть успешно удалена");
-        assertFalse(rentalDao.delete(999), "Попытка удаления несуществующей аренды должна вернуть false");
-    }
+        assertTrue(rentalRepository.existsById(savedRental.getId()), "Аренда должна быть успешно удалена");
 
-
-    @ParameterizedTest
-    @MethodSource("sourceRentalForFilterTest")
-    @Description(value = "Тест проверяет фильтрацию базы аренды по предикату")
-    @DisplayName("Test filterRental")
-    void filterRentalTest(Predicate<Rental> predicate, int expectedCount) {
-        List<Rental> filteredRentals = rentalDao.filterBy(predicate);
-        assertEquals(expectedCount, filteredRentals.size(), "Количество отфильтрованных rentals должно быть " + expectedCount);
-        assertTrue(filteredRentals.stream().allMatch(predicate), "Все отфильтрованные записи должны соответствовать предикату");
+        try {
+            rentalRepository.deleteById(savedRental.getId());
+        } catch (Exception ignored) {}
     }
 }

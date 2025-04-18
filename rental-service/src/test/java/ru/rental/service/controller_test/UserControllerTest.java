@@ -1,4 +1,4 @@
-package ru.rental.service;
+package ru.rental.service.controller_test;
 
 import io.qameta.allure.Description;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,14 +44,14 @@ class UserControllerTest {
     @Description(value = "Тест проверяет возвращение всех пользователей на главную страницу")
     @DisplayName("Тест getAll для user/index")
     void getAllUserTest() throws Exception {
-        when(userService.getAll()).thenReturn(Collections.singletonList(new UserDto()));
+        when(userService.findAll()).thenReturn(Collections.singletonList(new UserDto()));
 
         mockMvc.perform(get("/user"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/index"))
                 .andExpect(model().attributeExists("users"));
 
-        verify(userService, times(1)).getAll();
+        verify(userService, times(1)).findAll();
     }
 
     @Test
@@ -60,7 +60,7 @@ class UserControllerTest {
     void getUserById_ShouldReturnTest() throws Exception {
         UserDto userDto = new UserDto();
         userDto.setId(1);
-        when(userService.get(1)).thenReturn(Optional.of(userDto));
+        when(userService.findById(1)).thenReturn(Optional.of(userDto));
 
         mockMvc.perform(get("/user/1"))
                 .andExpect(status().isOk())
@@ -68,20 +68,20 @@ class UserControllerTest {
                 .andExpect(model().attributeExists("user"))
                 .andExpect(model().attribute("user", userDto));
 
-        verify(userService, times(1)).get(1);
+        verify(userService, times(1)).findById(1);
     }
 
     @Test
     @Description(value = "Тест проверяет возвращение пользователя по айди и что он не пустой")
     @DisplayName("Тест get для user/1 no found")
     void getUserByIdTest() throws Exception {
-        when(userService.get(1)).thenReturn(Optional.empty());
+        when(userService.findById(1)).thenReturn(Optional.empty());
 
         mockMvc.perform(get("/user/1"))
                 .andExpect(status().isNotFound())
                 .andExpect(content().string("user no found id: 1"));
 
-        verify(userService, times(1)).get(1);
+        verify(userService, times(1)).findById(1);
     }
 
     @Test
@@ -106,7 +106,7 @@ class UserControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/user"));
 
-        verify(userService, times(1)).save(userDto);
+        verify(userService, times(1)).create(userDto);
     }
 
     @Test
@@ -141,7 +141,7 @@ class UserControllerTest {
     void showUpdateFormTest() throws Exception {
         UserDto userDto = new UserDto();
         userDto.setId(1);
-        when(userService.get(1)).thenReturn(Optional.of(userDto));
+        when(userService.findById(1)).thenReturn(Optional.of(userDto));
 
         mockMvc.perform(get("/user/1/edit"))
                 .andExpect(status().isOk())
@@ -149,6 +149,6 @@ class UserControllerTest {
                 .andExpect(model().attributeExists("user"))
                 .andExpect(model().attribute("user", userDto));
 
-        verify(userService, times(1)).get(1);
+        verify(userService, times(1)).findById(1);
     }
 }

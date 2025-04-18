@@ -22,6 +22,8 @@ public class RentalDto {
 
     private Integer bikeId;
 
+    private Integer bicycleId;
+
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime startDate;
 

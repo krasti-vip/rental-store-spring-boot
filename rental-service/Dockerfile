@@ -5,7 +5,7 @@ LABEL authors="dmitriyboyko"
 
 WORKDIR /app
 
-COPY rental-service/target/rental-service-0.2.0.jar .
+COPY target/rental-service-0.2.0.jar .
 
 EXPOSE 8080
 

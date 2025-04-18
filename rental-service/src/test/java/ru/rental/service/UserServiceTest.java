@@ -24,12 +24,12 @@ class UserServiceTest extends BaseBd {
     @Description(value = "Тест проверяет существование пользователя, затем что возвращается правильный пользователь по айди")
     @DisplayName("Тест get")
     void getTest() {
-        Integer userId = userService.getAll().get(3).getId();
-        Optional<UserDto> user = userService.get(userId);
+        Integer userId = userService.findAll().get(3).getId();
+        Optional<UserDto> user = userService.findById(userId);
         assertTrue(user.isPresent(), "Пользователь с id должен существовать");
-        assertEquals("ozi", userService.get(userId).get().getUserName());
+        assertEquals("ozi", userService.findById(userId).get().getUserName());
         assertThrows(IllegalArgumentException.class, () -> {
-            userService.get(null);
+            userService.findById(null);
         });
     }
 
@@ -37,18 +37,19 @@ class UserServiceTest extends BaseBd {
     @Description(value = "Тест проверяет обновление пользователя, а также соответствие полей после обновления")
     @DisplayName("Тест обновления пользователя")
     void updateTest() {
-        Integer userId = userService.getAll().get(3).getId();
+        Integer userId = userService.findAll().get(3).getId();
         UserDto userTest2 = UserDto.builder()
                 .userName("Jac")
                 .firstName("Boy")
                 .lastName("Vas")
                 .passport(72621)
-                .listBike(List.of())
-                .listCar(List.of())
-                .listBicycle(List.of())
+                .email("krasti@yandex.ru")
+                .bikes(List.of())
+                .cars(List.of())
+                .bicycles(List.of())
                 .build();
         userService.update(userId, userTest2);
-        assertEquals("Jac", userService.get(userId).get().getUserName());
+        assertEquals("Jac", userService.findById(userId).get().getUserName());
     }
 
     @Test
@@ -64,33 +65,24 @@ class UserServiceTest extends BaseBd {
                 .email("hardi@mail.ru")
                 .build();
 
-        int userDtoId = userService.save(userDto).getId();
-        assertEquals("vandervud", userService.get(userDtoId).get().getUserName());
-        assertEquals(6, userService.getAll().size());
+        int userDtoId = userService.create(userDto).getId();
+        assertEquals("vandervud", userService.findById(userDtoId).get().getUserName());
+        assertEquals(6, userService.findAll().size());
 
-        Integer userId = userService.getAll().get(5).getId();
-        assertTrue(userService.get(userId).isPresent());
-        assertEquals(6, userService.getAll().size());
+        Integer userId = userService.findAll().get(5).getId();
+        assertTrue(userService.findById(userId).isPresent());
+        assertEquals(6, userService.findAll().size());
         userService.delete(userId);
-        Optional<UserDto> user = userService.get(userId);
+        Optional<UserDto> user = userService.findById(userId);
         assertTrue(user.isEmpty());
-        assertEquals(5, userService.getAll().size());
+        assertEquals(5, userService.findAll().size());
     }
 
     @Test
     @Description(value = "Тест проверяет возвращение всех пользователей и что список больше - 0")
     @DisplayName("Тест возвращения всех пользователей")
     void getAllTest() {
-        List<UserDto> users = userService.getAll();
+        List<UserDto> users = userService.findAll();
         assertTrue(users.size() > 0);
-    }
-
-    @Test
-    @Description(value = "Тест проверяет фильтрацию пользователей по предикату")
-    @DisplayName("Тест фильтрации")
-    void filterTest() {
-        List<UserDto> usersFilter = userService.filterBy(u -> u.getUserName().equals("bill"));
-        assertTrue(usersFilter.size() > 0);
-        assertEquals("bill", usersFilter.get(0).getUserName());
     }
 }

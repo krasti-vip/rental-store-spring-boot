@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import ru.rental.service.dto.BicycleDto;
 import ru.rental.service.service.BicycleService;
-
 import java.util.List;
 
 @Controller
@@ -17,6 +16,7 @@ import java.util.List;
 public class BicycleController {
 
     private static final String RETURN_A_BICYCLE = "redirect:/bicycle";
+
     private final BicycleService bicycleService;
 
     @Autowired
@@ -26,14 +26,14 @@ public class BicycleController {
 
     @GetMapping
     public String getAllBicycles(Model model) {
-        List<BicycleDto> bicycle = bicycleService.getAll();
+        List<BicycleDto> bicycle = bicycleService.findAll();
         model.addAttribute("bicycles", bicycle);
         return "bicycle/index";
     }
 
     @GetMapping("/{id}")
     public String getBicycleById(@PathVariable("id") int id, Model model) {
-        var bicycle = bicycleService.get(id)
+        var bicycle = bicycleService.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "bicycle no found id: " + id));
         model.addAttribute("bicycle", bicycle);
         return "bicycle/bicycle";
@@ -47,7 +47,7 @@ public class BicycleController {
 
     @PostMapping
     public String createBicycle(@ModelAttribute("bicycle") BicycleDto bicycleDto) {
-        bicycleService.save(bicycleDto);
+        bicycleService.create(bicycleDto);
         return RETURN_A_BICYCLE;
     }
 
@@ -65,7 +65,7 @@ public class BicycleController {
 
     @GetMapping("/{id}/edit")
     public String showUpdateForm(@PathVariable("id") int id, Model model) {
-        var bicycle = bicycleService.get(id).orElseThrow(() -> new IllegalArgumentException("bicycle no found id: " + id));
+        var bicycle = bicycleService.findById(id).orElseThrow(() -> new IllegalArgumentException("bicycle no found id: " + id));
         model.addAttribute("bicycle", bicycle);
         return "bicycle/update";
     }

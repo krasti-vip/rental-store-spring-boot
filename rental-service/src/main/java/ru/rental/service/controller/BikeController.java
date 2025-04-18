@@ -26,14 +26,14 @@ public class BikeController {
 
     @GetMapping
     public String getAllBikes(Model model) {
-        List<BikeDto> bikes = bikeService.getAll();
+        List<BikeDto> bikes = bikeService.findAll();
         model.addAttribute("bikes", bikes);
         return "bike/index";
     }
 
     @GetMapping("/{id}")
     public String getBikeById(@PathVariable("id") int id, Model model) {
-        var bike = bikeService.get(id)
+        var bike = bikeService.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "bike no found id: " + id));
         model.addAttribute("bike", bike);
         return "bike/bike";
@@ -47,7 +47,7 @@ public class BikeController {
 
     @PostMapping
     public String createBike(@ModelAttribute("bike") BikeDto bikeDto) {
-        bikeService.save(bikeDto);
+        bikeService.create(bikeDto);
         return RETURN_A_BIKE;
     }
 
@@ -65,7 +65,7 @@ public class BikeController {
 
     @GetMapping("/{id}/edit")
     public String showUpdateForm(@PathVariable("id") int id, Model model) {
-        var bike = bikeService.get(id).orElseThrow(() -> new IllegalArgumentException("bike no found id: " + id));
+        var bike = bikeService.findById(id).orElseThrow(() -> new IllegalArgumentException("bike no found id: " + id));
         model.addAttribute("bike", bike);
         return "bike/update";
     }

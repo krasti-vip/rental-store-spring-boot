@@ -11,13 +11,13 @@ import lombok.NoArgsConstructor;
 @Builder
 public class BikeDto {
 
-    private int id;
+    private Integer id;
 
     private String name;
 
     private double price;
 
-    private int horsePower;
+    private Integer horsePower;
 
     private double volume;
 

@@ -33,7 +33,7 @@ class BaseBd {
 
     @BeforeEach
     void initBd() {
-        final var path = BikeDaoTest.class.getClassLoader().getResource("initBd.sql").getPath();
+        final var path = BikeEntityTest.class.getClassLoader().getResource("initBd.sql").getPath();
         try (final var connection = ConnectionManager.getConnection();
              final var bufferedReader = new BufferedReader(new FileReader(path))) {
             var query = new StringBuilder();
