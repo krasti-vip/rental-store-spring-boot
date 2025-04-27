@@ -15,7 +15,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.sql.SQLException;
 
-class BaseBd {
+public class BaseBd {
 
     private static final PostgreSQLContainer postresqlContainer = new PostgreSQLContainer<>(DockerImageName.parse("postgres:17.2-alpine3.21"))
             .withDatabaseName("postgres")

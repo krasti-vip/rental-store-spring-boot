@@ -8,23 +8,18 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.CreditCardNumber;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Builder
-public class BankCardDto {
-
-    @NotNull
-    private Integer id;
-
+public class BankCardDtoCreate {
     @NotNull
     private Integer userId;
 
     @NotNull
     @NotBlank
-    @CreditCardNumber
+//    @CreditCardNumber
     private String numberCard;
 
     @NotNull
