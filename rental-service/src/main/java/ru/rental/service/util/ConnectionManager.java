@@ -6,11 +6,11 @@ import java.sql.SQLException;
 
 public class ConnectionManager {
 
-    private static final String BD_URL = "db.url";
+    private static final String BD_URL = "spring.datasource.url";
 
-    private static final String BD_USERNAME = "db.username";
+    private static final String BD_USERNAME = "spring.datasource.username";
 
-    private static final String BD_PASSWORD = "db.password";
+    private static final String BD_PASSWORD = "spring.datasource.password";
 
     private ConnectionManager() {
     }
