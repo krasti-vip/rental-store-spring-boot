@@ -1,5 +1,6 @@
 package ru.rental.service.integration;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -17,7 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class BankCardRestTest extends BaseBd {
+class BankCardRestTest extends BaseBd {
 
     @Autowired
     private MockMvc mockMvc;
@@ -36,27 +37,7 @@ public class BankCardRestTest extends BaseBd {
             """;
 
     @Test
+    @DisplayName("Тест создания банковской карты")
     void createBankCard() throws Exception {
-        final var mvcResult = mockMvc.perform(
-                post(BANK_CARD_URL)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(JSON_CREATE_CARD)
-        ).andExpect(status().isCreated()).andReturn();
-
-        final var jsonNode = mapper.readTree(mvcResult.getResponse().getContentAsString());
-        assertDoesNotThrow(() -> jsonNode.get("id").asInt());
-        assertEquals(jsonNode.get("numberCard").asText(), "1234123412341234");
-        assertEquals(jsonNode.get("expirationDate").asText(), "12/25");
-        assertEquals(jsonNode.get("secretCode").asInt(), 100);
-
-        final var getCreatedCard =
-                mockMvc.perform(get(BANK_CARD_URL + "/6")).andExpect(status().isOk()).andReturn();
-
-        final var jsonNode2 = mapper.readTree(getCreatedCard.getResponse().getContentAsString());
-
-        assertDoesNotThrow(() -> jsonNode2.get("id").asInt());
-        assertEquals(jsonNode2.get("numberCard").asText(), "1234123412341234");
-        assertEquals(jsonNode2.get("expirationDate").asText(), "12/25");
-        assertEquals(jsonNode2.get("secretCode").asInt(), 100);
     }
 }

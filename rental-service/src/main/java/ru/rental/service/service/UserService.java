@@ -1,5 +1,6 @@
 package ru.rental.service.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -10,6 +11,7 @@ import ru.rental.service.dto.BicycleDto;
 import ru.rental.service.dto.BikeDto;
 import ru.rental.service.dto.CarDto;
 import ru.rental.service.dto.UserDto;
+import ru.rental.service.dto.create.UserDtoCreate;
 import ru.rental.service.entity.User;
 import ru.rental.service.repository.BicycleRepository;
 import ru.rental.service.repository.BikeRepository;
@@ -19,7 +21,7 @@ import ru.rental.service.repository.UserRepository;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class UserService {
+public class UserService implements ServiceInterface<UserDto, UserDtoCreate> {
 
     private final UserRepository userRepository;
 
@@ -38,20 +40,22 @@ public class UserService {
     }
 
     @Transactional
-    public UserDto create(UserDto userDto) {
-        User user = modelMapper.map(userDto, User.class);
+    public UserDto create(UserDtoCreate userDtoCreate) {
+        User user = modelMapper.map(userDtoCreate, User.class);
         User savedUser = userRepository.save(user);
+
         return convertToDto(savedUser);
     }
 
     @Transactional
-    public Optional<UserDto> update(Integer id, UserDto userDto) {
-        return userRepository.findById(id)
-                .map(existingUser -> {
-                    updateUserFields(existingUser, userDto);
-                    User updatedUser = userRepository.save(existingUser);
-                    return convertToDtoWithRelations(updatedUser);
-                });
+    public UserDto update(UserDto updateUserDto) {
+        User existingUser = userRepository.findById(updateUserDto.getId())
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+        modelMapper.map(updateUserDto, existingUser);
+        User savedUser = userRepository.save(existingUser);
+
+        return convertToDto(savedUser);
+
     }
 
     @Transactional
@@ -65,17 +69,15 @@ public class UserService {
         return false;
     }
 
-    @Transactional(readOnly = true)
-    public List<UserDto> findAll() {
-        return ((List<User>) userRepository.findAll()).stream()
-                .map(this::convertToDto)
-                .toList();
+    @Override
+    public List<UserDto> findByUserId(Integer userId) {
+        return List.of();
     }
 
     @Transactional(readOnly = true)
-    public List<UserDto> findAllWithVehicles() {
+    public List<UserDto> getAll() {
         return ((List<User>) userRepository.findAll()).stream()
-                .map(this::convertToDtoWithRelations)
+                .map(this::convertToDto)
                 .toList();
     }
 
@@ -89,10 +91,6 @@ public class UserService {
         dto.setCars(getCarsForUser(user.getId()));
         dto.setBicycles(getBicyclesForUser(user.getId()));
         return dto;
-    }
-
-    private void updateUserFields(User user, UserDto dto) {
-        modelMapper.map(dto, user);
     }
 
     private List<BikeDto> getBikesForUser(Integer userId) {

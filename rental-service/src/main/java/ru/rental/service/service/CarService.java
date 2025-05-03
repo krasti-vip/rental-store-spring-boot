@@ -1,21 +1,25 @@
 package ru.rental.service.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.rental.service.dto.CarDto;
+import ru.rental.service.dto.create.CarDtoCreate;
 import ru.rental.service.entity.Car;
+import ru.rental.service.entity.User;
 import ru.rental.service.repository.CarRepository;
 import ru.rental.service.repository.UserRepository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class CarService {
+public class CarService implements ServiceInterface<CarDto, CarDtoCreate> {
 
     private final CarRepository carRepository;
 
@@ -30,22 +34,23 @@ public class CarService {
     }
 
     @Transactional
-    public CarDto create(CarDto carDto) {
-        Car car = modelMapper.map(carDto, Car.class);
-        setUserIfExists(car, carDto.getUserId());
+    public CarDto create(CarDtoCreate carDtoCreate) {
+        Car car = modelMapper.map(carDtoCreate, Car.class);
+        setUserIfExists(car, carDtoCreate.getUserId());
         Car savedCar = carRepository.save(car);
+
         return convertToDto(savedCar);
     }
 
     @Transactional
-    public Optional<CarDto> update(Integer id, CarDto carDto) {
-        return carRepository.findById(id)
-                .map(existingCar -> {
-                    updateCarFields(existingCar, carDto);
-                    setUserIfExists(existingCar, carDto.getUserId());
-                    Car updatedCar = carRepository.save(existingCar);
-                    return convertToDtoWithUser(updatedCar);
-                });
+    public CarDto update(CarDto updateCarDto) {
+        Car existingCar = carRepository.findById(updateCarDto.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Car not found"));
+        modelMapper.map(updateCarDto, existingCar);
+        setUserIfExists(existingCar, updateCarDto.getUserId());
+        Car savedCar = carRepository.save(existingCar);
+
+        return convertToDto(savedCar);
     }
 
     @Transactional
@@ -58,7 +63,7 @@ public class CarService {
     }
 
     @Transactional(readOnly = true)
-    public List<CarDto> findAll() {
+    public List<CarDto> getAll() {
         return ((List<Car>) carRepository.findAll()).stream()
                 .map(this::convertToDto)
                 .toList();
@@ -81,10 +86,6 @@ public class CarService {
             dto.setUserId(car.getUser().getId());
         }
         return dto;
-    }
-
-    private void updateCarFields(Car car, CarDto dto) {
-        modelMapper.map(dto, car);
     }
 
     private void setUserIfExists(Car car, Integer userId) {

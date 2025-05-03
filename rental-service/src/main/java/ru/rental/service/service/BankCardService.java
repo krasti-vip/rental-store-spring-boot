@@ -1,21 +1,25 @@
 package ru.rental.service.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.ValidationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.rental.service.dto.BankCardDto;
+import ru.rental.service.dto.create.BankCardDtoCreate;
 import ru.rental.service.entity.BankCard;
 import ru.rental.service.repository.BankCardRepository;
 import ru.rental.service.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class BankCardService {
+public class BankCardService implements ServiceInterface<BankCardDto, BankCardDtoCreate> {
 
     private final BankCardRepository bankCardRepository;
 
@@ -30,22 +34,22 @@ public class BankCardService {
     }
 
     @Transactional
-    public BankCardDto create(BankCardDto bankCardDto) {
-        BankCard bankCard = modelMapper.map(bankCardDto, BankCard.class);
-        setUserIfExists(bankCard, bankCardDto.getUserId());
+    public BankCardDto create(BankCardDtoCreate bankCardDtoCreate) {
+        BankCard bankCard = modelMapper.map(bankCardDtoCreate, BankCard.class);
+        setUserIfExists(bankCard, bankCardDtoCreate.getUserId());
         BankCard savedCard = bankCardRepository.save(bankCard);
         return convertToDtoWithUser(savedCard);
     }
 
     @Transactional
-    public Optional<BankCardDto> update(Integer id, BankCardDto bankCardDto) {
-        return bankCardRepository.findById(id)
-                .map(existingCard -> {
-                    updateCardFields(existingCard, bankCardDto);
-                    setUserIfExists(existingCard, bankCardDto.getUserId());
-                    BankCard updatedCard = bankCardRepository.save(existingCard);
-                    return convertToDtoWithUser(updatedCard);
-                });
+    public BankCardDto update(BankCardDto updateBankCardDto) {
+        BankCard existingCard = bankCardRepository.findById(updateBankCardDto.getId())
+                .orElseThrow(() -> new EntityNotFoundException("BankCard not found"));
+        modelMapper.map(updateBankCardDto, existingCard);
+        setUserIfExists(existingCard, updateBankCardDto.getUserId());
+        BankCard updatedCard = bankCardRepository.save(existingCard);
+
+        return convertToDtoWithUser(updatedCard);
     }
 
     @Transactional
@@ -64,6 +68,17 @@ public class BankCardService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
+    public List<BankCardDto> getAll() {
+        Iterable<BankCard> cards = bankCardRepository.findAll();
+        List<BankCard> cardList = new ArrayList<>();
+        cards.forEach(cardList::add);
+
+        return cardList.stream()
+                .map(this::convertToDtoWithUser)
+                .toList();
+    }
+
     private BankCardDto convertToDto(BankCard bankCard) {
         return modelMapper.map(bankCard, BankCardDto.class);
     }
@@ -77,25 +92,10 @@ public class BankCardService {
         return dto;
     }
 
-    private void updateCardFields(BankCard bankCard, BankCardDto dto) {
-        modelMapper.map(dto, bankCard);
-    }
-
     private void setUserIfExists(BankCard bankCard, Integer userId) {
         if (userId != null) {
             userRepository.findById(userId).ifPresent(bankCard::setUser);
         }
-    }
-
-    @Transactional(readOnly = true)
-    public List<BankCardDto> getAll() {
-        Iterable<BankCard> cards = bankCardRepository.findAll();
-        List<BankCard> cardList = new ArrayList<>();
-        cards.forEach(cardList::add);
-
-        return cardList.stream()
-                .map(this::convertToDtoWithUser)
-                .toList();
     }
 }
 

@@ -15,6 +15,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.sql.SQLException;
 
+import static org.apache.logging.log4j.util.LoaderUtil.getClassLoader;
+
 public class BaseBd {
 
     private static final PostgreSQLContainer postresqlContainer = new PostgreSQLContainer<>(DockerImageName.parse("postgres:17.2-alpine3.21"))
@@ -33,7 +35,7 @@ public class BaseBd {
 
     @BeforeEach
     void initBd() {
-        final var path = BikeEntityTest.class.getClassLoader().getResource("initBd.sql").getPath();
+        final var path = getClassLoader().getResource("initBd.sql").getPath();
         try (final var connection = ConnectionManager.getConnection();
              final var bufferedReader = new BufferedReader(new FileReader(path))) {
             var query = new StringBuilder();

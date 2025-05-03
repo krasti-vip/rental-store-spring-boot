@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User profile</title>
+    <link rel="stylesheet" th:href="@{/css/indexUser.css}">
+</head>
+<body>
+<header>
+    <h1>User profile</h1>
+    <p>Редактор учетных записей</p>
+</header>
+
+<script src="/js/bankcards.js"></script>
+
+<div class="container">
+    <div class="user-list">
+        <div class="user-card" th:each="user : ${users}">
+            <img alt="User Image"
+                 src="https://avatars.mds.yandex.net/i?id=374628b11f3b50bc0923a238081a3828_l-8498443-images-thumbs&n=13" th:src="'https://avatars.mds.yandex.net/i?id=374628b11f3b50bc0923a238081a3828_l-8498443-images-thumbs&n=13' +
+
+        ${user.userName}">
+            <h3 th:text="${user.id}">User ID</h3>
+            <p><strong>Логин:</strong> <span th:text="${user.userName}">0</span></p>
+            <p><strong>First_name:</strong> <span th:text="${user.firstName}">0</span></p>
+            <p><strong>Last_name:</strong> <span th:text="${user.lastName}">0</span></p>
+            <p><strong>Passport:</strong> <span th:text="${user.passport}">0</span></p>
+            <p><strong>Email:</strong> <span th:text="${user.email}">0</span></p>
+            <a th:href="@{/user/{id}(id=${user.id})}">Выбрать этого пользователя!</a>
+        </div>
+    </div>
+</div>
+<a href="user/create"> Добавить пользователя </a>
+<footer>
+    &copy; 2025 User profile.
+</footer>
+</body>
+</html>

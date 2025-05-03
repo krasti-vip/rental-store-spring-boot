@@ -1,22 +1,25 @@
 package ru.rental.service.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.rental.service.dto.BicycleDto;
+import ru.rental.service.dto.create.BicycleDtoCreate;
 import ru.rental.service.entity.Bicycle;
 import ru.rental.service.repository.BicycleRepository;
 import ru.rental.service.repository.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class BicycleService {
+public class BicycleService implements ServiceInterface<BicycleDto, BicycleDtoCreate>{
 
     private final BicycleRepository bicycleRepository;
 
@@ -31,22 +34,22 @@ public class BicycleService {
     }
 
     @Transactional
-    public BicycleDto create(BicycleDto bicycleDto) {
-        Bicycle bicycle = modelMapper.map(bicycleDto, Bicycle.class);
-        setUserIfExists(bicycle, bicycleDto.getUserId());
+    public BicycleDto create(BicycleDtoCreate bicycleDtoCreate) {
+        Bicycle bicycle = modelMapper.map(bicycleDtoCreate, Bicycle.class);
+        setUserIfExists(bicycle, bicycleDtoCreate.getUserId());
         Bicycle savedBicycle = bicycleRepository.save(bicycle);
         return convertToDto(savedBicycle);
     }
 
     @Transactional
-    public Optional<BicycleDto> update(Integer id, BicycleDto bicycleDto) {
-        return bicycleRepository.findById(id)
-                .map(existingBicycle -> {
-                    updateBicycleFields(existingBicycle, bicycleDto);
-                    setUserIfExists(existingBicycle, bicycleDto.getUserId());
-                    Bicycle updatedBicycle = bicycleRepository.save(existingBicycle);
-                    return convertToDtoWithUser(updatedBicycle);
-                });
+    public BicycleDto update(BicycleDto updateBicycleDto) {
+        Bicycle existingBicycle = bicycleRepository.findById(updateBicycleDto.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Bicycle not found"));
+        modelMapper.map(updateBicycleDto, existingBicycle);
+        setUserIfExists(existingBicycle, updateBicycleDto.getUserId());
+        Bicycle savedBicycle = bicycleRepository.save(existingBicycle);
+
+        return convertToDto(savedBicycle);
     }
 
     @Transactional
@@ -82,10 +85,6 @@ public class BicycleService {
             dto.setUserId(bicycle.getUser().getId());
         }
         return dto;
-    }
-
-    private void updateBicycleFields(Bicycle bicycle, BicycleDto dto) {
-        modelMapper.map(dto, bicycle);
     }
 
     private void setUserIfExists(Bicycle bicycle, Integer userId) {

@@ -11,10 +11,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.rental.service.dto.BankCardDto;
-import ru.rental.service.dto.BankCardDtoCreate;
+import ru.rental.service.dto.create.BankCardDtoCreate;
 import ru.rental.service.service.BankCardService;
 
 import java.util.List;
+import java.util.Map;
 
 @Tag(name = "Bank Card", description = "DAO REST controller Bank Card")
 @RequiredArgsConstructor
@@ -26,7 +27,7 @@ public class BankCardControllerRest {
     private final BankCardService bankCardService;
 
     @Operation(summary = "Get all bank card",
-            description = "Запррашиваем все банковские карты у базы данных без какой либо выборки и батчей, датащим сразу все")
+            description = "Запрашиваем все банковские карты у базы данных без какой либо выборки и батчей, датащим сразу все")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "при успешной поиске карты вернем 200 код и карту")
     })
@@ -46,23 +47,37 @@ public class BankCardControllerRest {
     @PostMapping
     @Operation(summary = "Create bank card")
     public ResponseEntity<BankCardDto> create(@RequestBody @Valid BankCardDtoCreate bankCardDtoCreate) {
-        final var bankCardDto = bankCardService.create(BankCardDto
-                .builder()
-                .numberCard(bankCardDtoCreate.getNumberCard())
-                .expirationDate(bankCardDtoCreate.getExpirationDate())
-                .userId(bankCardDtoCreate.getUserId())
-                .secretCode(bankCardDtoCreate.getSecretCode())
-                .build()
-        );
+        BankCardDto createdCard = bankCardService.create(bankCardDtoCreate);
 
-        return ResponseEntity.status(201).body(bankCardDto);
+        return ResponseEntity.status(201).body(createdCard);
     }
 
     @Operation(summary = "Delete a bank card")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Integer id) {
+    public ResponseEntity<Void> deleteCard(@PathVariable Integer id) {
         return bankCardService.delete(id)
                 ? ResponseEntity.status(HttpStatus.ACCEPTED).build()
                 : ResponseEntity.notFound().build();
+    }
+
+    @Operation(summary = "Get cards by user ID")
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<BankCardDto>> getCardsByUserId(
+            @PathVariable Integer userId) {
+        return ResponseEntity.ok(bankCardService.findByUserId(userId));
+    }
+
+    @Operation(summary = "Update bank card")
+    @PutMapping("/{id}")
+    public ResponseEntity<BankCardDto> updateCard(
+            @PathVariable Integer id,
+            @RequestBody @Valid BankCardDto bankCardDto) {
+
+        if (!id.equals(bankCardDto.getId())) {
+            throw new IllegalArgumentException("ID in path and body must match");
+        }
+
+        BankCardDto updatedCard = bankCardService.update(bankCardDto);
+        return ResponseEntity.ok(updatedCard);
     }
 }

@@ -9,5 +9,8 @@ import java.util.List;
 
 @Repository
 public interface RentalRepository extends CrudRepository<Rental, Integer> {
+
+    List<Rental> findAllByUserId(Integer userId);
+
     List<Rental> findByEndDateIsNullOrEndDateAfter(LocalDateTime date);
 }
