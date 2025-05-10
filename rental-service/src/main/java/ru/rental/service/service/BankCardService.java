@@ -1,123 +1,101 @@
 package ru.rental.service.service;
 
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import ru.rental.service.dao.BankCardDao;
+import org.modelmapper.ValidationException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.rental.service.dto.BankCardDto;
-import ru.rental.service.model.BankCard;
-
+import ru.rental.service.dto.create.BankCardDtoCreate;
+import ru.rental.service.entity.BankCard;
+import ru.rental.service.repository.BankCardRepository;
+import ru.rental.service.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-import java.util.function.Predicate;
 
-@Component
-public class BankCardService implements Service<BankCardDto, Integer> {
+@Service
+@Transactional
+@RequiredArgsConstructor
+public class BankCardService implements ServiceInterface<BankCardDto, BankCardDtoCreate> {
 
-    private static final Logger log = LoggerFactory.getLogger(BankCardService.class);
+    private final BankCardRepository bankCardRepository;
 
-    private static final String NO_BANK_CARD_FOUND = "BankCard with id {} not found";
+    private final UserRepository userRepository;
 
     private final ModelMapper modelMapper;
 
-    private final BankCardDao bankCardDao;
-
-    @Autowired
-    public BankCardService(BankCardDao bankCardDao, ModelMapper modelMapper) {
-        this.modelMapper = modelMapper;
-        this.bankCardDao = bankCardDao;
+    @Transactional(readOnly = true)
+    public Optional<BankCardDto> findById(Integer id) {
+        return bankCardRepository.findById(id)
+                .map(this::convertToDtoWithUser);
     }
 
-    @Override
-    public Optional<BankCardDto> get(Integer id) {
-        final var maybeBankCard = bankCardDao.get(id);
-
-        if (maybeBankCard == null) {
-            log.warn(NO_BANK_CARD_FOUND, id);
-            return Optional.empty();
-        } else {
-            log.info("BankCard with id {} found", id);
-            return Optional.of(modelMapper.map(maybeBankCard, BankCardDto.class));
-        }
+    @Transactional
+    public BankCardDto create(BankCardDtoCreate bankCardDtoCreate) {
+        BankCard bankCard = modelMapper.map(bankCardDtoCreate, BankCard.class);
+        setUserIfExists(bankCard, bankCardDtoCreate.getUserId());
+        BankCard savedCard = bankCardRepository.save(bankCard);
+        return convertToDtoWithUser(savedCard);
     }
 
-    @Override
-    public Optional<BankCardDto> update(Integer id, BankCardDto obj) {
-        var maybeBankCard = bankCardDao.get(id);
+    @Transactional
+    public BankCardDto update(BankCardDto updateBankCardDto) {
+        BankCard existingCard = bankCardRepository.findById(updateBankCardDto.getId())
+                .orElseThrow(() -> new EntityNotFoundException("BankCard not found"));
+        modelMapper.map(updateBankCardDto, existingCard);
+        setUserIfExists(existingCard, updateBankCardDto.getUserId());
+        BankCard updatedCard = bankCardRepository.save(existingCard);
 
-        if (maybeBankCard == null) {
-            log.warn(NO_BANK_CARD_FOUND, id);
-            return Optional.empty();
-        }
-
-        var updatedBankCard = BankCard.builder()
-                .id(maybeBankCard.getId())
-                .userId(obj.getUserId())
-                .numberCard(obj.getNumberCard())
-                .expirationDate(obj.getExpirationDate())
-                .secretCode(obj.getSecretCode())
-                .build();
-
-        var updated = bankCardDao.update(id, updatedBankCard);
-        log.info("BankCard with id {} updated", id);
-        return Optional.of(modelMapper.map(updated, BankCardDto.class));
+        return convertToDtoWithUser(updatedCard);
     }
 
-    @Override
-    public BankCardDto save(BankCardDto obj) {
-        var newBankCard = BankCard.builder()
-                .userId(obj.getUserId())
-                .numberCard(obj.getNumberCard())
-                .expirationDate(obj.getExpirationDate())
-                .secretCode(obj.getSecretCode())
-                .build();
-
-        var savedBankCard = bankCardDao.save(newBankCard);
-        log.info("BankCard with id {} saved", savedBankCard.getId());
-        return modelMapper.map(savedBankCard, BankCardDto.class);
-    }
-
-    @Override
+    @Transactional
     public boolean delete(Integer id) {
-        var maybeBankCard = bankCardDao.get(id);
-
-        if (maybeBankCard == null) {
-            log.warn(NO_BANK_CARD_FOUND, id);
-            return false;
+        if (bankCardRepository.existsById(id)) {
+            bankCardRepository.deleteById(id);
+            return true;
         }
-        log.info("BankCard with id {} deleted", id);
-        return bankCardDao.delete(id);
+        return false;
     }
 
-    @Override
-    public List<BankCardDto> filterBy(Predicate<BankCardDto> predicate) {
-        log.info("BankCard filtering by {}", predicate);
-        return bankCardDao.getAll().stream()
-                .map(e -> modelMapper.map(e, BankCardDto.class))
-                .filter(predicate)
+    @Transactional(readOnly = true)
+    public List<BankCardDto> findByUserId(Integer userId) {
+        return bankCardRepository.findById(userId).stream()
+                .map(this::convertToDtoWithUser)
                 .toList();
     }
 
-    @Override
+    @Transactional(readOnly = true)
     public List<BankCardDto> getAll() {
-        if (bankCardDao.getAll().isEmpty()) {
-            log.info("No BankCards found");
-            return new ArrayList<>();
-        }
-        log.info("BankCards found");
-        return bankCardDao.getAll().stream()
-                .map(e -> modelMapper.map(e, BankCardDto.class))
+        Iterable<BankCard> cards = bankCardRepository.findAll();
+        List<BankCard> cardList = new ArrayList<>();
+        cards.forEach(cardList::add);
+
+        return cardList.stream()
+                .map(this::convertToDtoWithUser)
                 .toList();
     }
 
-    public List<BankCardDto> getAllByUserId(int userId) {
-        log.info("Fetching bank cards for user with id {}", userId);
-        return bankCardDao.getAllByUserId(userId).stream()
-                .map(e -> modelMapper.map(e, BankCardDto.class))
-                .toList();
+    private BankCardDto convertToDto(BankCard bankCard) {
+        return modelMapper.map(bankCard, BankCardDto.class);
+    }
+
+    private BankCardDto convertToDtoWithUser(BankCard bankCard) {
+        BankCardDto dto = convertToDto(bankCard);
+        if (bankCard.getUser() != null) {
+            dto.setUserId(bankCard.getUser().getId());
+        }
+
+        return dto;
+    }
+
+    private void setUserIfExists(BankCard bankCard, Integer userId) {
+        if (userId != null) {
+            userRepository.findById(userId).ifPresent(bankCard::setUser);
+        }
     }
 }
 

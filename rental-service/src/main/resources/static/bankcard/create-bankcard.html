@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Добавить карту</title>
+    <link rel="stylesheet" href="/css/bankCard.css">
+</head>
+<body>
+<h1>Добавить новую карту</h1>
+
+<form id="create-bankcard-form">
+    <label for="userId">User ID:</label>
+    <input id="userId" name="userId" type="number" required>
+
+    <label for="numberCard">Номер карты:</label>
+    <input id="numberCard" name="numberCard" type="text" required>
+
+    <label for="expirationDate">Срок действия (MM/YY):</label>
+    <input id="expirationDate" name="expirationDate" type="text" required>
+
+    <label for="secretCode">CVV код:</label>
+    <input id="secretCode" name="secretCode" type="number" required>
+
+    <button type="submit">Создать</button>
+</form>
+
+<a href="index-bank-card.html">Назад к списку</a>
+
+<script src="/js/create-bankcard.js"></script>
+</body>
+</html>

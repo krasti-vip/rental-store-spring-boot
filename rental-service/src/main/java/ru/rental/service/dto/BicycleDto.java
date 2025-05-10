@@ -1,5 +1,6 @@
 package ru.rental.service.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,12 +12,16 @@ import lombok.NoArgsConstructor;
 @Builder
 public class BicycleDto {
 
-    private int id;
+    @NotNull
+    private Integer id;
 
+    @NotNull
     private String model;
 
+    @NotNull
     private double price;
 
+    @NotNull
     private String color;
 
     private Integer userId;

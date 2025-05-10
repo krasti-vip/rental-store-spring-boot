@@ -1,5 +1,6 @@
 package ru.rental.service.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,20 +15,26 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class RentalDto {
 
+    @NotNull
     private Integer id;
 
+    @NotNull
     private Integer userId;
 
     private Integer carId;
 
     private Integer bikeId;
 
+    private Integer bicycleId;
+
+    @NotNull
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime startDate;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime endDate;
 
+    @NotNull
     private Double rentalAmount;
 
     private Boolean isPaid;

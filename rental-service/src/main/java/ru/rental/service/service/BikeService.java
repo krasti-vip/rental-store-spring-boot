@@ -1,135 +1,94 @@
 package ru.rental.service.service;
 
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import ru.rental.service.dao.BikeDao;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.rental.service.dto.BikeDto;
-import ru.rental.service.model.Bike;
+import ru.rental.service.dto.create.BikeDtoCreeate;
+import ru.rental.service.entity.Bike;
+import ru.rental.service.repository.BikeRepository;
+import ru.rental.service.repository.UserRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
 
-@Component
-public class BikeService implements Service<BikeDto, Integer> {
+@Service
+@Transactional
+@RequiredArgsConstructor
+public class BikeService implements ServiceInterface<BikeDto, BikeDtoCreeate> {
 
-    private static final Logger log = LoggerFactory.getLogger(BikeService.class);
+    private final BikeRepository bikeRepository;
 
-    private static final String NO_BIKE_FOUND = "Bike with id {} not found";
+    private final UserRepository userRepository;
 
     private final ModelMapper modelMapper;
 
-    private final BikeDao bikeDao;
-
-    @Autowired
-    public BikeService(BikeDao bikeDao, ModelMapper modelMapper) {
-        this.modelMapper = modelMapper;
-        this.bikeDao = bikeDao;
+    @Transactional(readOnly = true)
+    public Optional<BikeDto> findById(Integer id) {
+        return bikeRepository.findById(id)
+                .map(this::convertToDtoWithUser);
     }
 
-    @Override
-    public Optional<BikeDto> get(Integer id) {
-        final var maybeBike = bikeDao.get(id);
+    @Transactional
+    public BikeDto create(BikeDtoCreeate bikeDtoCreeate) {
+        Bike bike = modelMapper.map(bikeDtoCreeate, Bike.class);
+        setUserIfExists(bike, bikeDtoCreeate.getUserId());
+        Bike savedBike = bikeRepository.save(bike);
 
-        if (maybeBike == null) {
-            log.warn(NO_BIKE_FOUND, id);
-            return Optional.empty();
-        } else {
-            log.info("Bike with id {} found", id);
-            return Optional.of(modelMapper.map(maybeBike, BikeDto.class));
-        }
+        return convertToDto(savedBike);
     }
 
-    @Override
-    public Optional<BikeDto> update(Integer id, BikeDto obj) {
-        var maybeBike = bikeDao.get(id);
+    @Transactional
+    public BikeDto update(BikeDto updatedBikeDto) {
+        Bike existingBike = bikeRepository.findById(updatedBikeDto.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Bike not found"));
+        modelMapper.map(updatedBikeDto, existingBike);
+        setUserIfExists(existingBike, updatedBikeDto.getUserId());
+        Bike savedBike = bikeRepository.save(existingBike);
 
-        if (maybeBike == null) {
-            log.warn(NO_BIKE_FOUND, id);
-            return Optional.empty();
-        }
-
-        var updatedBike = Bike.builder()
-                .id(maybeBike.getId())
-                .name(obj.getName())
-                .price(obj.getPrice())
-                .volume(obj.getVolume())
-                .horsePower(obj.getHorsePower())
-                .build();
-
-        var updated = bikeDao.update(id, updatedBike);
-        log.info("Bike with id {} updated", id);
-        return Optional.of(modelMapper.map(updated, BikeDto.class));
+        return convertToDto(savedBike);
     }
 
-    @Override
-    public BikeDto save(BikeDto obj) {
-        var newBike = Bike.builder()
-                .name(obj.getName())
-                .price(obj.getPrice())
-                .volume(obj.getVolume())
-                .horsePower(obj.getHorsePower())
-                .build();
-
-        var savedBike = bikeDao.save(newBike);
-        log.info("Bike with id {} saved", savedBike.getId());
-        return modelMapper.map(savedBike, BikeDto.class);
-    }
-
-    @Override
+    @Transactional
     public boolean delete(Integer id) {
-        var maybeBike = bikeDao.get(id);
-
-        if (maybeBike == null) {
-            log.warn(NO_BIKE_FOUND, id);
-            return false;
+        if (bikeRepository.existsById(id)) {
+            bikeRepository.deleteById(id);
+            return true;
         }
-        log.info("Bike with id {} deleted", id);
-        return bikeDao.delete(id);
+        return false;
     }
 
-    @Override
-    public List<BikeDto> filterBy(Predicate<BikeDto> predicate) {
-        log.info("Bike filtering by {}", predicate);
-        return bikeDao.getAll().stream()
-                .map(e -> modelMapper.map(e, BikeDto.class))
-                .filter(predicate)
-                .toList();
-    }
-
-    @Override
+    @Transactional(readOnly = true)
     public List<BikeDto> getAll() {
-        if (bikeDao.getAll().isEmpty()) {
-            log.info("No Bikes");
-            return new ArrayList<>();
-        }
-        log.info("Bikes found");
-        return bikeDao.getAll().stream()
-                .map(e -> modelMapper.map(e, BikeDto.class))
+        return ((List<Bike>) bikeRepository.findAll()).stream()
+                .map(this::convertToDto)
                 .toList();
     }
 
-    public List<BikeDto> getAllByUserId(int userId) {
-        log.info("Fetching bikes for user with id {}", userId);
-        return bikeDao.getAllByUserId(userId).stream()
-                .map(e -> modelMapper.map(e, BikeDto.class))
+    @Transactional(readOnly = true)
+    public List<BikeDto> findByUserId(Integer userId) {
+        return bikeRepository.findById(userId).stream()
+                .map(this::convertToDto)
                 .toList();
     }
 
-    public Optional<BikeDto> updateUserId(Integer bikeId, Integer userId) {
+    private BikeDto convertToDto(Bike bike) {
+        return modelMapper.map(bike, BikeDto.class);
+    }
 
-        var updatedBike = bikeDao.updateUserId(bikeId, userId);
-
-        if (updatedBike != null) {
-            log.info("Bike with id {} successfully updated with userId {}", bikeId, userId);
-            return Optional.of(modelMapper.map(updatedBike, BikeDto.class));
+    private BikeDto convertToDtoWithUser(Bike bike) {
+        BikeDto dto = convertToDto(bike);
+        if (bike.getUser() != null) {
+            dto.setUserId(bike.getUser().getId());
         }
+        return dto;
+    }
 
-        log.warn("Bike with id {} was not updated!", bikeId);
-        return Optional.empty();
+    private void setUserIfExists(Bike bike, Integer userId) {
+        if (userId != null) {
+            userRepository.findById(userId).ifPresent(bike::setUser);
+        }
     }
 }

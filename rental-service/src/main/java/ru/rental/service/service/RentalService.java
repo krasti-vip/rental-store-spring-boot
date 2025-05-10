@@ -1,115 +1,130 @@
 package ru.rental.service.service;
 
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import ru.rental.service.dao.RentalDao;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.rental.service.dto.RentalDto;
-import ru.rental.service.model.Rental;
-
+import ru.rental.service.dto.create.RentalDtoCreate;
+import ru.rental.service.entity.*;
+import ru.rental.service.repository.*;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
 
-@Component
-public class RentalService implements Service<RentalDto, Integer> {
+@Service
+@Transactional
+@RequiredArgsConstructor
+public class RentalService implements ServiceInterface<RentalDto, RentalDtoCreate> {
 
-    private static final Logger log = LoggerFactory.getLogger(RentalService.class);
+    private final RentalRepository rentalRepository;
+
+    private final UserRepository userRepository;
+
+    private final CarRepository carRepository;
+
+    private final BikeRepository bikeRepository;
+
+    private final BicycleRepository bicycleRepository;
 
     private final ModelMapper modelMapper;
 
-    private final RentalDao rentalDao;
-
-    @Autowired
-    public RentalService(RentalDao rentalDao, ModelMapper modelMapper) {
-        this.modelMapper = modelMapper;
-        this.rentalDao = rentalDao;
+    @Transactional(readOnly = true)
+    public Optional<RentalDto> findById(Integer id) {
+        return rentalRepository.findById(id)
+                .map(this::convertToDtoWithRelations);
     }
 
-    @Override
-    public Optional<RentalDto> get(Integer id) {
-        final var maybeRental = rentalDao.get(id);
+    @Transactional
+    public RentalDto create(RentalDtoCreate rentalDtoCreate) {
+        Rental rental = modelMapper.map(rentalDtoCreate, Rental.class);
+        setUserIfExists(rental, rentalDtoCreate.getUserId());
+        Rental savedRental = rentalRepository.save(rental);
 
-        if (maybeRental == null) {
-            log.warn("Rental not found");
-            return Optional.empty();
-        } else {
-            log.info("Rental found");
-            return Optional.of(modelMapper.map(maybeRental, RentalDto.class));
-        }
+        return convertToDtoWithRelations(savedRental);
     }
 
-    @Override
-    public Optional<RentalDto> update(Integer id, RentalDto obj) {
-        var maybeRental = rentalDao.get(id);
+    @Transactional
+    public RentalDto update(RentalDto updateRentalDto) {
+        Rental existingRental = rentalRepository.findById(updateRentalDto.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Rental not found"));
+        modelMapper.map(updateRentalDto, existingRental);
+        setUserIfExists(existingRental, updateRentalDto.getUserId());
+        setCarIfExists(existingRental, updateRentalDto.getCarId());
+        setBikeIfExists(existingRental, updateRentalDto.getBikeId());
+        setBicycleIfExists(existingRental, updateRentalDto.getBicycleId());
+        Rental savedRental = rentalRepository.save(existingRental);
 
-        if (maybeRental == null) {
-            log.warn("Rental not found");
-            return Optional.empty();
-        }
-
-        var updatedRental = Rental.builder()
-                .userId(obj.getUserId())
-                .carId(obj.getCarId())
-                .bikeId(obj.getBikeId())
-                .startDate(obj.getStartDate())
-                .endDate(obj.getEndDate())
-                .rentalAmount(obj.getRentalAmount())
-                .isPaid(obj.getIsPaid())
-                .build();
-
-        var updated = rentalDao.update(id, updatedRental);
-        log.info("Rental updated");
-        return Optional.of(modelMapper.map(updated, RentalDto.class));
+        return convertToDtoWithRelations(savedRental);
     }
 
-    @Override
-    public RentalDto save(RentalDto obj) {
-        var newRental = Rental.builder()
-                .userId(obj.getUserId())
-                .carId(obj.getCarId())
-                .bikeId(obj.getBikeId())
-                .startDate(obj.getStartDate())
-                .endDate(obj.getEndDate())
-                .rentalAmount(obj.getRentalAmount())
-                .isPaid(obj.getIsPaid())
-                .build();
-
-        var savedRental = rentalDao.save(newRental);
-        log.info("Rental saved");
-        return modelMapper.map(savedRental, RentalDto.class);
-    }
-
-    @Override
+    @Transactional
     public boolean delete(Integer id) {
-        var maybeRental = rentalDao.get(id);
+        if (rentalRepository.existsById(id)) {
+            rentalRepository.deleteById(id);
 
-        if (maybeRental == null) {
-            log.info("Rental not found");
-            return false;
+            return true;
         }
-        log.info("Rental deleted");
-        return rentalDao.delete(id);
+
+        return false;
     }
 
-    @Override
-    public List<RentalDto> filterBy(Predicate<RentalDto> predicate) {
-        List<Rental> rentals = rentalDao.getAll();
-        log.info("Rentals found");
-        return rentals.stream()
-                .map(e -> modelMapper.map(e, RentalDto.class))
-                .filter(predicate)
+    @Transactional(readOnly = true)
+    public List<RentalDto> findByUserId(Integer userId) {
+        return rentalRepository.findById(userId).stream()
+                .map(this::convertToDtoWithRelations)
                 .toList();
     }
 
-    @Override
+    @Transactional(readOnly = true)
     public List<RentalDto> getAll() {
-        List<Rental> rentals = rentalDao.getAll();
-        log.info("Rentals found");
-        return rentals.stream()
-                .map(e -> modelMapper.map(e, RentalDto.class))
+        return ((List<Rental>) rentalRepository.findAll()).stream()
+                .map(this::convertToDto)
                 .toList();
+    }
+
+    private RentalDto convertToDto(Rental rental) {
+        return modelMapper.map(rental, RentalDto.class);
+    }
+
+    private RentalDto convertToDtoWithRelations(Rental rental) {
+        RentalDto dto = convertToDto(rental);
+        if (rental.getUser() != null) {
+            dto.setUserId(rental.getUser().getId());
+        }
+        if (rental.getCar() != null) {
+            dto.setCarId(rental.getCar().getId());
+        }
+        if (rental.getBike() != null) {
+            dto.setBikeId(rental.getBike().getId());
+        }
+        if (rental.getBicycle() != null) {
+            dto.setBicycleId(rental.getBicycle().getId());
+        }
+        return dto;
+    }
+
+    private void setBicycleIfExists(Rental rental, Integer bicycleId) {
+        if (bicycleId != null) {
+            bicycleRepository.findById(bicycleId).ifPresent(rental::setBicycle);
+        }
+    }
+
+    private void setUserIfExists(Rental rental, Integer userId) {
+        if (userId != null) {
+            userRepository.findById(userId).ifPresent(rental::setUser);
+        }
+    }
+
+    private void setCarIfExists(Rental rental, Integer carId) {
+        if (carId != null) {
+            carRepository.findById(carId).ifPresent(rental::setCar);
+        }
+    }
+
+    private void setBikeIfExists(Rental rental, Integer bikeId) {
+        if (bikeId != null) {
+            bikeRepository.findById(bikeId).ifPresent(rental::setBike);
+        }
     }
 }

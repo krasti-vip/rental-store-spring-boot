@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS users
     user_name  VARCHAR(50) NOT NULL,
     first_name VARCHAR(50) NOT NULL,
     last_name  VARCHAR(50) NOT NULL,
-    passport   INT         NOT NULL UNIQUE,
+    passport   BIGINT      NOT NULL UNIQUE,
     email      VARCHAR(50)
 );
 --- Инициализация таблицы users
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS bikes
 INSERT INTO bikes (name, price, horse_power, volume, user_id)
 VALUES ('BMW', 2000, 200, 1.0, null),
        ('SUZUKI', 30000, 300, 1.0, null),
-       ('YAMAHA', 40000, 400, 1.0, null),
+       ('YAMAHA', 40000, 400, 1.0, 1),
        ('URAL', 2000, 200, 1.0, null),
        ('HONDA', 2000, 200, 1.0, null);
 --- Удаление таблицы bicycles
@@ -50,8 +50,8 @@ CREATE TABLE IF NOT EXISTS bicycles
 );
 --- Инициализация таблицы bicycles
 INSERT INTO bicycles (model, price, color, user_id)
-VALUES ('Mongust', 2000, 'blue', null),
-       ('Ctels', 1000, 'black', null),
+VALUES ('Mongust', 2000, 'blue', 1),
+       ('Ctels', 1000, 'black', 1),
        ('Aist', 1500, 'white', null),
        ('BMX', 2500, 'blue', null),
        ('Mochina', 1200, 'red', null);
@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS cars
 --- Инициализация таблицы cars
 INSERT INTO cars (title, price, horse_power, volume, color, user_id)
 VALUES ('MERCEDES', 655.30, 250, 3.5, 'black', null),
-       ('HONDA', 360.50, 190, 2.4, 'red', null),
+       ('HONDA', 360.50, 190, 2.4, 'red', 1),
        ('HYUNDAI', 320.90, 156, 2.0, 'white', null),
        ('BMW', 640.50, 450, 5.0, 'blue', null),
        ('OPEL', 210.90, 110, 1.8, 'gold', null);
@@ -81,27 +81,28 @@ DROP TABLE IF EXISTS rentals CASCADE;
 CREATE TABLE IF NOT EXISTS rentals
 (
     id            SERIAL PRIMARY KEY,
-    user_id       INT              NOT NULL REFERENCES users (id) ON DELETE RESTRICT,
+    user_id       INT      REFERENCES users (id) ON DELETE RESTRICT,
     car_id        INT REFERENCES cars (id) ON DELETE RESTRICT,
     bike_id       INT REFERENCES bikes (id) ON DELETE RESTRICT,
+    bicycle_id    INT REFERENCES bicycles (id) ON DELETE RESTRICT,
     start_date    TIMESTAMP        NOT NULL,
     end_date      TIMESTAMP,
     rental_amount DOUBLE PRECISION NOT NULL,
     is_paid       BOOLEAN DEFAULT FALSE
 );
 --- Инициализация таблицы rental
-INSERT INTO rentals (user_id, car_id, bike_id, start_date, end_date, rental_amount, is_paid)
-VALUES (1, 2, NULL, '2025-03-01 10:00:00', '2025-03-07 12:00:00', 5000.00, TRUE),
-       (2, 1, NULL, '2025-03-05 14:00:00', '2025-03-10 09:00:00', 4500.50, FALSE),
-       (3, NULL, 2, '2025-02-20 09:00:00', NULL, 12000.00, FALSE),
-       (4, 4, NULL, '2025-03-03 15:30:00', '2025-03-08 18:00:00', 7800.75, TRUE);
+INSERT INTO rentals (user_id, car_id, bike_id, bicycle_id, start_date, end_date, rental_amount, is_paid)
+VALUES (1, 2, NULL, NULL, '2025-03-01 10:00:00', '2025-03-07 12:00:00', 5000.00, TRUE),
+       (1, 1, NULL, NULL,'2025-03-05 14:00:00', '2025-03-10 09:00:00', 4500.50, FALSE),
+       (3, NULL, 2, NULL,'2025-02-20 09:00:00', NULL, 12000.00, FALSE),
+       (1, 4, NULL, NULL,'2025-03-03 15:30:00', '2025-03-08 18:00:00', 7800.75, TRUE);
 --- Удаление таблицы bank_cards
 DROP TABLE IF EXISTS bank_cards CASCADE;
 --- Создание таблицы bank_cards
 CREATE TABLE IF NOT EXISTS bank_cards
 (
     id            SERIAL PRIMARY KEY,
-    user_id     INT NOT NULL REFERENCES users (id) ON DELETE RESTRICT,
+    user_id     INT REFERENCES users (id) ON DELETE RESTRICT,
     number_card VARCHAR(20) NOT NULL,
     expiration_date VARCHAR(20) NOT NULL,
     secret_code VARCHAR(20) NOT NULL

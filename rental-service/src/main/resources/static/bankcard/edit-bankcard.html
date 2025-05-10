@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Редактирование карты</title>
+    <link rel="stylesheet" href="/css/bankCard.css">
+</head>
+<body>
+<h1>Редактирование карты</h1>
+
+<form id="edit-form">
+    <input type="hidden" id="card-id">
+
+    <label for="edit-userId">User ID:</label>
+    <input id="edit-userId" type="number">
+
+    <label for="edit-numberCard">Номер карты:</label>
+    <input id="edit-numberCard" type="text">
+
+    <label for="edit-expirationDate">Срок действия (MM/YY):</label>
+    <input id="edit-expirationDate" type="text">
+
+    <label for="edit-secretCode">CVV код:</label>
+    <input id="edit-secretCode" type="number">
+
+    <button type="submit">Сохранить</button>
+</form>
+
+<script src="/js/edit-bankcard.js"></script>
+</body>
+</html>

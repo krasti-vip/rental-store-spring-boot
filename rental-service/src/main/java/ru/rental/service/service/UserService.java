@@ -1,118 +1,113 @@
 package ru.rental.service.service;
 
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import ru.rental.service.dao.UserDao;
-import ru.rental.service.dto.UserDto;
-import ru.rental.service.model.User;
-
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
+import ru.rental.service.dto.BicycleDto;
+import ru.rental.service.dto.BikeDto;
+import ru.rental.service.dto.CarDto;
+import ru.rental.service.dto.UserDto;
+import ru.rental.service.dto.create.UserDtoCreate;
+import ru.rental.service.entity.User;
+import ru.rental.service.repository.BicycleRepository;
+import ru.rental.service.repository.BikeRepository;
+import ru.rental.service.repository.CarRepository;
+import ru.rental.service.repository.UserRepository;
 
-@Component
-public class UserService implements Service<UserDto, Integer> {
+@Service
+@Transactional
+@RequiredArgsConstructor
+public class UserService implements ServiceInterface<UserDto, UserDtoCreate> {
 
-    private static final Logger log = LoggerFactory.getLogger(UserService.class);
+    private final UserRepository userRepository;
 
-    private static final String NO_USER_FOUND = "User not found";
+    private final BikeRepository bikeRepository;
+
+    private final CarRepository carRepository;
+
+    private final BicycleRepository bicycleRepository;
 
     private final ModelMapper modelMapper;
 
-    private final UserDao userDao;
-
-    @Autowired
-    public UserService(UserDao userDao, ModelMapper modelMapper) {
-        this.modelMapper = modelMapper;
-        this.userDao = userDao;
+    @Transactional(readOnly = true)
+    public Optional<UserDto> findById(Integer id) {
+        return userRepository.findById(id)
+                .map(this::convertToDtoWithRelations);
     }
 
-    @Override
-    public Optional<UserDto> get(Integer id) {
-        final var maybeUser = userDao.get(id);
+    @Transactional
+    public UserDto create(UserDtoCreate userDtoCreate) {
+        User user = modelMapper.map(userDtoCreate, User.class);
+        User savedUser = userRepository.save(user);
 
-        if (maybeUser == null) {
-            log.info(NO_USER_FOUND);
-            return Optional.empty();
-        } else {
-            log.info("User found");
-            return Optional.of(modelMapper.map(maybeUser, UserDto.class));
-        }
+        return convertToDto(savedUser);
     }
 
-    @Override
-    public Optional<UserDto> update(Integer id, UserDto obj) {
-        var maybeUser = userDao.get(id);
+    @Transactional
+    public UserDto update(UserDto updateUserDto) {
+        User existingUser = userRepository.findById(updateUserDto.getId())
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+        modelMapper.map(updateUserDto, existingUser);
+        User savedUser = userRepository.save(existingUser);
 
-        if (maybeUser == null) {
-            log.info(NO_USER_FOUND);
-            return Optional.empty();
-        }
+        return convertToDto(savedUser);
 
-        var updatedUser = User.builder()
-                .userName(obj.getUserName())
-                .firstName(obj.getFirstName())
-                .lastName(obj.getLastName())
-                .passport(obj.getPassport())
-                .email(obj.getEmail())
-                .listBike(obj.getListBike())
-                .listCar(obj.getListCar())
-                .listBicycle(obj.getListBicycle())
-                .build();
-
-        var updated = userDao.update(id, updatedUser);
-        log.info("User updated");
-        return Optional.of(modelMapper.map(updated, UserDto.class));
     }
 
-    @Override
-    public UserDto save(UserDto obj) {
-        var newUser = User.builder()
-                .userName(obj.getUserName())
-                .firstName(obj.getFirstName())
-                .lastName(obj.getLastName())
-                .passport(obj.getPassport())
-                .email(obj.getEmail())
-                .build();
-
-        var savedUser = userDao.save(newUser);
-        log.info("User saved");
-        return modelMapper.map(savedUser, UserDto.class);
-    }
-
-    @Override
+    @Transactional
     public boolean delete(Integer id) {
-        var maybeUser = userDao.get(id);
+        if (userRepository.existsById(id)) {
+            userRepository.deleteById(id);
 
-        if (maybeUser == null) {
-            log.info(NO_USER_FOUND);
-            return false;
+            return true;
         }
-        log.info("User deleted");
-        return userDao.delete(id);
+
+        return false;
     }
 
     @Override
-    public List<UserDto> filterBy(Predicate<UserDto> predicate) {
+    public List<UserDto> findByUserId(Integer userId) {
+        return List.of();
+    }
 
-        List<User> users = userDao.getAll();
-        log.info("Users found");
-        return users.stream()
-                .map(e -> modelMapper.map(e, UserDto.class))
-                .filter(predicate)
+    @Transactional(readOnly = true)
+    public List<UserDto> getAll() {
+        return ((List<User>) userRepository.findAll()).stream()
+                .map(this::convertToDto)
                 .toList();
     }
 
-    @Override
-    public List<UserDto> getAll() {
+    private UserDto convertToDto(User user) {
+        return modelMapper.map(user, UserDto.class);
+    }
 
-        List<User> users = userDao.getAll();
-        log.info("Users found");
-        return users.stream()
-                .map(e -> modelMapper.map(e, UserDto.class))
+    private UserDto convertToDtoWithRelations(User user) {
+        UserDto dto = convertToDto(user);
+        dto.setBikes(getBikesForUser(user.getId()));
+        dto.setCars(getCarsForUser(user.getId()));
+        dto.setBicycles(getBicyclesForUser(user.getId()));
+        return dto;
+    }
+
+    private List<BikeDto> getBikesForUser(Integer userId) {
+        return bikeRepository.findById(userId).stream()
+                .map(bike -> modelMapper.map(bike, BikeDto.class))
+                .toList();
+    }
+
+    private List<CarDto> getCarsForUser(Integer userId) {
+        return carRepository.findById(userId).stream()
+                .map(car -> modelMapper.map(car, CarDto.class))
+                .toList();
+    }
+
+    private List<BicycleDto> getBicyclesForUser(Integer userId) {
+        return bicycleRepository.findById(userId).stream()
+                .map(bicycle -> modelMapper.map(bicycle, BicycleDto.class))
                 .toList();
     }
 }

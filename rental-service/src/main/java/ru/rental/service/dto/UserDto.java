@@ -1,12 +1,11 @@
 package ru.rental.service.dto;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.rental.service.model.Bicycle;
-import ru.rental.service.model.Bike;
-import ru.rental.service.model.Car;
 
 import java.util.List;
 
@@ -16,21 +15,28 @@ import java.util.List;
 @Builder
 public class UserDto {
 
-    private int id;
+    @NotNull
+    private Integer id;
 
+    @NotNull
     private String userName;
 
+    @NotNull
     private String firstName;
 
+    @NotNull
     private String lastName;
 
-    private int passport;
+    @NotNull
+    private Long passport;
 
+    @NotNull
+    @Email
     private String email;
 
-    private List<Bike> listBike;
+    private List<BikeDto> bikes;
 
-    private List<Car> listCar;
+    private List<CarDto> cars;
 
-    private List<Bicycle> listBicycle;
+    private List<BicycleDto> bicycles;
 }
