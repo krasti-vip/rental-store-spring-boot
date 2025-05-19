@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import ru.rental.service.dto.BicycleDto;
 import ru.rental.service.dto.BikeDto;
 import ru.rental.service.dto.CarDto;
+import ru.rental.service.entity.BankCard;
 
 import java.util.List;
 
@@ -34,6 +35,8 @@ public class UserDtoCreate {
     private Long passport;
 
     private String email;
+
+    private List<BankCard> bankCards;
 
     private List<BikeDto> bikes;
 

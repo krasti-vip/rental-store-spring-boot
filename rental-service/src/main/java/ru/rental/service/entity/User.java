@@ -7,7 +7,6 @@ import java.util.List;
 
 @Table(name = "users")
 @ToString(exclude = {"bankCards", "bikes", "cars", "bicycles"})
-
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor

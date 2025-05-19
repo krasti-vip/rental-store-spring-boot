@@ -13,7 +13,5 @@ public interface ServiceInterface<D, T> {
 
     boolean delete(Integer id);
 
-    List<D> findByUserId(Integer userId);
-
     List<D> getAll();
 }

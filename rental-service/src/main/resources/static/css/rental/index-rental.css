@@ -1,0 +1,213 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0 0 60px 0;
+    background-color: #f8f9fa;
+    color: #343a40;
+    min-height: 100vh;
+}
+
+header {
+    background: linear-gradient(135deg, #9b59b6, #8e44ad);
+    color: white;
+    padding: 25px 20px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+}
+
+.rental-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 25px;
+}
+
+.rental-card {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    padding: 20px;
+}
+
+.rental-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+}
+
+.rental-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.rental-id {
+    font-weight: bold;
+    color: #9b59b6;
+    font-size: 1.1rem;
+}
+
+.rental-status {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.status-active {
+    background-color: #2ecc71;
+    color: white;
+}
+
+.status-completed {
+    background-color: #3498db;
+    color: white;
+}
+
+.status-unpaid {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.rental-details {
+    margin-bottom: 15px;
+}
+
+.rental-detail {
+    display: flex;
+    margin-bottom: 8px;
+}
+
+.detail-label {
+    font-weight: 600;
+    color: #2c3e50;
+    width: 120px;
+}
+
+.detail-value {
+    color: #495057;
+}
+
+.rental-amount {
+    font-weight: bold;
+    color: #27ae60;
+    font-size: 1.2rem;
+    margin: 10px 0;
+    text-align: right;
+}
+
+.rental-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.add-rental-btn {
+    display: block;
+    width: fit-content;
+    margin: 30px auto;
+    padding: 15px 30px;
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: white;
+    text-decoration: none;
+    border-radius: 30px;
+    font-weight: bold;
+    font-size: 1.2rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    border: none;
+    cursor: pointer;
+}
+
+.add-rental-btn:hover {
+    background: linear-gradient(135deg, #2980b9, #3498db);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+}
+
+footer {
+    background: linear-gradient(135deg, #9b59b6, #8e44ad);
+    color: white;
+    text-align: center;
+    padding: 15px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+/* Кнопки */
+.button {
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    font-size: 0.9rem;
+    border: none;
+}
+
+.view-btn {
+    background: #3498db;
+    color: white;
+}
+
+.view-btn:hover {
+    background: #2980b9;
+}
+
+.edit-btn {
+    background: #f39c12;
+    color: white;
+}
+
+.edit-btn:hover {
+    background: #e67e22;
+}
+
+.delete-btn {
+    background: #e74c3c;
+    color: white;
+}
+
+.delete-btn:hover {
+    background: #c0392b;
+}
+
+.pay-btn {
+    background: #2ecc71;
+    color: white;
+}
+
+.pay-btn:hover {
+    background: #27ae60;
+}
+
+@media (max-width: 768px) {
+    .rental-list {
+        grid-template-columns: 1fr;
+    }
+
+    .rental-actions {
+        flex-direction: column;
+    }
+
+    .button {
+        width: 100%;
+    }
+}

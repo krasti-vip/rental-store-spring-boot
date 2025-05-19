@@ -24,7 +24,6 @@ public class BankCardDto {
 
     @NotNull
     @NotBlank
-    @CreditCardNumber
     private String numberCard;
 
     @NotNull

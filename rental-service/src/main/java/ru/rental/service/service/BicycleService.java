@@ -8,18 +8,18 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.rental.service.dto.BicycleDto;
 import ru.rental.service.dto.create.BicycleDtoCreate;
 import ru.rental.service.entity.Bicycle;
+import ru.rental.service.entity.Bike;
 import ru.rental.service.repository.BicycleRepository;
 import ru.rental.service.repository.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class BicycleService implements ServiceInterface<BicycleDto, BicycleDtoCreate>{
+public class BicycleService implements ServiceInterface<BicycleDto, BicycleDtoCreate>, ServiceInterfaceUserId<BicycleDto> {
 
     private final BicycleRepository bicycleRepository;
 
@@ -30,7 +30,7 @@ public class BicycleService implements ServiceInterface<BicycleDto, BicycleDtoCr
     @Transactional(readOnly = true)
     public Optional<BicycleDto> findById(Integer id) {
         return bicycleRepository.findById(id)
-                .map(this::convertToDtoWithUser);
+                .map(this::convertToDtoUser);
     }
 
     @Transactional
@@ -42,11 +42,11 @@ public class BicycleService implements ServiceInterface<BicycleDto, BicycleDtoCr
     }
 
     @Transactional
-    public BicycleDto update(BicycleDto updateBicycleDto) {
-        Bicycle existingBicycle = bicycleRepository.findById(updateBicycleDto.getId())
+    public BicycleDto update(BicycleDto bicycleDto) {
+        Bicycle existingBicycle = bicycleRepository.findById(bicycleDto.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Bicycle not found"));
-        modelMapper.map(updateBicycleDto, existingBicycle);
-        setUserIfExists(existingBicycle, updateBicycleDto.getUserId());
+        modelMapper.map(bicycleDto, existingBicycle);
+        setUserIfExists(existingBicycle, bicycleDto.getUserId());
         Bicycle savedBicycle = bicycleRepository.save(existingBicycle);
 
         return convertToDto(savedBicycle);
@@ -56,21 +56,23 @@ public class BicycleService implements ServiceInterface<BicycleDto, BicycleDtoCr
     public boolean delete(Integer id) {
         if (bicycleRepository.existsById(id)) {
             bicycleRepository.deleteById(id);
+
             return true;
         }
+
         return false;
     }
 
     @Transactional(readOnly = true)
-    public List<BicycleDto> findAll() {
-        return ((List<Bicycle>) bicycleRepository.findAll()).stream()
+    public List<BicycleDto> findByUserId(Integer userId) {
+        return bicycleRepository.findByUserId(userId).stream()
                 .map(this::convertToDto)
                 .toList();
     }
 
     @Transactional(readOnly = true)
-    public List<BicycleDto> findByUserId(Integer userId) {
-        return bicycleRepository.findById(userId).stream()
+    public List<BicycleDto> getAll() {
+        return ((List<Bicycle>) bicycleRepository.findAll()).stream()
                 .map(this::convertToDto)
                 .toList();
     }
@@ -79,11 +81,12 @@ public class BicycleService implements ServiceInterface<BicycleDto, BicycleDtoCr
         return modelMapper.map(bicycle, BicycleDto.class);
     }
 
-    private BicycleDto convertToDtoWithUser(Bicycle bicycle) {
+    private BicycleDto convertToDtoUser(Bicycle bicycle) {
         BicycleDto dto = convertToDto(bicycle);
         if (bicycle.getUser() != null) {
             dto.setUserId(bicycle.getUser().getId());
         }
+
         return dto;
     }
 
@@ -91,16 +94,5 @@ public class BicycleService implements ServiceInterface<BicycleDto, BicycleDtoCr
         if (userId != null) {
             userRepository.findById(userId).ifPresent(bicycle::setUser);
         }
-    }
-
-    @Transactional(readOnly = true)
-    public List<BicycleDto> getAll() {
-        Iterable<Bicycle> bicycleDto = bicycleRepository.findAll();
-        List<Bicycle> bicycleList = new ArrayList<>();
-        bicycleDto.forEach(bicycleList::add);
-
-        return bicycleList.stream()
-                .map(this::convertToDtoWithUser)
-                .toList();
     }
 }

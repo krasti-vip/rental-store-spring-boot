@@ -1,0 +1,276 @@
+/* Общие стили */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0 0 60px 0;
+    background-color: #f8f9fa;
+    color: #343a40;
+    position: relative;
+    min-height: 100vh;
+    line-height: 1.6;
+}
+
+header {
+    background: linear-gradient(135deg, #2c3e50, #1a252f);
+    color: white;
+    padding: 25px 20px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #3498db, #2ecc71);
+}
+
+header h1 {
+    margin: 0;
+    font-size: 2.2rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+header p {
+    margin: 10px 0 0;
+    opacity: 0.9;
+    font-size: 1.1rem;
+}
+
+.container {
+    max-width: 800px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+/* Стили для карточки с деталями */
+.card-details {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    margin: 0 auto;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+.card-details:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.12);
+}
+
+.card-details h2 {
+    color: #2c3e50;
+    border-bottom: 2px solid #f1f1f1;
+    padding-bottom: 15px;
+    margin-bottom: 25px;
+    font-size: 1.8rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.card-details h2::before {
+    content: '💳';
+    font-size: 1.5rem;
+}
+
+.card-image {
+    width: 100%;
+    max-height: 220px;
+    object-fit: contain;
+    margin-bottom: 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    border: 1px solid #eee;
+    padding: 10px;
+    background: white;
+}
+
+/* Стили для строк с деталями */
+.detail-row {
+    display: flex;
+    margin-bottom: 18px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid #f5f5f5;
+    align-items: center;
+    transition: background-color 0.2s ease;
+    padding: 12px 15px;
+    border-radius: 8px;
+}
+
+.detail-row:hover {
+    background-color: #f8f9fa;
+}
+
+.detail-label {
+    font-weight: 600;
+    color: #2c3e50;
+    width: 40%;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.detail-label::before {
+    content: '•';
+    color: #3498db;
+    font-size: 1.5rem;
+}
+
+.detail-value {
+    width: 60%;
+    color: #495057;
+    font-size: 1.1rem;
+    word-break: break-word;
+}
+
+/* Стили для кнопок */
+.card-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 35px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.button {
+    padding: 12px 25px;
+    border-radius: 30px;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: none;
+    font-size: 1rem;
+    min-width: 150px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.button i {
+    font-size: 1.1rem;
+}
+
+.submit-btn {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: white;
+}
+
+.submit-btn:hover {
+    background: linear-gradient(135deg, #2980b9, #3498db);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.delete-btn {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: white;
+}
+
+.delete-btn:hover {
+    background: linear-gradient(135deg, #c0392b, #e74c3c);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.back-link {
+    background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+    color: white;
+}
+
+.back-link:hover {
+    background: linear-gradient(135deg, #7f8c8d, #95a5a6);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+/* Сообщения об ошибках и успехе */
+.error-message {
+    color: #e74c3c;
+    padding: 20px;
+    background-color: #fadbd8;
+    border-radius: 10px;
+    margin-bottom: 25px;
+    border-left: 5px solid #e74c3c;
+    font-weight: 500;
+}
+
+.success-message {
+    color: #27ae60;
+    padding: 20px;
+    background-color: #d5f5e3;
+    border-radius: 10px;
+    margin-bottom: 25px;
+    border-left: 5px solid #27ae60;
+    font-weight: 500;
+    text-align: center;
+    animation: fadeIn 0.5s ease;
+}
+
+/* Анимации */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.button:active {
+    transform: scale(0.98) !important;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .detail-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+
+    .detail-label,
+    .detail-value {
+        width: 100%;
+    }
+
+    .card-actions {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .button {
+        width: 100%;
+    }
+}
+
+/* Дополнительные визуальные улучшения */
+footer {
+    background: linear-gradient(135deg, #2c3e50, #1a252f);
+    color: white;
+    text-align: center;
+    padding: 20px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    z-index: 100;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+}
+
+footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #2ecc71, #3498db);
+}

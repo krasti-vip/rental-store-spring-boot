@@ -7,8 +7,8 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "rentals")
-@ToString(exclude = {"user", "car", "bike"})
-@EqualsAndHashCode(exclude = {"user", "car", "bike"})
+@ToString(exclude = {"user", "car", "bike", "bicycle"})
+@EqualsAndHashCode(exclude = {"user", "car", "bike", "bicycle"})
 @AllArgsConstructor
 @NoArgsConstructor
 @Data

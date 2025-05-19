@@ -19,7 +19,7 @@ import java.util.List;
 @Tag(name = "Rental", description = "DAO REST controller rental")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/rental")
+@RequestMapping("/api/rentals")
 @Validated
 public class RentalControllerRest {
 
