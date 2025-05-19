@@ -15,7 +15,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class BankCardDtoCreate {
 
-    @NotNull
     private Integer userId;
 
     @NotNull

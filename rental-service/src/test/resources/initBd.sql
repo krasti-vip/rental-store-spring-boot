@@ -35,7 +35,7 @@ INSERT INTO bikes (name, price, horse_power, volume, user_id)
 VALUES ('BMW', 2000, 200, 1.0, null),
        ('SUZUKI', 30000, 300, 1.0, null),
        ('YAMAHA', 40000, 400, 1.0, 1),
-       ('URAL', 2000, 200, 1.0, null),
+       ('URAL', 2000, 200, 1.0, 1),
        ('HONDA', 2000, 200, 1.0, null);
 --- Удаление таблицы bicycles
 DROP TABLE IF EXISTS bicycles CASCADE;
@@ -105,12 +105,12 @@ CREATE TABLE IF NOT EXISTS bank_cards
     user_id     INT REFERENCES users (id) ON DELETE RESTRICT,
     number_card VARCHAR(20) NOT NULL,
     expiration_date VARCHAR(20) NOT NULL,
-    secret_code VARCHAR(20) NOT NULL
+    secret_code INT NOT NULL
     );
 --- Инициализация таблицы bank_cards
 INSERT INTO bank_cards (user_id, number_card, expiration_date, secret_code)
-VALUES (1, '1234567809876543', '12/25', '123'),
-       (2, '4564567809876543', '12/26', '345'),
-       (3, '9874567809876543', '12/43', '543'),
-       (4, '7654567809876543', '12/32', '567'),
-       (5, '6544567809876543', '11/25', '346');
+VALUES (3, '1234567809876543', '12/25', 123),
+       (2, '4564567809876543', '12/26', 345),
+       (null, '9874567809876543', '12/43', 543),
+       (4, '7654567809876543', '12/32', 567),
+       (5, '6544567809876543', '11/25', 346);

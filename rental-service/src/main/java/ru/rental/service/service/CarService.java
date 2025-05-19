@@ -8,18 +8,16 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.rental.service.dto.CarDto;
 import ru.rental.service.dto.create.CarDtoCreate;
 import ru.rental.service.entity.Car;
-import ru.rental.service.entity.User;
 import ru.rental.service.repository.CarRepository;
 import ru.rental.service.repository.UserRepository;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class CarService implements ServiceInterface<CarDto, CarDtoCreate> {
+public class CarService implements ServiceInterface<CarDto, CarDtoCreate>, ServiceInterfaceUserId<CarDto> {
 
     private final CarRepository carRepository;
 
@@ -30,7 +28,7 @@ public class CarService implements ServiceInterface<CarDto, CarDtoCreate> {
     @Transactional(readOnly = true)
     public Optional<CarDto> findById(Integer id) {
         return carRepository.findById(id)
-                .map(this::convertToDtoWithUser);
+                .map(this::convertToDtoUser);
     }
 
     @Transactional
@@ -80,17 +78,16 @@ public class CarService implements ServiceInterface<CarDto, CarDtoCreate> {
         return modelMapper.map(car, CarDto.class);
     }
 
-    private CarDto convertToDtoWithUser(Car car) {
+    private CarDto convertToDtoUser(Car car) {
         CarDto dto = convertToDto(car);
         if (car.getUser() != null) {
             dto.setUserId(car.getUser().getId());
         }
+
         return dto;
     }
 
     private void setUserIfExists(Car car, Integer userId) {
-        if (userId != null) {
-            userRepository.findById(userId).ifPresent(car::setUser);
-        }
+        userRepository.findById(userId).ifPresent(car::setUser);
     }
 }

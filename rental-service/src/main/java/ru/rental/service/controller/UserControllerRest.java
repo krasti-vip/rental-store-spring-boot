@@ -19,7 +19,7 @@ import java.util.List;
 @Tag(name = "User", description = "DAO REST controller user")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/user")
+@RequestMapping("/api/users")
 @Validated
 public class UserControllerRest {
 
@@ -31,7 +31,7 @@ public class UserControllerRest {
             @ApiResponse(responseCode = "200", description = "при успешной поиске пользователей вернем 200 код и пользователей")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<UserDto> findByUserId(@PathVariable Integer id) {
+    public ResponseEntity<UserDto> findById(@PathVariable Integer id) {
         return userService
                 .findById(id)
                 .map(ResponseEntity::ok)

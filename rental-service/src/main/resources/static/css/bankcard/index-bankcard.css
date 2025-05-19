@@ -1,0 +1,127 @@
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    background-image: url('https://www.zlato.cz/wp-content/uploads/kreditní-karty_iStock-914609710.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: #333;
+    min-height: 100vh;
+}
+
+header {
+    background-color: rgba(51, 51, 51, 0.9);
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.85);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+.bankcard-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+    justify-content: center;
+}
+
+.bankcard-card {
+    flex: 1 1 calc(33.333% - 40px);
+    min-width: 300px;
+    background-color: rgba(249, 249, 249, 0.95);
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+    text-align: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    padding-bottom: 15px;
+}
+
+.bankcard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.bankcard-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-bottom: 1px solid #eee;
+}
+
+.bankcard-card h3 {
+    margin: 15px 0 10px;
+    font-size: 1.4em;
+    color: #2c3e50;
+}
+
+.bankcard-card p {
+    padding: 0 15px;
+    color: #555;
+    margin: 8px 0;
+    font-size: 0.95em;
+}
+
+.bankcard-card p span {
+    font-weight: bold;
+    color: #333;
+}
+
+/* Стили для кнопок */
+.bankcard-card a,
+.add-card-btn {
+    display: inline-block;
+    margin: 15px auto 10px;
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: white;
+    text-decoration: none;
+    border-radius: 25px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    border: none;
+    cursor: pointer;
+    text-shadow: 0 1px 1px rgba(0,0,0,0.2);
+}
+
+.bankcard-card a:hover,
+.add-card-btn:hover {
+    background: linear-gradient(135deg, #2980b9, #3498db);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    text-decoration: none;
+}
+
+.add-card-btn {
+    display: block;
+    width: fit-content;
+    margin: 20px auto;
+    padding: 12px 25px;
+    font-size: 1.1em;
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
+}
+
+.add-card-btn:hover {
+    background: linear-gradient(135deg, #27ae60, #2ecc71);
+}
+
+footer {
+    background-color: rgba(51, 51, 51, 0.9);
+    color: #fff;
+    text-align: center;
+    padding: 15px;
+    margin-top: auto;
+    box-shadow: 0 -2px 5px rgba(0,0,0,0.2);
+}

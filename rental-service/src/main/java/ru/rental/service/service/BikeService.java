@@ -17,7 +17,7 @@ import java.util.Optional;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class BikeService implements ServiceInterface<BikeDto, BikeDtoCreeate> {
+public class BikeService implements ServiceInterface<BikeDto, BikeDtoCreeate>, ServiceInterfaceUserId<BikeDto> {
 
     private final BikeRepository bikeRepository;
 
@@ -28,24 +28,23 @@ public class BikeService implements ServiceInterface<BikeDto, BikeDtoCreeate> {
     @Transactional(readOnly = true)
     public Optional<BikeDto> findById(Integer id) {
         return bikeRepository.findById(id)
-                .map(this::convertToDtoWithUser);
+                .map(this::convertToDtoUser);
     }
 
     @Transactional
     public BikeDto create(BikeDtoCreeate bikeDtoCreeate) {
         Bike bike = modelMapper.map(bikeDtoCreeate, Bike.class);
-        setUserIfExists(bike, bikeDtoCreeate.getUserId());
         Bike savedBike = bikeRepository.save(bike);
 
         return convertToDto(savedBike);
     }
 
     @Transactional
-    public BikeDto update(BikeDto updatedBikeDto) {
-        Bike existingBike = bikeRepository.findById(updatedBikeDto.getId())
+    public BikeDto update(BikeDto bikeDto) {
+        Bike existingBike = bikeRepository.findById(bikeDto.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Bike not found"));
-        modelMapper.map(updatedBikeDto, existingBike);
-        setUserIfExists(existingBike, updatedBikeDto.getUserId());
+        modelMapper.map(bikeDto, existingBike);
+        setUserIfExists(existingBike, bikeDto.getUserId());
         Bike savedBike = bikeRepository.save(existingBike);
 
         return convertToDto(savedBike);
@@ -55,8 +54,10 @@ public class BikeService implements ServiceInterface<BikeDto, BikeDtoCreeate> {
     public boolean delete(Integer id) {
         if (bikeRepository.existsById(id)) {
             bikeRepository.deleteById(id);
+
             return true;
         }
+
         return false;
     }
 
@@ -69,7 +70,7 @@ public class BikeService implements ServiceInterface<BikeDto, BikeDtoCreeate> {
 
     @Transactional(readOnly = true)
     public List<BikeDto> findByUserId(Integer userId) {
-        return bikeRepository.findById(userId).stream()
+        return bikeRepository.findByUserId(userId).stream()
                 .map(this::convertToDto)
                 .toList();
     }
@@ -78,17 +79,16 @@ public class BikeService implements ServiceInterface<BikeDto, BikeDtoCreeate> {
         return modelMapper.map(bike, BikeDto.class);
     }
 
-    private BikeDto convertToDtoWithUser(Bike bike) {
+    private BikeDto convertToDtoUser(Bike bike) {
         BikeDto dto = convertToDto(bike);
         if (bike.getUser() != null) {
             dto.setUserId(bike.getUser().getId());
         }
+
         return dto;
     }
 
     private void setUserIfExists(Bike bike, Integer userId) {
-        if (userId != null) {
-            userRepository.findById(userId).ifPresent(bike::setUser);
-        }
+        userRepository.findById(userId).ifPresent(bike::setUser);
     }
 }

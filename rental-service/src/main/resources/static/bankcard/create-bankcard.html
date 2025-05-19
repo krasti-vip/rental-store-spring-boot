@@ -2,30 +2,25 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Добавить карту</title>
-    <link rel="stylesheet" href="/css/bankCard.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Добавление карты</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/bankcard/create-bankcard.css">
 </head>
 <body>
-<h1>Добавить новую карту</h1>
+<header>
+    <h1><i class="fas fa-plus-circle"></i> Добавление карты</h1>
+    <p>Введите данные новой банковской карты</p>
+</header>
 
-<form id="create-bankcard-form">
-    <label for="userId">User ID:</label>
-    <input id="userId" name="userId" type="number" required>
+<div class="container">
+    <div id="form-container"></div>
+</div>
 
-    <label for="numberCard">Номер карты:</label>
-    <input id="numberCard" name="numberCard" type="text" required>
+<footer>
+    &copy; 2025 Bank Card Service. All rights reserved.
+</footer>
 
-    <label for="expirationDate">Срок действия (MM/YY):</label>
-    <input id="expirationDate" name="expirationDate" type="text" required>
-
-    <label for="secretCode">CVV код:</label>
-    <input id="secretCode" name="secretCode" type="number" required>
-
-    <button type="submit">Создать</button>
-</form>
-
-<a href="index-bank-card.html">Назад к списку</a>
-
-<script src="/js/create-bankcard.js"></script>
+<script src="/js/bankcard/create-bankcard.js"></script>
 </body>
 </html>

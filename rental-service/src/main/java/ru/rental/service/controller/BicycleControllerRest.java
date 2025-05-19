@@ -19,7 +19,7 @@ import java.util.List;
 @Tag(name = "Bicycle", description = "DAO REST controller Bicycle")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/bicycle")
+@RequestMapping("/api/bicycles")
 @Validated
 public class BicycleControllerRest {
 
@@ -31,7 +31,7 @@ public class BicycleControllerRest {
             @ApiResponse(responseCode = "200", description = "при успешной поиске велика вернем 200 код и велосипед")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<BicycleDto> findByBicycleId(@PathVariable Integer id) {
+    public ResponseEntity<BicycleDto> findById(@PathVariable Integer id) {
         return bicycleService
                 .findById(id)
                 .map(ResponseEntity::ok)
@@ -53,7 +53,7 @@ public class BicycleControllerRest {
 
     @Operation(summary = "Delete a bicycle")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteBicycle(@PathVariable Integer id) {
+    public ResponseEntity<Void> delete(@PathVariable Integer id) {
         return bicycleService.delete(id)
                 ? ResponseEntity.status(HttpStatus.ACCEPTED).build()
                 : ResponseEntity.notFound().build();
@@ -61,14 +61,14 @@ public class BicycleControllerRest {
 
     @Operation(summary = "Get bicycles by user ID")
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<BicycleDto>> getBicycleByUserId(
+    public ResponseEntity<List<BicycleDto>> getByUserId(
             @PathVariable Integer userId) {
         return ResponseEntity.ok(bicycleService.findByUserId(userId));
     }
 
     @Operation(summary = "Update bicycle")
     @PutMapping("/{id}")
-    public ResponseEntity<BicycleDto> updateBicycle(
+    public ResponseEntity<BicycleDto> update(
             @PathVariable Integer id,
             @RequestBody @Valid BicycleDto bicycleDto) {
 

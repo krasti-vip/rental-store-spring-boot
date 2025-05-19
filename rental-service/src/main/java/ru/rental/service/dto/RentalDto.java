@@ -18,7 +18,6 @@ public class RentalDto {
     @NotNull
     private Integer id;
 
-    @NotNull
     private Integer userId;
 
     private Integer carId;

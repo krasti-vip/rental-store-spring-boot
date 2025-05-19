@@ -3,7 +3,6 @@ package ru.rental.service.service;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.ValidationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.rental.service.dto.BankCardDto;
@@ -11,15 +10,15 @@ import ru.rental.service.dto.create.BankCardDtoCreate;
 import ru.rental.service.entity.BankCard;
 import ru.rental.service.repository.BankCardRepository;
 import ru.rental.service.repository.UserRepository;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class BankCardService implements ServiceInterface<BankCardDto, BankCardDtoCreate> {
+public class BankCardService implements ServiceInterface<BankCardDto, BankCardDtoCreate>, ServiceInterfaceUserId<BankCardDto> {
 
     private final BankCardRepository bankCardRepository;
 
@@ -30,7 +29,7 @@ public class BankCardService implements ServiceInterface<BankCardDto, BankCardDt
     @Transactional(readOnly = true)
     public Optional<BankCardDto> findById(Integer id) {
         return bankCardRepository.findById(id)
-                .map(this::convertToDtoWithUser);
+                .map(this::convertToDtoUser);
     }
 
     @Transactional
@@ -38,7 +37,7 @@ public class BankCardService implements ServiceInterface<BankCardDto, BankCardDt
         BankCard bankCard = modelMapper.map(bankCardDtoCreate, BankCard.class);
         setUserIfExists(bankCard, bankCardDtoCreate.getUserId());
         BankCard savedCard = bankCardRepository.save(bankCard);
-        return convertToDtoWithUser(savedCard);
+        return convertToDtoUser(savedCard);
     }
 
     @Transactional
@@ -49,22 +48,24 @@ public class BankCardService implements ServiceInterface<BankCardDto, BankCardDt
         setUserIfExists(existingCard, updateBankCardDto.getUserId());
         BankCard updatedCard = bankCardRepository.save(existingCard);
 
-        return convertToDtoWithUser(updatedCard);
+        return convertToDtoUser(updatedCard);
     }
 
     @Transactional
     public boolean delete(Integer id) {
         if (bankCardRepository.existsById(id)) {
             bankCardRepository.deleteById(id);
+
             return true;
         }
+
         return false;
     }
 
     @Transactional(readOnly = true)
     public List<BankCardDto> findByUserId(Integer userId) {
-        return bankCardRepository.findById(userId).stream()
-                .map(this::convertToDtoWithUser)
+        return bankCardRepository.findByUserId(userId).stream()
+                .map(this::convertToDtoUser)
                 .toList();
     }
 
@@ -75,7 +76,7 @@ public class BankCardService implements ServiceInterface<BankCardDto, BankCardDt
         cards.forEach(cardList::add);
 
         return cardList.stream()
-                .map(this::convertToDtoWithUser)
+                .map(this::convertToDtoUser)
                 .toList();
     }
 
@@ -83,7 +84,7 @@ public class BankCardService implements ServiceInterface<BankCardDto, BankCardDt
         return modelMapper.map(bankCard, BankCardDto.class);
     }
 
-    private BankCardDto convertToDtoWithUser(BankCard bankCard) {
+    private BankCardDto convertToDtoUser(BankCard bankCard) {
         BankCardDto dto = convertToDto(bankCard);
         if (bankCard.getUser() != null) {
             dto.setUserId(bankCard.getUser().getId());
@@ -93,9 +94,7 @@ public class BankCardService implements ServiceInterface<BankCardDto, BankCardDt
     }
 
     private void setUserIfExists(BankCard bankCard, Integer userId) {
-        if (userId != null) {
-            userRepository.findById(userId).ifPresent(bankCard::setUser);
-        }
+        userRepository.findById(userId).ifPresent(bankCard::setUser);
     }
 }
 

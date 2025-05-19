@@ -1,76 +1,121 @@
 package ru.rental.service.integration;
 
+import io.qameta.allure.Description;
+import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import ru.rental.service.BaseBd;
+import ru.rental.service.controller.UserControllerRest;
+import ru.rental.service.dto.UserDto;
+import ru.rental.service.dto.create.UserDtoCreate;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 class UserRestTest extends BaseBd {
 
     @Autowired
-    private MockMvc mockMvc;
-
-    private ObjectMapper mapper = new ObjectMapper();
-
-    private static final String USER_URL = "/api/user";
-
-    private static final String JSON_CREATE_USER = """
-            {
-                "userName": "Igr",
-                "firstName": "Ugor",
-                "lastName": "Zepnov",
-                "passport": 1234567890,
-                "email": null,
-                "bikes": null,
-                "cars": null,
-                "bicycles": null
-            }
-            """;
+    private UserControllerRest userController;
 
     @Test
-    @DisplayName("Тест создания пользователя")
-    void createCar() throws Exception {
-        final var mvcResult = mockMvc.perform(
-                post(USER_URL)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(JSON_CREATE_USER)
-        ).andExpect(status().isCreated()).andReturn();
+    @Description(value = "Тест findById() для пользователя через RestController")
+    @DisplayName("Тест RestController для пользователя")
+    void findByIdTest() {
+        ResponseEntity<UserDto> response = userController.findById(1);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        UserDto body = response.getBody();
+        assertNotNull(body);
+        assertEquals(1, body.getId());
+        assertEquals("bill", body.getUserName());
+        assertEquals("Ivanov", body.getFirstName());
+        assertEquals("Dima", body.getLastName());
+        assertEquals(456987123L, body.getPassport());
+        assertNotNull(body.getBankCards());
+        assertEquals(0, body.getBankCards().size());
+    }
 
-        final var jsonNode = mapper.readTree(mvcResult.getResponse().getContentAsString());
-        assertDoesNotThrow(() -> jsonNode.get("id").asInt());
-        assertEquals(jsonNode.get("userName").asText(), "Igr");
-        assertEquals(jsonNode.get("firstName").asText(), "Ugor");
-        assertEquals(jsonNode.get("lastName").asText(), "Zepnov");
-        assertEquals(jsonNode.get("passport").asInt(), 1234567890);
-        assertTrue(jsonNode.get("email").isNull());
-        assertTrue(jsonNode.get("bikes").isNull());
-        assertTrue(jsonNode.get("cars").isNull());
-        assertTrue(jsonNode.get("bicycles").isNull());
+    @Test
+    @Description(value = "Тест findAll() для пользователя через RestController")
+    @DisplayName("Тест findAll() для пользователей")
+    void findAllTest() {
+        ResponseEntity<List<UserDto>> response = userController.findAll();
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        List<UserDto> users = response.getBody();
+        assertNotNull(users);
+        assertEquals(5, users.size());
+        boolean hasBill = users.stream().anyMatch(u -> "bill".equals(u.getUserName()));
+        assertTrue(hasBill, "В списке должен быть пользователь 'bill'");
+    }
 
-        final var getCreateUser =
-                mockMvc.perform(get(USER_URL + "/6")).andExpect(status().isOk()).andReturn();
+    @Test
+    @Description(value = "Тест create() для пользователя через RestController")
+    @DisplayName("Тест create() для пользователя")
+    void createTest() {
+        UserDtoCreate newUser = new UserDtoCreate();
+        newUser.setUserName("newuser");
+        newUser.setFirstName("First");
+        newUser.setLastName("Last");
+        newUser.setPassport(999999999L);
+        newUser.setEmail("newuser@mail.com");
+        ResponseEntity<UserDto> response = userController.create(newUser);
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        UserDto created = response.getBody();
+        assertNotNull(created);
+        assertEquals("newuser", created.getUserName());
+        assertEquals("First", created.getFirstName());
+        assertEquals("Last", created.getLastName());
+        assertEquals(999999999L, created.getPassport());
+        assertEquals("newuser@mail.com", created.getEmail());
+        assertTrue(created.getId() > 0); // id должен быть сгенерирован
+    }
 
-        final var jsonNode2 = mapper.readTree(getCreateUser.getResponse().getContentAsString());
+    @Test
+    @Description(value = "Тест delete() для пользователя через RestController")
+    @DisplayName("Тест delete() для пользователя")
+    void deleteTest() {
+        ResponseEntity<Void> response = userController.delete(5);
+        assertEquals(HttpStatus.ACCEPTED, response.getStatusCode());
+        ResponseEntity<UserDto> afterDelete = userController.findById(5);
+        assertEquals(HttpStatus.NOT_FOUND, afterDelete.getStatusCode());
+    }
 
-        assertEquals(jsonNode2.get("userName").asText(), "Igr");
-        assertEquals(jsonNode2.get("firstName").asText(), "Ugor");
-        assertEquals(jsonNode2.get("lastName").asText(), "Zepnov");
-        assertEquals(jsonNode2.get("passport").asInt(), 1234567890);
-        assertTrue(jsonNode2.get("email").isNull());
-        assertTrue(jsonNode2.get("bikes").size() == 0);
-        assertTrue(jsonNode2.get("cars").size() == 0);
-        assertTrue(jsonNode2.get("bicycles").size() == 0);
+    @Test
+    @Description(value = "Тест update() для пользователя через RestController")
+    @DisplayName("Тест updateUser() для пользователя")
+    void updateTest() {
+        UserDto update = new UserDto();
+        update.setId(1);
+        update.setUserName("billUpdated");
+        update.setFirstName("IvanovUpdated");
+        update.setLastName("DimaUpdated");
+        update.setPassport(456987123L);
+        update.setEmail("billupdated@mail.com");
+        ResponseEntity<UserDto> response = userController.updateUser(1, update);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        UserDto updatedUser = response.getBody();
+        assertNotNull(updatedUser);
+        assertEquals("billUpdated", updatedUser.getUserName());
+        assertEquals("IvanovUpdated", updatedUser.getFirstName());
+        assertEquals("DimaUpdated", updatedUser.getLastName());
+        assertEquals("billupdated@mail.com", updatedUser.getEmail());
+    }
+
+    @Test
+    @Description(value = "Тест проверяет валидацию при неверно переданных параметрах для пользователя через RestController")
+    @DisplayName("Тест updateUser() с неверными данными - ожидание ConstraintViolationException")
+    void updateUserValidationErrorTest() {
+        UserDto update = new UserDto();
+        update.setUserName("");
+        assertThrows(ConstraintViolationException.class, () -> {
+            userController.updateUser(1, update);
+        });
     }
 }

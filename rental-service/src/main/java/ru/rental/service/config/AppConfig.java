@@ -10,7 +10,7 @@ import ru.rental.service.entity.User;
 public class AppConfig {
 
     @Bean
-    public ModelMapper modelMapper() {
+    public ModelMapper modelMapper(RentalDtoToEntityConverter rentalDtoToEntityConverter) {
         ModelMapper modelMapper = new ModelMapper();
 
         modelMapper.getConfiguration()
@@ -28,6 +28,8 @@ public class AppConfig {
                     mapper.map(UserDto::getPassport, User::setPassport);
                     mapper.map(UserDto::getEmail, User::setEmail);
                 });
+
+        modelMapper.addConverter(rentalDtoToEntityConverter);
 
         return modelMapper;
     }

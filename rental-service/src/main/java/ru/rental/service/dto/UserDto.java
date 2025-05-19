@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.rental.service.entity.BankCard;
 
 import java.util.List;
 
@@ -30,9 +31,10 @@ public class UserDto {
     @NotNull
     private Long passport;
 
-    @NotNull
     @Email
     private String email;
+
+    private List<BankCard> bankCards;
 
     private List<BikeDto> bikes;
 

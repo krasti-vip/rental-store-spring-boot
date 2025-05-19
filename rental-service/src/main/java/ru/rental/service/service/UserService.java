@@ -69,11 +69,6 @@ public class UserService implements ServiceInterface<UserDto, UserDtoCreate> {
         return false;
     }
 
-    @Override
-    public List<UserDto> findByUserId(Integer userId) {
-        return List.of();
-    }
-
     @Transactional(readOnly = true)
     public List<UserDto> getAll() {
         return ((List<User>) userRepository.findAll()).stream()
@@ -90,6 +85,7 @@ public class UserService implements ServiceInterface<UserDto, UserDtoCreate> {
         dto.setBikes(getBikesForUser(user.getId()));
         dto.setCars(getCarsForUser(user.getId()));
         dto.setBicycles(getBicyclesForUser(user.getId()));
+
         return dto;
     }
 

@@ -13,9 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.rental.service.dto.BankCardDto;
 import ru.rental.service.dto.create.BankCardDtoCreate;
 import ru.rental.service.service.BankCardService;
-
 import java.util.List;
-import java.util.Map;
 
 @Tag(name = "Bank Card", description = "DAO REST controller Bank Card")
 @RequiredArgsConstructor
@@ -32,7 +30,7 @@ public class BankCardControllerRest {
             @ApiResponse(responseCode = "200", description = "при успешной поиске карты вернем 200 код и карту")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<BankCardDto> findByCardId(@PathVariable Integer id) {
+    public ResponseEntity<BankCardDto> findById(@PathVariable Integer id) {
         return bankCardService
                 .findById(id)
                 .map(ResponseEntity::ok)
@@ -54,7 +52,7 @@ public class BankCardControllerRest {
 
     @Operation(summary = "Delete a bank card")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCard(@PathVariable Integer id) {
+    public ResponseEntity<Void> delete(@PathVariable Integer id) {
         return bankCardService.delete(id)
                 ? ResponseEntity.status(HttpStatus.ACCEPTED).build()
                 : ResponseEntity.notFound().build();
@@ -62,14 +60,14 @@ public class BankCardControllerRest {
 
     @Operation(summary = "Get cards by user ID")
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<BankCardDto>> getCardsByUserId(
+    public ResponseEntity<List<BankCardDto>> getByUserId(
             @PathVariable Integer userId) {
         return ResponseEntity.ok(bankCardService.findByUserId(userId));
     }
 
     @Operation(summary = "Update bank card")
     @PutMapping("/{id}")
-    public ResponseEntity<BankCardDto> updateCard(
+    public ResponseEntity<BankCardDto> update(
             @PathVariable Integer id,
             @RequestBody @Valid BankCardDto bankCardDto) {
 
