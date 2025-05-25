@@ -6,7 +6,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.rental.service.BaseBd;
-import ru.rental.service.repository.RentalRepository;
+import ru.rental.service.bicycle.entity.Bicycle;
+import ru.rental.service.rental.entity.Rental;
+import ru.rental.service.rental.repository.RentalRepository;
+import ru.rental.service.user.entity.User;
 
 import java.time.LocalDateTime;
 import java.util.Optional;

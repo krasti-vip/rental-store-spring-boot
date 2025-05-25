@@ -6,7 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.rental.service.BaseBd;
-import ru.rental.service.entity.BankCard;
+import ru.rental.service.bankcard.entity.BankCard;
+import ru.rental.service.bankcard.repository.BankCardRepository;
 
 import java.util.List;
 import java.util.Optional;

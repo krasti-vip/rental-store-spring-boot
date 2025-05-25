@@ -3,6 +3,8 @@ package ru.rental.service.entity;
 import jdk.jfr.Description;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import ru.rental.service.car.entity.Car;
+import ru.rental.service.user.entity.User;
 
 import java.util.List;
 
