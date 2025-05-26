@@ -6,9 +6,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.rental.service.BaseBd;
-import ru.rental.service.dto.RentalDto;
-import ru.rental.service.dto.create.RentalDtoCreate;
-import ru.rental.service.repository.RentalRepository;
+import ru.rental.service.rental.dto.RentalDto;
+import ru.rental.service.rental.dto.RentalDtoCreate;
+import ru.rental.service.rental.repository.RentalRepository;
+import ru.rental.service.rental.service.RentalService;
+import ru.rental.service.user.service.UserService;
 
 import java.time.LocalDateTime;
 
@@ -39,7 +41,7 @@ class RentalServiceTest extends BaseBd {
     @DisplayName("Тест create() и delete() для аренды")
     void createAndDeleteTest() {
         RentalDtoCreate rental = new RentalDtoCreate(
-                5,
+                2,
                 null,
                 null,
                 3,

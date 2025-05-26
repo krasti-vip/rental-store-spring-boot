@@ -6,7 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.rental.service.BaseBd;
-import ru.rental.service.entity.Bicycle;
+import ru.rental.service.bicycle.entity.Bicycle;
+import ru.rental.service.bicycle.repository.BicycleRepository;
 
 import java.util.List;
 

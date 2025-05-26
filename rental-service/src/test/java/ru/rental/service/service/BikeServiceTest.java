@@ -6,9 +6,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.rental.service.BaseBd;
-import ru.rental.service.dto.BikeDto;
-import ru.rental.service.dto.create.BikeDtoCreeate;
-import ru.rental.service.dto.create.UserDtoCreate;
+import ru.rental.service.bike.dto.BikeDto;
+import ru.rental.service.bike.dto.BikeDtoCreate;
+import ru.rental.service.bike.service.BikeService;
+import ru.rental.service.user.service.UserService;
 
 import java.util.List;
 
@@ -36,28 +37,15 @@ class BikeServiceTest extends BaseBd {
     @Description(value = "Тест проверяет сохранение и удаление мотоцикла")
     @DisplayName("Тест create() и delete() для мотоцикла")
     void createAndDeleteTest() {
-        UserDtoCreate userDtoCreate = new UserDtoCreate(
-                "user",
-                "name",
-                "test",
-                123456L,
-                null,
-                null,
-                null,
-                null,
-                null
-        );
-        userService.create(userDtoCreate);
-
-        BikeDtoCreeate bikeDtoCreeate = new BikeDtoCreeate(
+        BikeDtoCreate bikeDtoCreate = new BikeDtoCreate(
                 "Harley",
                 54.5,
                 75,
                 0.75,
-                6
+                4
         );
         assertEquals(5, bikeService.getAll().size());
-        bikeService.create(bikeDtoCreeate);
+        bikeService.create(bikeDtoCreate);
         assertEquals(6, bikeService.getAll().size());
         assertEquals("Harley", bikeService.findById(6).get().getName());
 

@@ -9,9 +9,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import ru.rental.service.BaseBd;
-import ru.rental.service.controller.BikeControllerRest;
-import ru.rental.service.dto.BikeDto;
-import ru.rental.service.dto.create.BikeDtoCreeate;
+import ru.rental.service.bike.controller.BikeControllerRest;
+import ru.rental.service.bike.dto.BikeDto;
+import ru.rental.service.bike.dto.BikeDtoCreate;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -56,13 +56,13 @@ class BikeRestTest extends BaseBd {
     @Description("Тест проверяет создание мотоцикла через RestController")
     @DisplayName("Тест create() для мотоцикла")
     void createTest() {
-        BikeDtoCreeate bikeDtoCreeate = new BikeDtoCreeate();
-        bikeDtoCreeate.setUserId(2);
-        bikeDtoCreeate.setName("NewBike");
-        bikeDtoCreeate.setPrice(6000);
-        bikeDtoCreeate.setHorsePower(45);
-        bikeDtoCreeate.setVolume(300);
-        ResponseEntity<BikeDto> response = bikeControllerRest.create(bikeDtoCreeate);
+        BikeDtoCreate bikeDtoCreate = new BikeDtoCreate();
+        bikeDtoCreate.setUserId(2);
+        bikeDtoCreate.setName("NewBike");
+        bikeDtoCreate.setPrice(6000);
+        bikeDtoCreate.setHorsePower(45);
+        bikeDtoCreate.setVolume(300);
+        ResponseEntity<BikeDto> response = bikeControllerRest.create(bikeDtoCreate);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         BikeDto created = response.getBody();
         assertNotNull(created);

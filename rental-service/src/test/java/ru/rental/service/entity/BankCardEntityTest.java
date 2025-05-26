@@ -3,6 +3,8 @@ package ru.rental.service.entity;
 import jdk.jfr.Description;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import ru.rental.service.bankcard.entity.BankCard;
+import ru.rental.service.user.entity.User;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -27,17 +29,19 @@ class BankCardEntityTest {
         );
 
         BankCard bankCard = new BankCard(
-                6,
+                8,
                 "1234567",
                 "12/32",
                 234,
                 user
         );
 
-        assertEquals(6, bankCard.getId());
+        assertEquals(8, bankCard.getId());
         assertEquals(7, bankCard.getUser().getId());
         assertEquals("1234567", bankCard.getNumberCard());
         bankCard.setNumberCard("88888");
         assertEquals("88888", bankCard.getNumberCard());
+        bankCard.setNumberCard("234888");
+        assertEquals("234888", bankCard.getNumberCard());
     }
 }

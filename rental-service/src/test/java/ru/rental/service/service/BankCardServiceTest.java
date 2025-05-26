@@ -6,11 +6,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.rental.service.BaseBd;
-import ru.rental.service.dto.BankCardDto;
-import ru.rental.service.dto.create.BankCardDtoCreate;
-import ru.rental.service.dto.create.UserDtoCreate;
-import ru.rental.service.entity.BankCard;
-import ru.rental.service.repository.BankCardRepository;
+import ru.rental.service.bankcard.dto.BankCardDto;
+import ru.rental.service.bankcard.dto.BankCardDtoCreate;
+import ru.rental.service.bankcard.service.BankCardService;
+import ru.rental.service.bankcard.entity.BankCard;
+import ru.rental.service.bankcard.repository.BankCardRepository;
+import ru.rental.service.user.service.UserService;
 
 import java.util.List;
 import java.util.Optional;
@@ -47,21 +48,8 @@ class BankCardServiceTest extends BaseBd {
     @DisplayName("Тест create() и delete() для банковской карты")
     void createAndDeleteTest() {
 
-        UserDtoCreate userDtoCreate = new UserDtoCreate(
-                "user",
-                "name",
-                "test",
-                123456L,
-                null,
-                null,
-                null,
-                null,
-                null
-        );
-
-        userService.create(userDtoCreate);
         BankCardDtoCreate bankCardDtoCreate = new BankCardDtoCreate(
-                6,
+                5,
                 "7654098756784321",
                 "11/27",
                 543

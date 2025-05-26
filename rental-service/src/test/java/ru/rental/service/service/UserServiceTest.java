@@ -6,8 +6,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.rental.service.BaseBd;
-import ru.rental.service.dto.UserDto;
-import ru.rental.service.dto.create.UserDtoCreate;
+import ru.rental.service.user.dto.UserDto;
+import ru.rental.service.user.dto.UserDtoCreate;
+import ru.rental.service.user.service.UserService;
 
 import java.util.*;
 

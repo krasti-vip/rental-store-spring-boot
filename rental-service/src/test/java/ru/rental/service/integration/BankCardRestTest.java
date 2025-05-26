@@ -10,9 +10,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import ru.rental.service.BaseBd;
-import ru.rental.service.controller.BankCardControllerRest;
-import ru.rental.service.dto.BankCardDto;
-import ru.rental.service.dto.create.BankCardDtoCreate;
+import ru.rental.service.bankcard.controller.BankCardControllerRest;
+import ru.rental.service.bankcard.dto.BankCardDto;
+import ru.rental.service.bankcard.dto.BankCardDtoCreate;
 
 import java.util.List;
 
