@@ -2,7 +2,6 @@ package ru.rental.service.bankcard.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import ru.rental.service.bankcard.dto.BankCardDtoCreate;
 import ru.rental.service.user.entity.User;
 
 @Entity

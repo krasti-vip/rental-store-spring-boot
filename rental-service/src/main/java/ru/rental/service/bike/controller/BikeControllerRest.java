@@ -10,9 +10,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.rental.service.bike.dto.BikeDto;
-import ru.rental.service.bike.dto.BikeDtoCreate;
+
 import ru.rental.service.bike.service.BikeService;
+import ru.rental.service.common.dto.BikeDto;
+import ru.rental.service.common.dto.BikeDtoCreate;
 
 import java.util.List;
 

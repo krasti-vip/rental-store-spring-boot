@@ -10,8 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.rental.service.user.dto.UserDto;
-import ru.rental.service.user.dto.UserDtoCreate;
+import ru.rental.service.common.dto.UserDto;
+import ru.rental.service.common.dto.UserDtoCreate;
 import ru.rental.service.user.service.UserService;
 
 import java.util.List;

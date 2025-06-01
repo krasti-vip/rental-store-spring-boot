@@ -10,8 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.rental.service.bankcard.dto.BankCardDto;
-import ru.rental.service.bankcard.dto.BankCardDtoCreate;
+import ru.rental.service.common.dto.BankCardDto;
+import ru.rental.service.common.dto.BankCardDtoCreate;
 import ru.rental.service.bankcard.service.BankCardService;
 import java.util.List;
 

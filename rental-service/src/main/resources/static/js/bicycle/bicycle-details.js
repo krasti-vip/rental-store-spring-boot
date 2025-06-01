@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function loadBicycleDetails(bicycleId) {
     try {
-        const response = await fetch(`/api/bicycles/${bicycleId}`);
+        const response = await fetch(`http://localhost:7878/api/bicycles/${bicycleId}`);
 
         if (!response.ok) {
             throw new Error('Велосипед не найден');
@@ -88,7 +88,7 @@ async function deleteBicycle(bicycleId) {
     deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Удаление...';
 
     try {
-        const response = await fetch(`/api/bicycles/${bicycleId}`, {
+        const response = await fetch(`http://localhost:7878/api/bicycles/${bicycleId}`, {
             method: 'DELETE'
         });
 

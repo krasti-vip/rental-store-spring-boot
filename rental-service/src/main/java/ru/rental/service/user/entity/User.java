@@ -3,9 +3,9 @@ package ru.rental.service.user.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import ru.rental.service.bankcard.entity.BankCard;
-import ru.rental.service.bicycle.entity.Bicycle;
 import ru.rental.service.bike.entity.Bike;
 import ru.rental.service.car.entity.Car;
+
 
 import java.util.List;
 
@@ -47,6 +47,5 @@ public class User {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
     private List<Car> cars;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
-    private List<Bicycle> bicycles;
+    private List<Integer> bicyclesId;
 }

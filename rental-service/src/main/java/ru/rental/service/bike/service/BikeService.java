@@ -4,12 +4,13 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.rental.service.bike.dto.BikeDto;
-import ru.rental.service.bike.dto.BikeDtoCreate;
+import ru.rental.service.bike.MapperUtilBike;
 import ru.rental.service.bike.entity.Bike;
 import ru.rental.service.bike.repository.BikeRepository;
-import ru.rental.service.ServiceInterface;
-import ru.rental.service.ServiceInterfaceUserId;
+import ru.rental.service.common.dto.BikeDto;
+import ru.rental.service.common.dto.BikeDtoCreate;
+import ru.rental.service.common.service.ServiceInterface;
+import ru.rental.service.common.service.ServiceInterfaceUserId;
 import ru.rental.service.user.entity.User;
 import ru.rental.service.user.repository.UserRepository;
 
@@ -25,21 +26,20 @@ public class BikeService implements ServiceInterface<BikeDto, BikeDtoCreate>, Se
 
     private final UserRepository userRepository;
 
+    private final MapperUtilBike bikeMapper;
+
     @Transactional(readOnly = true)
     public Optional<BikeDto> findById(Integer id) {
         return bikeRepository.findById(id)
-                .map(BikeDto::toEntity);
+                .map(bikeMapper::toDto);
     }
 
     @Transactional
     public BikeDto create(BikeDtoCreate bikeDtoCreate) {
-        User user = userRepository.findById(bikeDtoCreate.getUserId())
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
-
-        Bike bike = bikeDtoCreate.toEntity(user);
+        Bike bike = bikeMapper.toEntity(bikeDtoCreate);
         Bike savedBike = bikeRepository.save(bike);
 
-        return BikeDto.toEntity(savedBike);
+        return bikeMapper.toDto(savedBike);
     }
 
     @Transactional
@@ -56,7 +56,7 @@ public class BikeService implements ServiceInterface<BikeDto, BikeDtoCreate>, Se
 
         Bike updatedBike = bikeRepository.save(existing);
 
-        return BikeDto.toEntity(updatedBike);
+        return bikeMapper.toDto(updatedBike);
     }
 
     @Transactional
@@ -73,14 +73,14 @@ public class BikeService implements ServiceInterface<BikeDto, BikeDtoCreate>, Se
     @Transactional(readOnly = true)
     public List<BikeDto> findByUserId(Integer userId) {
         return bikeRepository.findByUserId(userId).stream()
-                .map(BikeDto::toEntity)
+                .map(bikeMapper::toDto)
                 .toList();
     }
 
     @Transactional(readOnly = true)
     public List<BikeDto> getAll() {
         return ((List<Bike>) bikeRepository.findAll()).stream()
-                .map(BikeDto::toEntity)
+                .map(bikeMapper::toDto)
                 .toList();
     }
 }

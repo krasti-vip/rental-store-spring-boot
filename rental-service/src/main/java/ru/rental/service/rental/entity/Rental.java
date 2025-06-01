@@ -2,7 +2,6 @@ package ru.rental.service.rental.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import ru.rental.service.bicycle.entity.Bicycle;
 import ru.rental.service.bike.entity.Bike;
 import ru.rental.service.car.entity.Car;
 import ru.rental.service.user.entity.User;
@@ -35,9 +34,7 @@ public class Rental {
     @JoinColumn(name = "bike_id")
     private Bike bike;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "bicycle_id")
-    private Bicycle bicycle;
+    private Integer bicycleId;
 
     @Column(name = "start_date", nullable = false)
     private LocalDateTime startDate;

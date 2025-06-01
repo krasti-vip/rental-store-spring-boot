@@ -4,18 +4,19 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.rental.service.bicycle.entity.Bicycle;
-import ru.rental.service.bicycle.repository.BicycleRepository;
+
 import ru.rental.service.bike.entity.Bike;
 import ru.rental.service.bike.repository.BikeRepository;
 import ru.rental.service.car.entity.Car;
 import ru.rental.service.car.repository.CarRepository;
-import ru.rental.service.rental.dto.RentalDto;
-import ru.rental.service.rental.dto.RentalDtoCreate;
+import ru.rental.service.common.dto.RentalDto;
+import ru.rental.service.common.dto.RentalDtoCreate;
+import ru.rental.service.rental.BicycleTemplate;
+import ru.rental.service.rental.MapperUtilRental;
 import ru.rental.service.rental.entity.Rental;
 import ru.rental.service.rental.repository.RentalRepository;
-import ru.rental.service.ServiceInterface;
-import ru.rental.service.ServiceInterfaceUserId;
+import ru.rental.service.common.service.ServiceInterface;
+import ru.rental.service.common.service.ServiceInterfaceUserId;
 import ru.rental.service.user.entity.User;
 import ru.rental.service.user.repository.UserRepository;
 
@@ -33,14 +34,16 @@ public class RentalService implements ServiceInterface<RentalDto, RentalDtoCreat
 
     private final BikeRepository bikeRepository;
 
-    private final BicycleRepository bicycleRepository;
+    private final BicycleTemplate bicycleTemplate;
 
     private final CarRepository carRepository;
+
+    private final MapperUtilRental mapperUtilRental;
 
     @Transactional(readOnly = true)
     public Optional<RentalDto> findById(Integer id) {
         return rentalRepository.findById(id)
-                .map(RentalDto::toEntity);
+                .map(mapperUtilRental::toDto);
     }
 
     @Transactional
@@ -51,13 +54,12 @@ public class RentalService implements ServiceInterface<RentalDto, RentalDtoCreat
                 .orElseThrow(() -> new EntityNotFoundException("Bike not found"));
         Car car = carRepository.findById(rentalDtoCreate.getUserId())
                 .orElseThrow(() -> new EntityNotFoundException("Car not found"));
-        Bicycle bicycle = bicycleRepository.findById(rentalDtoCreate.getUserId())
-                .orElseThrow(() -> new EntityNotFoundException("Bicycle not found"));
+        Integer bicycleId = bicycleTemplate.findById(rentalDtoCreate.getUserId()).getId();
 
-        Rental rental = rentalDtoCreate.toEntity(user, car, bike, bicycle);
+        Rental rental = mapperUtilRental.toEntity(rentalDtoCreate, user, car, bike, bicycleId);
         Rental savedRental = rentalRepository.save(rental);
 
-        return RentalDto.toEntity(savedRental);
+        return mapperUtilRental.toDto(savedRental);
     }
 
     @Transactional
@@ -70,11 +72,10 @@ public class RentalService implements ServiceInterface<RentalDto, RentalDtoCreat
                 .orElseThrow(() -> new EntityNotFoundException("Bike not found"));
         Car car = carRepository.findById(updateRentalDto.getUserId())
                 .orElseThrow(() -> new EntityNotFoundException("Car not found"));
-        Bicycle bicycle = bicycleRepository.findById(updateRentalDto.getUserId())
-                .orElseThrow(() -> new EntityNotFoundException("Bicycle not found"));
+        Integer bicycleId = bicycleTemplate.findById(updateRentalDto.getUserId()).getId();
 
         existing.setUser(user);
-        existing.setBicycle(bicycle);
+        existing.setBicycleId(bicycleId);
         existing.setCar(car);
         existing.setBike(bike);
         existing.setStartDate(updateRentalDto.getStartDate());
@@ -82,7 +83,7 @@ public class RentalService implements ServiceInterface<RentalDto, RentalDtoCreat
         existing.setRentalAmount(updateRentalDto.getRentalAmount());
         existing.setIsPaid(updateRentalDto.getIsPaid());
 
-        return RentalDto.toEntity(existing);
+        return mapperUtilRental.toDto(rentalRepository.save(existing));
     }
 
     @Transactional
@@ -99,14 +100,14 @@ public class RentalService implements ServiceInterface<RentalDto, RentalDtoCreat
     @Transactional(readOnly = true)
     public List<RentalDto> findByUserId(Integer userId) {
         return rentalRepository.findByUserId(userId).stream()
-                .map(RentalDto::toEntity)
+                .map(mapperUtilRental::toDto)
                 .toList();
     }
 
     @Transactional(readOnly = true)
     public List<RentalDto> getAll() {
         return ((List<Rental>) rentalRepository.findAll()).stream()
-                .map(RentalDto::toEntity)
+                .map(mapperUtilRental::toDto)
                 .toList();
     }
 }

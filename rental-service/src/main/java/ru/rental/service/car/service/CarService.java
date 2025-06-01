@@ -4,12 +4,14 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.rental.service.car.dto.CarDto;
-import ru.rental.service.car.dto.CarDtoCreate;
+
+import ru.rental.service.car.MapperUtilCar;
 import ru.rental.service.car.entity.Car;
 import ru.rental.service.car.repository.CarRepository;
-import ru.rental.service.ServiceInterface;
-import ru.rental.service.ServiceInterfaceUserId;
+import ru.rental.service.common.dto.CarDto;
+import ru.rental.service.common.dto.CarDtoCreate;
+import ru.rental.service.common.service.ServiceInterface;
+import ru.rental.service.common.service.ServiceInterfaceUserId;
 import ru.rental.service.user.entity.User;
 import ru.rental.service.user.repository.UserRepository;
 
@@ -25,21 +27,21 @@ public class CarService implements ServiceInterface<CarDto, CarDtoCreate>, Servi
 
     private final UserRepository userRepository;
 
+    private final MapperUtilCar mapperUtilCar;
+
     @Transactional(readOnly = true)
     public Optional<CarDto> findById(Integer id) {
         return carRepository.findById(id)
-                .map(CarDto::toEntity);
+                .map(mapperUtilCar::toDto);
     }
 
     @Transactional
     public CarDto create(CarDtoCreate carDtoCreate) {
-        User user = userRepository.findById(carDtoCreate.getUserId())
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-        Car car = carDtoCreate.toEntity(user);
+        Car car = mapperUtilCar.toEntity(carDtoCreate);
         Car savedCar = carRepository.save(car);
 
-        return CarDto.toEntity(savedCar);
+        return mapperUtilCar.toDto(savedCar);
     }
 
     @Transactional
@@ -58,7 +60,7 @@ public class CarService implements ServiceInterface<CarDto, CarDtoCreate>, Servi
 
         Car savedCar = carRepository.save(existing);
 
-        return CarDto.toEntity(savedCar);
+        return mapperUtilCar.toDto(savedCar);
     }
 
     @Transactional
@@ -73,14 +75,14 @@ public class CarService implements ServiceInterface<CarDto, CarDtoCreate>, Servi
     @Transactional(readOnly = true)
     public List<CarDto> getAll() {
         return ((List<Car>) carRepository.findAll()).stream()
-                .map(CarDto::toEntity)
+                .map(mapperUtilCar::toDto)
                 .toList();
     }
 
     @Transactional(readOnly = true)
     public List<CarDto> findByUserId(Integer userId) {
         return carRepository.findById(userId).stream()
-                .map(CarDto::toEntity)
+                .map(mapperUtilCar::toDto)
                 .toList();
     }
 }

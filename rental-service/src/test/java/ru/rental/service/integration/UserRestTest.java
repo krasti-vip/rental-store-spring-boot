@@ -10,9 +10,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import ru.rental.service.BaseBd;
+import ru.rental.service.common.dto.UserDto;
+import ru.rental.service.common.dto.UserDtoCreate;
 import ru.rental.service.user.controller.UserControllerRest;
-import ru.rental.service.user.dto.UserDto;
-import ru.rental.service.user.dto.UserDtoCreate;
 
 import java.util.List;
 
