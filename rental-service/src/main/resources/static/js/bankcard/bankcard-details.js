@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function loadBankCardDetails(cardId) {
     try {
-        const response = await fetch(`/api/bankcards/${cardId}`);
+        const response = await fetch(`http://localhost:7875/api/bankcards/${cardId}`);
 
         if (!response.ok) {
             const error = await response.json().catch(() => null);
@@ -88,7 +88,7 @@ async function deleteBankCard(cardId) {
         deleteBtn.disabled = true;
         deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Удаление...';
 
-        const response = await fetch(`/api/bankcards/${cardId}`, {
+        const response = await fetch(`http://localhost:7875/api/bankcards/${cardId}`, {
             method: 'DELETE'
         });
 

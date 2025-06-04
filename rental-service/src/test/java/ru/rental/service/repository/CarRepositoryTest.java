@@ -6,8 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.rental.service.BaseBd;
-import ru.rental.service.car.entity.Car;
-import ru.rental.service.car.repository.CarRepository;
+import ru.rental.service.common.dto.CarDto;
 
 import java.util.List;
 
@@ -67,7 +66,7 @@ class CarRepositoryTest extends BaseBd {
     @Test
     @DisplayName("Тест получение машин User")
     void findCarByUserTest() {
-        List<Car> cars = carRepository.findAllByUserId(1);
+        List<CarDto> cars = carRepository.findAllByUserId(1);
         assertEquals(1, cars.size());
     }
 }

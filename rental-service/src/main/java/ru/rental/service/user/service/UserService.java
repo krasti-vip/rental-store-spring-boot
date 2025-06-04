@@ -4,17 +4,13 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-
 import ru.rental.service.common.dto.BicycleDto;
 import ru.rental.service.common.dto.UserDto;
 import ru.rental.service.common.dto.UserDtoCreate;
 import ru.rental.service.common.service.ServiceInterface;
-
-import ru.rental.service.rental.BicycleTemplate;
+import ru.rental.service.user.BicycleTemplate;
 import ru.rental.service.user.MapperUtilUser;
 import ru.rental.service.user.entity.User;
 import ru.rental.service.user.repository.UserRepository;
@@ -32,13 +28,14 @@ public class UserService implements ServiceInterface<UserDto, UserDtoCreate> {
 
     @Transactional(readOnly = true)
     public Optional<UserDto> findById(Integer id) {
-        return userRepository.findWithUserById(id)
-                .map(e -> {
-                            List<BicycleDto> bicycleDtos = bicycleTemplate.findAllByUserId(e.getId());
-                            e.setBicyclesId(bicycleDtos.stream().map(BicycleDto::getId).collect(Collectors.toList()));
-                            return mapperUtilUser.toDto(e);
-                        }
-                );
+        return userRepository.findById(id).map(mapperUtilUser::toDto);
+//        return userRepository.findWithUserById(id)
+//                .map(e -> {
+//                            List<BicycleDto> bicycleDto = bicycleTemplate.findAllByUserId(e.getId());
+//                            e.setBicyclesId(bicycleDto.stream().map(BicycleDto::getId).toList());
+//                            return mapperUtilUser.toDto(e);
+//                        }
+//                );
     }
 
     @Transactional

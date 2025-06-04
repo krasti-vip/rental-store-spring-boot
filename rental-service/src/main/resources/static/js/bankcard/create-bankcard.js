@@ -114,7 +114,7 @@ async function createCard(e) {
             secretCode: document.getElementById('secretCode').value
         };
 
-        const response = await fetch('/api/bankcards', {
+        const response = await fetch('http://localhost:7875/api/bankcards', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

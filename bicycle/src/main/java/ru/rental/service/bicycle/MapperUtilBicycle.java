@@ -10,8 +10,6 @@ import ru.rental.service.common.dto.BicycleDtoCreate;
 @AllArgsConstructor
 public class MapperUtilBicycle {
 
-    private final UserTemplate userTemplate;
-
     public BicycleDto toDto(Bicycle bicycle) {
         Integer userId = null;
         if (bicycle.getUserId() != null) {

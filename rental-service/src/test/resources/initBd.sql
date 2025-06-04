@@ -82,9 +82,9 @@ CREATE TABLE IF NOT EXISTS rentals
 (
     id            SERIAL PRIMARY KEY,
     user_id       INT      REFERENCES users (id) ON DELETE RESTRICT,
-    car_id        INT REFERENCES cars (id) ON DELETE RESTRICT,
-    bike_id       INT REFERENCES bikes (id) ON DELETE RESTRICT,
-    bicycle_id    INT REFERENCES bicycles (id) ON DELETE RESTRICT,
+    car_id        INT REFERENCES cars (id) ON DELETE CASCADE,
+    bike_id       INT REFERENCES bikes (id) ON DELETE CASCADE,
+    bicycle_id    INT REFERENCES bicycles (id) ON DELETE CASCADE,
     start_date    TIMESTAMP        NOT NULL,
     end_date      TIMESTAMP,
     rental_amount DOUBLE PRECISION NOT NULL,

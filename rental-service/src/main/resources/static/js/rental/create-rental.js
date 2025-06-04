@@ -99,7 +99,7 @@ async function createRental(e) {
             isPaid: document.getElementById('isPaid').value === 'true'
         };
 
-        const response = await fetch('/api/rentals', {
+        const response = await fetch('http://localhost:7874/api/rentals', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

@@ -25,11 +25,11 @@ public class UserDto {
 
     private String email;
 
-    private List<BankCardDto> bankCards;
+    private List<Integer> bankCards;
 
-    private List<BikeDto> bikes;
+    private List<Integer> bikes;
 
-    private List<CarDto> cars;
+    private List<Integer> cars;
 
     private List<Integer> bicycles;
 }

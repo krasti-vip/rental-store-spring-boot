@@ -2,10 +2,8 @@ package ru.rental.service.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.rental.service.bankcard.MapperUtilBankcard;
-import ru.rental.service.bike.MapperUtilBike;
-import ru.rental.service.car.MapperUtilCar;
-import ru.rental.service.common.dto.*;
+import ru.rental.service.common.dto.UserDto;
+import ru.rental.service.common.dto.UserDtoCreate;
 import ru.rental.service.user.entity.User;
 
 import java.util.List;
@@ -14,30 +12,26 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MapperUtilUser {
 
-    private final MapperUtilBankcard mapperUtilBankcard;
-
-    private final MapperUtilBike mapperUtilBike;
-
-    private final MapperUtilCar mapperUtilCar;
-
     public UserDto toDto(User user) {
-        List<BikeDto> bikeDtos = null;
-        if (user.getBikes() != null) {
-            bikeDtos = user.getBikes().stream()
-                    .map(mapperUtilBike::toDto)
-                    .toList();
+
+        List<Integer> bikeDtos = null;
+        if (user.getBikeId() != null) {
+            bikeDtos = user.getBikeId();
         }
 
-        List<CarDto> carDtos = null;
-        if (user.getCars() != null) {
-            carDtos = user.getCars().stream()
-                    .map(mapperUtilCar::toDto)
-                    .toList();
+        List<Integer> carDtos = null;
+        if (user.getCarsId() != null) {
+            carDtos = user.getCarsId();
         }
 
         List<Integer> bicycleDtos = null;
         if (user.getBicyclesId() != null) {
             bicycleDtos = user.getBicyclesId();
+        }
+
+        List<Integer> bankcardDtos = null;
+        if (user.getBankCardId() != null) {
+            bankcardDtos = user.getBankCardId();
         }
 
         return UserDto.builder()
@@ -47,7 +41,7 @@ public class MapperUtilUser {
                 .lastName(user.getLastName())
                 .passport(user.getPassport())
                 .email(user.getEmail())
-                .bankCards(user.getBankCards().stream().map(mapperUtilBankcard::toDto).toList())
+                .bankCards(bankcardDtos)
                 .bikes(bikeDtos)
                 .cars(carDtos)
                 .bicycles(bicycleDtos)
@@ -61,9 +55,9 @@ public class MapperUtilUser {
                 .lastName(userDtoCreate.getLastName())
                 .passport(userDtoCreate.getPassport())
                 .email(userDtoCreate.getEmail())
-                .bankCards(userDtoCreate.getBankCards().stream().map(mapperUtilBankcard::toEntity).toList())
-                .bikes(null)
-                .cars(null)
+                .bankCardId(null)
+                .bikeId(null)
+                .carsId(null)
                 .bicyclesId(null)
                 .build();
     }

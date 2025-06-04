@@ -22,11 +22,11 @@ public class UserDtoCreate {
 
     private String email;
 
-    private List<BankCardDtoCreate> bankCards;
+    private List<Integer> bankCards;
 
-    private List<BikeDtoCreate> bikes;
+    private List<Integer> bikes;
 
-    private List<CarDtoCreate> cars;
+    private List<Integer> cars;
 
     private List<Integer> bicycles;
 }

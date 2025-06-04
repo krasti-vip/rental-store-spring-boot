@@ -3,7 +3,6 @@ package ru.rental.service.entity;
 import jdk.jfr.Description;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import ru.rental.service.bicycle.entity.Bicycle;
 import ru.rental.service.user.entity.User;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

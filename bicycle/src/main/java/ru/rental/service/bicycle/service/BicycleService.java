@@ -5,12 +5,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.rental.service.bicycle.MapperUtilBicycle;
-import ru.rental.service.bicycle.UserTemplate;
 import ru.rental.service.common.dto.BicycleDto;
 import ru.rental.service.common.dto.BicycleDtoCreate;
 import ru.rental.service.bicycle.entity.Bicycle;
 import ru.rental.service.bicycle.repository.BicycleRepository;
-import ru.rental.service.common.dto.UserDto;
 import ru.rental.service.common.service.ServiceInterface;
 import ru.rental.service.common.service.ServiceInterfaceUserId;
 
@@ -23,8 +21,6 @@ import java.util.Optional;
 public class BicycleService implements ServiceInterface<BicycleDto, BicycleDtoCreate>, ServiceInterfaceUserId<BicycleDto> {
 
     private final BicycleRepository bicycleRepository;
-
-    private final UserTemplate userTemplate;
 
     private final MapperUtilBicycle mapperUtilBicycle;
 
@@ -47,12 +43,11 @@ public class BicycleService implements ServiceInterface<BicycleDto, BicycleDtoCr
     public BicycleDto update(BicycleDto updateBicycleDto) {
         Bicycle existing = bicycleRepository.findById(updateBicycleDto.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Bicycle not found"));
-        UserDto userDto = userTemplate.findById(updateBicycleDto.getUserId());
 
         existing.setModel(updateBicycleDto.getModel());
         existing.setPrice(updateBicycleDto.getPrice());
         existing.setColor(updateBicycleDto.getColor());
-        existing.setUserId(userDto.getId());
+        existing.setUserId(updateBicycleDto.getUserId());
 
         Bicycle updated = bicycleRepository.save(existing);
 

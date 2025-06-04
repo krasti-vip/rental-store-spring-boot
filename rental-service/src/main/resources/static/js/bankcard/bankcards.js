@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function loadBankCards() {
     try {
-        const response = await fetch('/api/bankcards');
+        const response = await fetch('http://localhost:7875/api/bankcards');
         const cards = await response.json();
         renderBankCards(cards);
     } catch (error) {

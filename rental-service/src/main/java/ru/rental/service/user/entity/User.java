@@ -2,11 +2,6 @@ package ru.rental.service.user.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import ru.rental.service.bankcard.entity.BankCard;
-import ru.rental.service.bike.entity.Bike;
-import ru.rental.service.car.entity.Car;
-
-
 import java.util.List;
 
 @Table(name = "users")
@@ -38,14 +33,15 @@ public class User {
     @Column(name = "email")
     private String email;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
-    private List<BankCard> bankCards;
+    @Transient
+    private List<Integer> bankCardId;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
-    private List<Bike> bikes;
+    @Transient
+    private List<Integer> bikeId;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
-    private List<Car> cars;
+    @Transient
+    private List<Integer> carsId;
 
+    @Transient
     private List<Integer> bicyclesId;
 }
