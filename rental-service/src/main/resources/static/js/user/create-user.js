@@ -65,7 +65,7 @@ async function createUser(e) {
             email: document.getElementById('email').value || null
         };
 
-        const response = await fetch('/api/users', {
+        const response = await fetch('http://localhost:7873/api/users', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

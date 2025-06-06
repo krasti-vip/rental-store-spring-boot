@@ -6,8 +6,6 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "rentals")
-@ToString(exclude = {"user", "car", "bike", "bicycle"})
-@EqualsAndHashCode(exclude = {"user", "car", "bike", "bicycle"})
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -18,12 +16,16 @@ public class Rental {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(name = "user_id", nullable = false)
     private Integer userId;
 
+    @Column(name = "car_id", nullable = false)
     private Integer carId;
 
+    @Column(name = "bike_id", nullable = false)
     private Integer bikeId;
 
+    @Column(name = "bicycle_id", nullable = false)
     private Integer bicycleId;
 
     @Column(name = "start_date", nullable = false)

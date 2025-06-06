@@ -13,7 +13,7 @@ public class UserTemplate {
 
     private final RestTemplate restTemplate;
 
-    private final String userServerUrl = "http://localhost:8081/api/users";
+    private final String userServerUrl = "http://localhost:7873/api/users";
 
     public UserDto findById(Integer id) {
         return restTemplate.getForObject(userServerUrl + "/" + id, UserDto.class, id);

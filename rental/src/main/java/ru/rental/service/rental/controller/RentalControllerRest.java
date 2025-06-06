@@ -32,7 +32,7 @@ public class RentalControllerRest {
             @ApiResponse(responseCode = "200", description = "при успешной поиске аренды вернем 200 код и аренду")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<RentalDto> findByRentalId(@PathVariable Integer id) {
+    public ResponseEntity<RentalDto> findById(@PathVariable Integer id) {
         return rentalService
                 .findById(id)
                 .map(ResponseEntity::ok)

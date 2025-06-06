@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function loadUserDetails(userId) {
     try {
-        const response = await fetch(`/api/users/${userId}`);
+        const response = await fetch(`http://localhost:7873/api/users/${userId}`);
 
         if (!response.ok) {
             throw new Error('Пользователь не найден');
@@ -89,7 +89,7 @@ async function deleteUser(userId) {
     deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Удаление...';
 
     try {
-        const response = await fetch(`/api/users/${userId}`, {
+        const response = await fetch(`http://localhost:7873/api/users/${userId}`, {
             method: 'DELETE'
         });
 

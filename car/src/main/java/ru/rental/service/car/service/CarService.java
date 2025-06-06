@@ -10,7 +10,6 @@ import ru.rental.service.car.entity.Car;
 import ru.rental.service.car.repository.CarRepository;
 import ru.rental.service.common.dto.CarDto;
 import ru.rental.service.common.dto.CarDtoCreate;
-import ru.rental.service.common.dto.UserDto;
 import ru.rental.service.common.service.ServiceInterface;
 import ru.rental.service.common.service.ServiceInterfaceUserId;
 
@@ -47,14 +46,13 @@ public class CarService implements ServiceInterface<CarDto, CarDtoCreate>, Servi
     public CarDto update(CarDto updateCarDto) {
         Car existing = carRepository.findById(updateCarDto.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Car not found"));
-        UserDto userDto = userTemplate.findById(updateCarDto.getUserId());
 
         existing.setTitle(updateCarDto.getTitle());
         existing.setPrice(updateCarDto.getPrice());
         existing.setHorsePower(updateCarDto.getHorsePower());
         existing.setVolume(updateCarDto.getVolume());
         existing.setColor(updateCarDto.getColor());
-        existing.setUserId(userDto.getId());
+        existing.setUserId(updateCarDto.getUserId());
 
         Car savedCar = carRepository.save(existing);
 

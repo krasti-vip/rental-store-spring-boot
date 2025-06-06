@@ -4,10 +4,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class BicycleApplicationTests {
+class BicycleApplicationTests extends BaseBd {
 
     @Test
     void contextLoads() {
     }
-
 }

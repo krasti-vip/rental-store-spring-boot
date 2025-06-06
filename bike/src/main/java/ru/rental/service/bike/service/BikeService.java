@@ -46,12 +46,11 @@ public class BikeService implements ServiceInterface<BikeDto, BikeDtoCreate>, Se
     public BikeDto update(BikeDto updateBikeDto) {
         Bike existing = bikeRepository.findById(updateBikeDto.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Bike not found"));
-        UserDto userDto = userTemplate.findById(updateBikeDto.getUserId());
 
         existing.setName(updateBikeDto.getName());
         existing.setPrice(updateBikeDto.getPrice());
         existing.setHorsePower(updateBikeDto.getHorsePower());
-        existing.setUserId(userDto.getId());
+        existing.setUserId(updateBikeDto.getUserId());
 
         Bike updatedBike = bikeRepository.save(existing);
 

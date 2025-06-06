@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function loadUsers() {
     try {
-        const response = await fetch('/api/users');
+        const response = await fetch('http://localhost:7873/api/users');
         const users = await response.json();
         renderUsers(users);
     } catch (error) {
@@ -66,7 +66,7 @@ async function deleteUser(userId) {
     }
 
     try {
-        const response = await fetch(`/api/users/${userId}`, {
+        const response = await fetch(`http://localhost:7873/api/users/${userId}`, {
             method: 'DELETE'
         });
 
