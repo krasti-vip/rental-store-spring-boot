@@ -1,6 +1,5 @@
 package ru.rental.service.bicycle.controller;
 
-import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,8 +37,6 @@ class BicycleRestTest extends BaseBd {
         assertEquals("Ctels", body.getModel());
         assertEquals(1000, body.getPrice());
         assertEquals("black", body.getColor());
-        assertNotNull(body.getUserId());
-        assertEquals(1, body.getUserId());
     }
 
     @Test
@@ -61,7 +58,6 @@ class BicycleRestTest extends BaseBd {
     @DisplayName("Тест create() для велосипеда")
     void createTest() {
         BicycleDtoCreate bicycleDtoCreate = new BicycleDtoCreate();
-        bicycleDtoCreate.setUserId(5);
         bicycleDtoCreate.setModel("NewBicycle");
         bicycleDtoCreate.setPrice(6000);
         bicycleDtoCreate.setColor("red");
@@ -69,7 +65,6 @@ class BicycleRestTest extends BaseBd {
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         BicycleDto created = response.getBody();
         assertNotNull(created);
-        assertEquals(5, created.getUserId());
         assertEquals("NewBicycle", created.getModel());
         assertEquals(6000, created.getPrice());
         assertEquals("red", created.getColor());
@@ -92,7 +87,6 @@ class BicycleRestTest extends BaseBd {
     void updateTest() {
         BicycleDto update = new BicycleDto();
         update.setId(3);
-        update.setUserId(4);
         update.setModel("Aist");
         update.setPrice(1500);
         update.setColor("white");
@@ -100,7 +94,6 @@ class BicycleRestTest extends BaseBd {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         BicycleDto updatedBicycle = response.getBody();
         assertNotNull(updatedBicycle);
-        assertEquals(4, updatedBicycle.getUserId());
         assertEquals("Aist", updatedBicycle.getModel());
         assertEquals(1500, updatedBicycle.getPrice());
         assertEquals("white", updatedBicycle.getColor());

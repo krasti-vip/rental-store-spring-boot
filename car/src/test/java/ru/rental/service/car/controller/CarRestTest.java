@@ -13,9 +13,8 @@ import ru.rental.service.common.dto.CarDto;
 import ru.rental.service.common.dto.CarDtoCreate;
 
 import java.util.List;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -59,7 +58,6 @@ class CarRestTest extends BaseBd {
     @DisplayName("Тест create() для машины")
     void createTest() {
         CarDtoCreate carDtoCreate = new CarDtoCreate();
-        carDtoCreate.setUserId(2);
         carDtoCreate.setTitle("NewCar");
         carDtoCreate.setPrice(6000);
         carDtoCreate.setHorsePower(45);
@@ -69,12 +67,70 @@ class CarRestTest extends BaseBd {
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         CarDto created = response.getBody();
         assertNotNull(created);
-        assertEquals(2, created.getUserId());
         assertEquals("NewCar", created.getTitle());
         assertEquals(6000, created.getPrice());
         assertEquals(45, created.getHorsePower());
         assertEquals(30.10, created.getVolume());
         assertEquals("red", created.getColor());
         assertTrue(created.getId() > 0);
+    }
+
+    @Test
+    @Description("Тест проверяет удаление автомобиля через RestController")
+    @DisplayName("Тест delete() для автомобиля")
+    void deleteTest() {
+        ResponseEntity<Void> response = carControllerRest.delete(5);
+        assertEquals(HttpStatus.ACCEPTED, response.getStatusCode());
+        ResponseEntity<CarDto> afterDelete = carControllerRest.findById(5);
+        assertEquals(HttpStatus.NOT_FOUND, afterDelete.getStatusCode());
+    }
+
+    @Test
+    @Description(value = "Тест проверяет обновление данных для автомобиля через RestController")
+    @DisplayName("Тест updateUser() для автомобиля")
+    void updateTest() {
+        CarDto update = new CarDto();
+        update.setId(2);
+        update.setTitle("Aist");
+        update.setPrice(1500);
+        update.setHorsePower(45);
+        update.setVolume(30.10);
+        update.setColor("red");
+        update.setUserId(4);
+        ResponseEntity<CarDto> response = carControllerRest.update(2, update);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        CarDto updateCar = response.getBody();
+        assertNotNull(updateCar);
+        assertEquals("Aist", updateCar.getTitle());
+        assertEquals(1500, updateCar.getPrice());
+        assertEquals(30.10, updateCar.getVolume());
+        assertEquals(4, updateCar.getUserId());
+        assertEquals(2, updateCar.getId());
+        assertEquals(45, updateCar.getHorsePower());
+
+    }
+
+    @Test
+    @Description(value = "Тест проверяет валидацию машины при недопустимых значениях через RestController")
+    @DisplayName("Тест update() для машины с неверными данными - ожидание ConstraintViolationException")
+    void updateValidationErrorTest() {
+        CarDto update = new CarDto();
+        update.setTitle("");
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            carControllerRest.update(1, update);
+        });
+    }
+
+    @Test
+    @Description(value = "Тест проверяет получение машины пользователя по его id через RestController")
+    @DisplayName("Тест getByUserId() для машины")
+    void getByUserIdTest() {
+        ResponseEntity<List<CarDto>> response = carControllerRest.getCarByUserId(1);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        List<CarDto> car = response.getBody();
+        assertNotNull(car);
+        assertEquals(1, car.size());
+        assertEquals("MERCEDES", car.get(0).getTitle());
     }
 }

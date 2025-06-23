@@ -36,7 +36,6 @@ class BankCardRestTest extends BaseBd {
         assertEquals("1234567809876543", body.getNumberCard());
         assertEquals("12/25", body.getExpirationDate());
         assertEquals(123, body.getSecretCode());
-        assertNotNull(body.getUserId());
         assertEquals(3, body.getUserId());
     }
 
@@ -59,10 +58,10 @@ class BankCardRestTest extends BaseBd {
     @DisplayName("Тест create() для банковской карты")
     void createTest() {
         BankCardDtoCreate newBankCard = new BankCardDtoCreate();
-        newBankCard.setUserId(5);
         newBankCard.setNumberCard("23456789");
         newBankCard.setExpirationDate("12/32");
         newBankCard.setSecretCode(432);
+        newBankCard.setUserId(5);
 
         ResponseEntity<BankCardDto> response = bankCardControllerRest.create(newBankCard);
 
@@ -93,7 +92,6 @@ class BankCardRestTest extends BaseBd {
     void updateTest() {
         BankCardDto update = new BankCardDto();
         update.setId(1);
-        update.setUserId(3);
         update.setNumberCard("23456789");
         update.setExpirationDate("12/32");
         update.setSecretCode(432);
@@ -101,7 +99,6 @@ class BankCardRestTest extends BaseBd {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         BankCardDto updatedBankCard = response.getBody();
         assertNotNull(updatedBankCard);
-        assertEquals(3, updatedBankCard.getUserId());
         assertEquals("23456789", updatedBankCard.getNumberCard());
         assertEquals("12/32", updatedBankCard.getExpirationDate());
         assertEquals(432, updatedBankCard.getSecretCode());

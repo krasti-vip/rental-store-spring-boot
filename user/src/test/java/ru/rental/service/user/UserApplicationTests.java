@@ -9,5 +9,4 @@ class UserApplicationTests extends BaseBd{
     @Test
     void contextLoads() {
     }
-
 }

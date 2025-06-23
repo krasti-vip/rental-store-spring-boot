@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.rental.service.bankcard.BaseBd;
 import ru.rental.service.bankcard.entity.BankCard;
+import ru.rental.service.bankcard.util.ConnectionManager;
+import ru.rental.service.common.dto.BankCardDto;
 
 import java.util.List;
 import java.util.Optional;
@@ -36,7 +38,7 @@ class BankCardRepositoryTest extends BaseBd {
                 "7654098756784321",
                 "11/27",
                 543,
-                null
+                1
         );
 
         bankCardRepository.save(card);

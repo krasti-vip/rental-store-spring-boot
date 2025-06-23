@@ -5,7 +5,6 @@ import lombok.*;
 import java.util.List;
 
 @Table(name = "users")
-@ToString(exclude = {"bankCards", "bikes", "cars", "bicycles"})
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -34,14 +33,14 @@ public class User {
     private String email;
 
     @Transient
-    private List<Integer> bankCardId;
+    private List<Integer> bankCardDtoId;
 
     @Transient
-    private List<Integer> bikeId;
+    private List<Integer> bikeDtoId;
 
     @Transient
-    private List<Integer> carsId;
+    private List<Integer> carDtoId;
 
     @Transient
-    private List<Integer> bicyclesId;
+    private List<Integer> bicycleDtoId;
 }

@@ -19,7 +19,7 @@ class BicycleRepositoryTest extends BaseBd {
     private BicycleRepository bicycleRepository;
 
     @Test
-    @DisplayName("Тест получения всех карт")
+    @DisplayName("Тест получения всех велосипедов")
     void findAllTest() {
         List<Bicycle> bicycles = (List<Bicycle>) bicycleRepository.findAll();
         assertEquals(5, bicycles.size());
@@ -34,7 +34,7 @@ class BicycleRepositoryTest extends BaseBd {
                 "Mongust",
                 123.56,
                 "Black",
-                null
+                3
         );
         bicycleRepository.save(bicycle);
         List<Bicycle> bicycles = (List<Bicycle>) bicycleRepository.findAll();

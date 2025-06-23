@@ -1,26 +1,27 @@
 package ru.rental.service.bankcard.util;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+@Component
 public class ConnectionManager {
 
-    private static final String BD_URL = "spring.datasource.url";
+    @Value("${spring.datasource.url}")
+    private String bdUrl;
 
-    private static final String BD_USERNAME = "spring.datasource.username";
+    @Value("${spring.datasource.username}")
+    private String bdUsername;
 
-    private static final String BD_PASSWORD = "spring.datasource.password";
+    @Value("${spring.datasource.password}")
+    private String bdPassword;
 
-    private ConnectionManager() {
-    }
-
-    public static Connection getConnection() {
+    public Connection getConnection() {
         try {
-            return DriverManager.getConnection(
-                    PropertiesUtil.getProperties(BD_URL),
-                    PropertiesUtil.getProperties(BD_USERNAME),
-                    PropertiesUtil.getProperties(BD_PASSWORD));
+            return DriverManager.getConnection(bdUrl, bdUsername, bdPassword);
         } catch (SQLException e) {
             throw new IllegalStateException("Ошибка подключения к базе данных", e);
         }

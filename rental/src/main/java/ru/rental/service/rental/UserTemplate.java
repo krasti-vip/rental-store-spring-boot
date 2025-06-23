@@ -1,6 +1,7 @@
 package ru.rental.service.rental;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import ru.rental.service.common.dto.UserDto;
@@ -13,7 +14,8 @@ public class UserTemplate {
 
     private final RestTemplate restTemplate;
 
-    private final String userServerUrl = "http://localhost:7873/api/users";
+    @Value("${user.url}")
+    private String userServerUrl;
 
     public UserDto findById(Integer id) {
         return restTemplate.getForObject(userServerUrl + "/" + id, UserDto.class, id);

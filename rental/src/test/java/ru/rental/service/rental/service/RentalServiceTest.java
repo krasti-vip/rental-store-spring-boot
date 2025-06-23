@@ -54,7 +54,7 @@ class RentalServiceTest extends BaseBd {
     void rentalUpdateTest() {
         RentalDto rental = new RentalDto(
                 3,
-                3,
+                1,
                 null,
                 2,
                 null,

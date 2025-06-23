@@ -24,8 +24,9 @@ class CarServiceTest extends BaseBd {
     @Description(value = "Тест проверяет существование машины, затем что возвращается правильная машина по айди")
     @DisplayName("Тест get машин")
     void findBiId() {
-        assertTrue(carService.findById(1).isPresent());
-        assertEquals("MERCEDES", carService.findById(1).get().getTitle());
+        assertTrue(carService.findById(2).isPresent());
+        CarDto dto = carService.findById(2).get();
+        assertEquals("HONDA", dto.getTitle());
     }
 
     @Test
@@ -38,7 +39,7 @@ class CarServiceTest extends BaseBd {
                 230,
                 3.4,
                 "black",
-                3
+                null
         );
 
         assertEquals(5, carService.getAll().size());
@@ -62,7 +63,7 @@ class CarServiceTest extends BaseBd {
                 190,
                 2.4,
                 "red",
-                1
+                2
         );
 
         assertEquals(360.50, carService.findById(2).get().getPrice());

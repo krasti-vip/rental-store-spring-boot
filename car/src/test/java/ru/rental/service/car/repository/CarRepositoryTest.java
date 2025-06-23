@@ -37,7 +37,7 @@ class CarRepositoryTest extends BaseBd {
                 149,
                 2.5,
                 "Gold",
-                null
+                2
         );
         carRepository.save(car);
         List<Car> cars = (List<Car>) carRepository.findAll();

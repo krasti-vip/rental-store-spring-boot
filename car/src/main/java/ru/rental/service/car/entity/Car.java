@@ -32,5 +32,6 @@ public class Car {
     @Column(name = "color")
     private String color;
 
+    @Column(name = "user_id", nullable = false)
     private Integer userId;
 }

@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS bikes
 --- Инициализация таблицы bikes
 INSERT INTO bikes (name, price, horse_power, volume, user_id)
 VALUES ('BMW', 2000, 200, 1.0, null),
-       ('SUZUKI', 30000, 300, 1.0, null),
+       ('SUZUKI', 30000, 300, 1.0, 1),
        ('YAMAHA', 40000, 400, 1.0, 1),
        ('URAL', 2000, 200, 1.0, 1),
        ('HONDA', 2000, 200, 1.0, null);

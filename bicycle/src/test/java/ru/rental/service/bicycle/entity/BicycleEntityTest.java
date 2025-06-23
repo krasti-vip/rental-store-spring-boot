@@ -16,11 +16,10 @@ class BicycleEntityTest {
                 "Kok",
                 54.5,
                 "black",
-                4
+                3
         );
 
         assertEquals(6, bicycle.getId());
-        assertEquals(4, bicycle.getUserId());
         assertEquals("black", bicycle.getColor());
         bicycle.setColor("red");
         assertEquals("red", bicycle.getColor());

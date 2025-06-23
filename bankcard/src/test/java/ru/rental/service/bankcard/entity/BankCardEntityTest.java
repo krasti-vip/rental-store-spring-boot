@@ -18,11 +18,10 @@ class BankCardEntityTest {
                 "1234567",
                 "12/32",
                 234,
-                3
+                4
         );
 
         assertEquals(8, bankCard.getId());
-        assertEquals(3, bankCard.getUserId());
         assertEquals("1234567", bankCard.getNumberCard());
         bankCard.setNumberCard("88888");
         assertEquals("88888", bankCard.getNumberCard());

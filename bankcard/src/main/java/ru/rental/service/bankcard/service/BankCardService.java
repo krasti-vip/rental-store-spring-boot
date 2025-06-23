@@ -12,8 +12,6 @@ import ru.rental.service.bankcard.entity.BankCard;
 import ru.rental.service.bankcard.repository.BankCardRepository;
 import ru.rental.service.common.service.ServiceInterface;
 import ru.rental.service.common.service.ServiceInterfaceUserId;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,10 +24,20 @@ public class BankCardService implements ServiceInterface<BankCardDto, BankCardDt
 
     private final MapperUtilBankcard mapperUtilBankcard;
 
+    private final UserTemplate userTemplate;
+
     @Transactional(readOnly = true)
     public Optional<BankCardDto> findById(Integer id) {
         return bankCardRepository.findById(id)
-                .map(mapperUtilBankcard::toDto);
+                .map(bankCard -> {
+                    Integer userId = bankCard.getUserId();
+
+                    BankCardDto dto = mapperUtilBankcard.toDto(bankCard);
+                    dto.setUserId(userId);
+
+                    return dto;
+                });
+
     }
 
     @Transactional
@@ -48,7 +56,6 @@ public class BankCardService implements ServiceInterface<BankCardDto, BankCardDt
         existing.setNumberCard(updateBankCardDto.getNumberCard());
         existing.setExpirationDate(updateBankCardDto.getExpirationDate());
         existing.setSecretCode(updateBankCardDto.getSecretCode());
-        existing.setUserId(updateBankCardDto.getUserId());
 
         BankCard updated = bankCardRepository.save(existing);
         return mapperUtilBankcard.toDto(updated);
@@ -74,11 +81,7 @@ public class BankCardService implements ServiceInterface<BankCardDto, BankCardDt
 
     @Transactional(readOnly = true)
     public List<BankCardDto> getAll() {
-        Iterable<BankCard> cards = bankCardRepository.findAll();
-        List<BankCard> cardList = new ArrayList<>();
-        cards.forEach(cardList::add);
-
-        return cardList.stream()
+        return ((List<BankCard>) bankCardRepository.findAll()).stream()
                 .map(mapperUtilBankcard::toDto)
                 .toList();
     }

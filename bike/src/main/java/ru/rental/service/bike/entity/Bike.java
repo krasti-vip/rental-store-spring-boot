@@ -8,8 +8,6 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "bikes")
-@ToString(exclude = "user")
-@EqualsAndHashCode(exclude = "user")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -31,5 +29,6 @@ public class Bike {
     @Column(name = "volume", nullable = false)
     private Double volume;
 
+    @Column(name = "user_id", nullable = false)
     private Integer userId;
 }

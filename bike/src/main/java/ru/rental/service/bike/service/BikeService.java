@@ -5,12 +5,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.rental.service.bike.MapperUtilBike;
-import ru.rental.service.bike.UserTemplate;
 import ru.rental.service.bike.entity.Bike;
 import ru.rental.service.bike.repository.BikeRepository;
 import ru.rental.service.common.dto.BikeDto;
 import ru.rental.service.common.dto.BikeDtoCreate;
-import ru.rental.service.common.dto.UserDto;
 import ru.rental.service.common.service.ServiceInterface;
 import ru.rental.service.common.service.ServiceInterfaceUserId;
 
@@ -24,14 +22,19 @@ public class BikeService implements ServiceInterface<BikeDto, BikeDtoCreate>, Se
 
     private final BikeRepository bikeRepository;
 
-    private final UserTemplate userTemplate;
-
     private final MapperUtilBike mapperUtilBike;
 
     @Transactional(readOnly = true)
     public Optional<BikeDto> findById(Integer id) {
         return bikeRepository.findById(id)
-                .map(mapperUtilBike::toDto);
+                .map(bike -> {
+                    Integer userId = bike.getUserId();
+
+                    BikeDto dto = mapperUtilBike.toDto(bike);
+                    dto.setUserId(userId);
+
+                    return dto;
+                });
     }
 
     @Transactional

@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.rental.service.car.MapperUtilCar;
-import ru.rental.service.car.UserTemplate;
 import ru.rental.service.car.entity.Car;
 import ru.rental.service.car.repository.CarRepository;
 import ru.rental.service.common.dto.CarDto;
@@ -23,14 +22,19 @@ public class CarService implements ServiceInterface<CarDto, CarDtoCreate>, Servi
 
     private final CarRepository carRepository;
 
-    private final UserTemplate userTemplate;
-
     private final MapperUtilCar mapperUtilCar;
 
     @Transactional(readOnly = true)
     public Optional<CarDto> findById(Integer id) {
         return carRepository.findById(id)
-                .map(mapperUtilCar::toDto);
+                .map(car -> {
+                    Integer userId = car.getUserId();
+
+                    CarDto dto = mapperUtilCar.toDto(car);
+                    dto.setUserId(userId);
+
+                    return dto;
+                });
     }
 
     @Transactional

@@ -10,6 +10,7 @@ import ru.rental.service.common.dto.BicycleDto;
 import ru.rental.service.common.dto.BicycleDtoCreate;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -25,6 +26,9 @@ class BicycleServiceTest extends BaseBd {
     void findBiId() {
         assertTrue(bicycleService.findById(1).isPresent());
         assertEquals("Aist", bicycleService.findById(3).get().getModel());
+
+        Optional<BicycleDto> bicycleDto = bicycleService.findById(1);
+        assertEquals(1, bicycleDto.get().getUserId());
     }
 
     @Test
@@ -36,7 +40,7 @@ class BicycleServiceTest extends BaseBd {
                 "Kok",
                 54.5,
                 "black",
-                5
+                null
         );
         assertEquals(5, bicycleService.getAll().size());
         bicycleService.create(bicycleDtoCreate);
@@ -57,12 +61,11 @@ class BicycleServiceTest extends BaseBd {
                 "Kok",
                 54.5,
                 "black",
-                4
+                2
         );
 
         assertTrue(bicycleService.findByUserId(4).isEmpty());
         bicycleService.update(bicycleDto);
-        assertEquals(4, bicycleService.findById(3).get().getUserId());
     }
 
     @Test

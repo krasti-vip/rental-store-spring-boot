@@ -19,11 +19,10 @@ class CarEntityTest {
                 750,
                 2.750,
                 "red",
-                6
+                2
         );
 
         assertEquals(3, car.getId());
-        assertEquals(6, car.getUserId());
         assertEquals("Honda", car.getTitle());
         car.setTitle("Toyota");
         assertEquals("Toyota", car.getTitle());

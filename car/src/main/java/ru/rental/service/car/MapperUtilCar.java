@@ -14,6 +14,7 @@ public class MapperUtilCar {
 
     public CarDto toDto(Car car) {
         Integer userId = null;
+
         if (car.getUserId() != null) {
             userId = car.getUserId();
         }

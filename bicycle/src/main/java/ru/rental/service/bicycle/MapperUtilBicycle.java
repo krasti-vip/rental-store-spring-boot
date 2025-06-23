@@ -12,6 +12,7 @@ public class MapperUtilBicycle {
 
     public BicycleDto toDto(Bicycle bicycle) {
         Integer userId = null;
+
         if (bicycle.getUserId() != null) {
             userId = bicycle.getUserId();
         }

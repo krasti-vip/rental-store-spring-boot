@@ -10,11 +10,15 @@ import ru.rental.service.common.dto.BankCardDtoCreate;
 @Component
 public class MapperUtilBankcard {
 
+    private final UserTemplate userTemplate;
+
     public BankCardDto toDto(BankCard bankCard) {
         Integer userId = null;
+
         if (bankCard.getUserId() != null) {
             userId = bankCard.getUserId();
         }
+
         return BankCardDto.builder()
                 .id(bankCard.getId())
                 .userId(userId)

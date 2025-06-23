@@ -5,8 +5,6 @@ import lombok.*;
 
 @Entity
 @Table(name = "bank_cards")
-@ToString(exclude = "user")
-@EqualsAndHashCode(exclude = "user")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -25,5 +23,8 @@ public class BankCard {
     @Column(name = "secret_code", nullable = false)
     private Integer secretCode;
 
+    @Column(name = "user_id", nullable = false)
     private Integer userId;
+
+
 }

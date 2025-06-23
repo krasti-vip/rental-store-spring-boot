@@ -10,13 +10,13 @@ import ru.rental.service.common.dto.BikeDtoCreate;
 @RequiredArgsConstructor
 public class MapperUtilBike {
 
-    private final UserTemplate userTemplate;
-
     public BikeDto toDto(Bike bike) {
         Integer userId = null;
+
         if (bike.getUserId() != null) {
             userId = bike.getUserId();
         }
+
         return BikeDto.builder()
                 .id(bike.getId())
                 .name(bike.getName())

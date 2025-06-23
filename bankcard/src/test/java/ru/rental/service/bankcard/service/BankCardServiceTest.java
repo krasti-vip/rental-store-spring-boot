@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import ru.rental.service.bankcard.BaseBd;
 import ru.rental.service.bankcard.entity.BankCard;
 import ru.rental.service.bankcard.repository.BankCardRepository;
+import ru.rental.service.bankcard.util.ConnectionManager;
 import ru.rental.service.common.dto.BankCardDto;
 import ru.rental.service.common.dto.BankCardDtoCreate;
 
@@ -35,6 +36,7 @@ class BankCardServiceTest extends BaseBd {
         Integer cardId = bankCardService.getAll().get(0).getId();
         Optional<BankCardDto> cardDto = bankCardService.findById(cardId);
 
+        assertEquals(3, cardDto.get().getUserId());
         assertTrue(cardDto.isPresent(), "Карта с cardId должна существовать");
         assertEquals("1234567809876543", cardDto.get().getNumberCard());
         assertTrue(bankCardService.findById(-1).isEmpty());
@@ -46,7 +48,7 @@ class BankCardServiceTest extends BaseBd {
     void createAndDeleteTest() {
 
         BankCardDtoCreate bankCardDtoCreate = new BankCardDtoCreate(
-                5,
+                null,
                 "7654098756784321",
                 "11/27",
                 543
@@ -70,7 +72,7 @@ class BankCardServiceTest extends BaseBd {
 
         BankCardDto bankCardDto = new BankCardDto(
                 3,
-                3,
+                2,
                 "7654098756784321",
                 "11/27",
                 543
@@ -78,7 +80,6 @@ class BankCardServiceTest extends BaseBd {
 
         assertTrue(bankCardService.findByUserId(1).isEmpty());
         bankCardService.update(bankCardDto);
-        assertEquals(3, bankCardService.findById(3).get().getUserId());
     }
 
     @Test

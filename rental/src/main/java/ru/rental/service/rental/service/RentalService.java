@@ -4,8 +4,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.rental.service.common.dto.RentalDto;
-import ru.rental.service.common.dto.RentalDtoCreate;
+import ru.rental.service.common.dto.*;
 import ru.rental.service.rental.*;
 import ru.rental.service.rental.entity.Rental;
 import ru.rental.service.rental.repository.RentalRepository;
@@ -40,12 +39,28 @@ public class RentalService implements ServiceInterface<RentalDto, RentalDtoCreat
 
     @Transactional
     public RentalDto create(RentalDtoCreate rentalDtoCreate) {
-        Integer userId = userTemplate.findById(rentalDtoCreate.getUserId()).getId();
-        Integer bikeId = bikeTemplate.findById(rentalDtoCreate.getUserId()).getId();
-        Integer carId = carTemplate.findById(rentalDtoCreate.getUserId()).getId();
-        Integer bicycleId = bicycleTemplate.findById(rentalDtoCreate.getUserId()).getId();
 
-        Rental rental = mapperUtilRental.toEntity(rentalDtoCreate, userId, carId, bikeId, bicycleId);
+        Integer userId = null;
+        if (rentalDtoCreate.getUserId() != null) {
+            userId = userTemplate.findById(rentalDtoCreate.getUserId()).getId();
+        }
+
+        Integer bikeId = null;
+        if (rentalDtoCreate.getBikeId() != null) {
+            bikeId = bikeTemplate.findById(rentalDtoCreate.getBikeId()).getId();
+        }
+
+        Integer carId = null;
+        if (rentalDtoCreate.getCarId() != null) {
+            carId = carTemplate.findById(rentalDtoCreate.getCarId()).getId();
+        }
+
+        Integer bicycleId = null;
+        if (rentalDtoCreate.getBicycleId() != null) {
+            bicycleId = bicycleTemplate.findById(rentalDtoCreate.getBicycleId()).getId();
+        }
+
+        Rental rental = mapperUtilRental.toEntity(rentalDtoCreate, userId, bikeId, carId, bicycleId);
         Rental savedRental = rentalRepository.save(rental);
 
         return mapperUtilRental.toDto(savedRental);
@@ -56,14 +71,15 @@ public class RentalService implements ServiceInterface<RentalDto, RentalDtoCreat
         Rental existing = rentalRepository.findById(updateRentalDto.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Rental not found"));
 
-        existing.setUserId(updateRentalDto.getUserId());
-        existing.setBicycleId(updateRentalDto.getBicycleId());
-        existing.setCarId(updateRentalDto.getCarId());
-        existing.setBikeId(updateRentalDto.getBikeId());
-        existing.setStartDate(updateRentalDto.getStartDate());
-        existing.setEndDate(updateRentalDto.getEndDate());
-        existing.setRentalAmount(updateRentalDto.getRentalAmount());
-        existing.setIsPaid(updateRentalDto.getIsPaid());
+        Optional.ofNullable(updateRentalDto.getUserId());
+        Optional.ofNullable(updateRentalDto.getBicycleId());
+        Optional.ofNullable(updateRentalDto.getCarId());
+        Optional.ofNullable(updateRentalDto.getBikeId());
+
+        Optional.ofNullable(updateRentalDto.getStartDate()).ifPresent(existing::setStartDate);
+        Optional.ofNullable(updateRentalDto.getEndDate()).ifPresent(existing::setEndDate);
+        Optional.ofNullable(updateRentalDto.getRentalAmount()).ifPresent(existing::setRentalAmount);
+        Optional.ofNullable(updateRentalDto.getIsPaid()).ifPresent(existing::setIsPaid);
 
         return mapperUtilRental.toDto(rentalRepository.save(existing));
     }

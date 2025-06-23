@@ -69,7 +69,7 @@ public class CarControllerRest {
 
     @Operation(summary = "Update car")
     @PutMapping("/{id}")
-    public ResponseEntity<CarDto> updateCar(
+    public ResponseEntity<CarDto> update(
             @PathVariable Integer id,
             @RequestBody @Valid CarDto carDto) {
 

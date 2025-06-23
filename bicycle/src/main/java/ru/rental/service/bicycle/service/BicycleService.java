@@ -27,7 +27,14 @@ public class BicycleService implements ServiceInterface<BicycleDto, BicycleDtoCr
     @Transactional(readOnly = true)
     public Optional<BicycleDto> findById(Integer id) {
         return bicycleRepository.findById(id)
-                .map(mapperUtilBicycle::toDto);
+                .map(bicycle -> {
+                    Integer userId = bicycle.getUserId();
+
+                    BicycleDto dto = mapperUtilBicycle.toDto(bicycle);
+                    dto.setUserId(userId);
+
+                    return dto;
+                });
     }
 
     @Transactional

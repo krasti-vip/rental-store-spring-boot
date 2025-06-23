@@ -37,7 +37,7 @@ class BikeRepositoryTest extends BaseBd {
                 345.7,
                 54,
                 1.0,
-                null
+                2
         );
 
         bikeRepository.save(bike);
@@ -69,6 +69,6 @@ class BikeRepositoryTest extends BaseBd {
     @DisplayName("Тест получение мотоциклов User")
     void findBikeByUserTest() {
         List<Bike> bikes = bikeRepository.findByUserId(1);
-        assertEquals(2, bikes.size());
+        assertEquals(3, bikes.size());
     }
 }

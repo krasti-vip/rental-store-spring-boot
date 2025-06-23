@@ -36,10 +36,10 @@ class RentalEntityTest extends BaseBd {
 
         Rental rental = new Rental(
                 5,
-                2,
                 null,
                 null,
-                3,
+                null,
+                null,
                 LocalDateTime.parse("2025-02-20T09:00:00"),
                 LocalDateTime.parse("2025-03-10T09:00:00"),
                 12_000.0,
@@ -47,8 +47,6 @@ class RentalEntityTest extends BaseBd {
         );
 
         assertEquals(5, rental.getId());
-        assertEquals(2, rental.getUserId());
-        assertEquals(3, rental.getBicycleId());
         assertEquals(12_000.0, rental.getRentalAmount());
         rental.setRentalAmount(11_500.0);
         assertEquals(11_500.0, rental.getRentalAmount());

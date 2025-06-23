@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import ru.rental.service.bike.BaseBd;
 import ru.rental.service.common.dto.BikeDto;
 import ru.rental.service.common.dto.BikeDtoCreate;
-
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -36,7 +35,7 @@ class BikeRestTest extends BaseBd {
         assertEquals(30000, body.getPrice());
         assertEquals(300, body.getHorsePower());
         assertEquals(1.0, body.getVolume());
-        assertNull(body.getUserId());
+        assertEquals(1, body.getUserId());
     }
 
     @Test
@@ -57,7 +56,6 @@ class BikeRestTest extends BaseBd {
     @DisplayName("Тест create() для мотоцикла")
     void createTest() {
         BikeDtoCreate bikeDtoCreate = new BikeDtoCreate();
-        bikeDtoCreate.setUserId(2);
         bikeDtoCreate.setName("NewBike");
         bikeDtoCreate.setPrice(6000);
         bikeDtoCreate.setHorsePower(45);
@@ -66,11 +64,67 @@ class BikeRestTest extends BaseBd {
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         BikeDto created = response.getBody();
         assertNotNull(created);
-        assertEquals(2, created.getUserId());
         assertEquals("NewBike", created.getName());
         assertEquals(6000, created.getPrice());
         assertEquals(45, created.getHorsePower());
         assertEquals(300, created.getVolume());
         assertTrue(created.getId() > 0);
+    }
+
+    @Test
+    @Description("Тест проверяет удаление мотоцикла через RestController")
+    @DisplayName("Тест delete() для мотоцикла")
+    void deleteTest() {
+        ResponseEntity<Void> response = bikeControllerRest.delete(5);
+        assertEquals(HttpStatus.ACCEPTED, response.getStatusCode());
+        ResponseEntity<BikeDto> afterDelete = bikeControllerRest.findById(5);
+        assertEquals(HttpStatus.NOT_FOUND, afterDelete.getStatusCode());
+    }
+
+    @Test
+    @Description(value = "Тест проверяет обновление данных для мотоцикла через RestController")
+    @DisplayName("Тест updateUser() для мотоцикла")
+    void updateTest() {
+        BikeDto update = new BikeDto();
+        update.setId(3);
+        update.setName("Aist");
+        update.setPrice(1500);
+        update.setHorsePower(45);
+        update.setUserId(4);
+        ResponseEntity<BikeDto> response = bikeControllerRest.update(3, update);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        BikeDto updateBike = response.getBody();
+        assertNotNull(updateBike);
+        assertEquals("Aist", updateBike.getName());
+        assertEquals(1500, updateBike.getPrice());
+        assertEquals(1.0, updateBike.getVolume());
+        assertEquals(4, updateBike.getUserId());
+        assertEquals(3, updateBike.getId());
+        assertEquals(45, updateBike.getHorsePower());
+
+    }
+
+    @Test
+    @Description(value = "Тест проверяет валидацию мотоцикла при недопустимых значениях через RestController")
+    @DisplayName("Тест update() для мотоцикла с неверными данными - ожидание ConstraintViolationException")
+    void updateValidationErrorTest() {
+        BikeDto update = new BikeDto();
+        update.setName("");
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            bikeControllerRest.update(1, update);
+        });
+    }
+
+    @Test
+    @Description(value = "Тест проверяет получение мотоцикла пользователя по его id через RestController")
+    @DisplayName("Тест getByUserId() для мотоцикла")
+    void getByUserIdTest() {
+        ResponseEntity<List<BikeDto>> response = bikeControllerRest.getByUserId(1);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        List<BikeDto> bike = response.getBody();
+        assertNotNull(bike);
+        assertEquals(3, bike.size());
+        assertEquals("YAMAHA", bike.get(1).getName());
     }
 }

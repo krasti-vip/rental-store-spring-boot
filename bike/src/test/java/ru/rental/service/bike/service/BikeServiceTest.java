@@ -23,8 +23,9 @@ class BikeServiceTest extends BaseBd {
     @Description(value = "Тест проверяет существование мотоцикла, затем что возвращается правильный мотоцикл по айди")
     @DisplayName("Тест получения мотоцикла по ID")
     void findBiId() {
-        assertTrue(bikeService.findById(1).isPresent());
-        assertEquals("BMW", bikeService.findById(1).get().getName());
+        assertTrue(bikeService.findById(3).isPresent());
+        BikeDto dto = bikeService.findById(3).get();
+        assertEquals("YAMAHA", dto.getName());
     }
 
     @Test
@@ -36,7 +37,7 @@ class BikeServiceTest extends BaseBd {
                 54.5,
                 75,
                 0.75,
-                4
+                null
         );
         assertEquals(5, bikeService.getAll().size());
         bikeService.create(bikeDtoCreate);
@@ -58,10 +59,10 @@ class BikeServiceTest extends BaseBd {
                 40000,
                 400,
                 1.0,
-                1
+                null
         );
 
-        assertEquals(2, bikeService.findByUserId(1).size());
+        assertEquals(3, bikeService.findByUserId(1).size());
         bikeService.update(bikeDto);
         assertEquals(3, bikeService.findByUserId(1).size());
     }

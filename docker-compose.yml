@@ -1,65 +1,186 @@
-version: '3.8'
+version: "3.8"
 
 services:
-  app:
-    image: app:0.3
-    depends_on:
-      - rental
+  rental-service:
+    image: rental-service:1.0.0
     ports:
-      - "8080:8080"
+      - "8081:8081"
     networks:
-      vaganda:
-  rental:
+      - app-network
+    depends_on:
+      - postgres-service
+
+  postgres-service:
     image: postgres:17.4
-    container_name: postgres
+    container_name: postgres-service
+    ports:
+      - "7772:5432"
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: postgres
-    ports:
-      - "5432:5432"
-    volumes:
-      - data:/var/lib/postgresql/data
     networks:
-      vaganda:
-  nexus:
-    image: sonatype/nexus3:3.78.2-java17-alpine
+      - app-network
+
+  rental:
+    image: rental:1.0.0
     ports:
-      - "8081:8081"
-    volumes:
-      - nexus-data:/nexus-data
+      - "7874:7874"
+    networks:
+      - app-network
+    depends_on:
+      - postgres-rental
     environment:
-      INSTALL4J_ADD_VM_PARAMS: -Xms2703m -Xmx2703m -XX:MaxDirectMemorySize=2703m -Djava.util.prefs.userRoot=/some-other-dir
-    networks:
-      vaganda:
-  jenkins:
-    image: custom-jenkins:0.2.4
-    environment:
-      - TESTCONTAINERS_HOST_OVERRIDE=host.docker.internal
-      - DOCKER_HOST=unix:///var/run/docker.sock
-    user: root
+      RENTAL_DATASOURCE_URL: jdbc:postgresql://postgres-rental:5432/postgres
+      RENTAL_DATASOURCE_USERNAME: admin
+      RENTAL_DATASOURCE_PASSWORD: admin
+      USER_URL: http://user:7873/api/users
+
+  postgres-rental:
+    image: postgres:17.4
+    container_name: postgres-rental
     ports:
-      - "8082:8080"
-    volumes:
-      - jenkins_data:/var/jenkins_home
-      - ssh_volume:/var/jenkins_home/.ssh
-      - /var/run/docker.sock:/var/run/docker.sock
-    restart: always
+      - "7773:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: postgres
     networks:
-      vaganda:
-volumes:
-  data:
-  nexus-data:
-  jenkins_data:
-  ssh_volume:
+      - app-network
+
+  user:
+    image: user:1.0.0
+    ports:
+      - "7873:7873"
+    networks:
+      - app-network
+    depends_on:
+      - postgres-user
+    environment:
+      USER_DATASOURCE_URL: jdbc:postgresql://postgres-user:5432/postgres
+      USER_DATASOURCE_USERNAME: admin
+      USER_DATASOURCE_PASSWORD: admin
+      BICYCLE_URL: http://bicycle:7878/api/bicycles
+      CAR_URL: http://car:7876/api/cars
+      BIKE_URL: http://bike:7877/api/bikes
+      BANKCARD_URL: http://bankcard:7875/api/bankcards
+
+  postgres-user:
+    image: postgres:17.4
+    container_name: postgres-user
+    ports:
+      - "7771:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: postgres
+    networks:
+      - app-network
+
+  car:
+    image: car:1.0.1
+    ports:
+      - "7876:7876"
+    networks:
+      - app-network
+    depends_on:
+      - postgres-car
+    environment:
+      CAR_DATASOURCE_URL: jdbc:postgresql://postgres-car:5432/postgres
+      CAR_DATASOURCE_USERNAME: admin
+      CAR_DATASOURCE_PASSWORD: admin
+      USER_URL: http://user:7873/api/users
+
+  postgres-car:
+    image: postgres:17.4
+    container_name: postgres-car
+    ports:
+      - "7777:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: postgres
+    networks:
+      - app-network
+
+  bike:
+    image: bike:1.0.0
+    ports:
+      - "7877:7877"
+    networks:
+      - app-network
+    depends_on:
+      - postgres-bike
+    environment:
+      BIKE_DATASOURCE_URL: jdbc:postgresql://postgres-bike:5432/postgres
+      BIKE_DATASOURCE_USERNAME: admin
+      BIKE_DATASOURCE_PASSWORD: admin
+      USER_URL: http://user:7873/api/users
+
+  postgres-bike:
+    image: postgres:17.4
+    container_name: postgres-bike
+    ports:
+      - "7774:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: postgres
+    networks:
+      - app-network
+
+  bicycle:
+    image: bicycle:1.0.0
+    ports:
+      - "7878:7878"
+    networks:
+      - app-network
+    depends_on:
+      - postgres-bicycle
+    environment:
+      BICYCLE_DATASOURCE_URL: jdbc:postgresql://postgres-bicycle:5432/postgres
+      BICYCLE_DATASOURCE_USERNAME: admin
+      BICYCLE_DATASOURCE_PASSWORD: admin
+      USER_URL: http://user:7873/api/users
+
+  postgres-bicycle:
+    image: postgres:17.4
+    container_name: postgres-bicycle
+    ports:
+      - "7775:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: postgres
+    networks:
+      - app-network
+
+  bankcard:
+    image: bankcard:1.0.0
+    ports:
+      - "7875:7875"
+    networks:
+      - app-network
+    depends_on:
+      - postgres-bankcard
+    environment:
+      BANKCARD_DATASOURCE_URL: jdbc:postgresql://postgres-bankcard:5432/postgres
+      BANKCARD_DATASOURCE_USERNAME: admin
+      BANKCARD_DATASOURCE_PASSWORD: admin
+      USER_URL: http://user:7873/api/users
+
+  postgres-bankcard:
+    image: postgres:17.4
+    container_name: postgres-bankcard
+    ports:
+      - "7776:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: postgres
+    networks:
+      - app-network
+
 networks:
-  vaganda:
-
-
-
-  #меняй версию образа докера перед запуском
-  #vaganda название сети связи докера между приложениями(контейнерами)
-
-
-
-
+  app-network:
+    driver: bridge

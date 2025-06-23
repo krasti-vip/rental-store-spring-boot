@@ -2,8 +2,7 @@ package ru.rental.service.rental;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.rental.service.common.dto.RentalDto;
-import ru.rental.service.common.dto.RentalDtoCreate;
+import ru.rental.service.common.dto.*;
 import ru.rental.service.rental.entity.Rental;
 
 @Component

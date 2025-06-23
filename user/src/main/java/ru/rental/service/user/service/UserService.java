@@ -4,16 +4,14 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.List;
-import java.util.Optional;
-import ru.rental.service.common.dto.BicycleDto;
-import ru.rental.service.common.dto.UserDto;
-import ru.rental.service.common.dto.UserDtoCreate;
+import ru.rental.service.common.dto.*;
 import ru.rental.service.common.service.ServiceInterface;
-import ru.rental.service.user.BicycleTemplate;
-import ru.rental.service.user.MapperUtilUser;
+import ru.rental.service.user.*;
 import ru.rental.service.user.entity.User;
 import ru.rental.service.user.repository.UserRepository;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -26,16 +24,43 @@ public class UserService implements ServiceInterface<UserDto, UserDtoCreate> {
 
     private final BicycleTemplate bicycleTemplate;
 
+    private final CarTemplate carTemplate;
+
+    private final BikeTemplate bikeTemplate;
+
+    private final BankcardTemplate bankcardTemplate;
+
     @Transactional(readOnly = true)
     public Optional<UserDto> findById(Integer id) {
-        return userRepository.findById(id).map(mapperUtilUser::toDto);
-//        return userRepository.findWithUserById(id)
-//                .map(e -> {
-//                            List<BicycleDto> bicycleDto = bicycleTemplate.findAllByUserId(e.getId());
-//                            e.setBicyclesId(bicycleDto.stream().map(BicycleDto::getId).toList());
-//                            return mapperUtilUser.toDto(e);
-//                        }
-//                );
+        return userRepository.findById(id)
+                .map(user -> {
+                    List<Integer> bicycleIds = bicycleTemplate.findAllByUserId(user.getId())
+                            .stream()
+                            .map(BicycleDto::getId)
+                            .toList();
+
+                    List<Integer> carIds = carTemplate.findAllByUserId(user.getId())
+                            .stream()
+                            .map(CarDto::getId)
+                            .toList();
+
+                    List<Integer> bikeIds = bikeTemplate.findAllByUserId(user.getId())
+                            .stream()
+                            .map(BikeDto::getId)
+                            .toList();
+
+                    List<Integer> bankCardIds = bankcardTemplate.findAllByUserId(user.getId())
+                            .stream()
+                            .map(BankCardDto::getId)
+                            .toList();
+
+                    user.setBicycleDtoId(bicycleIds);
+                    user.setCarDtoId(carIds);
+                    user.setBikeDtoId(bikeIds);
+                    user.setBankCardDtoId(bankCardIds);
+
+                    return mapperUtilUser.toDto(user);
+                });
     }
 
     @Transactional

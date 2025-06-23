@@ -17,6 +17,13 @@
 
     <modules>
         <module>rental-service</module>
+        <module>bankcard</module>
+        <module>bicycle</module>
+        <module>bike</module>
+        <module>car</module>
+        <module>common</module>
+        <module>rental</module>
+        <module>user</module>
     </modules>
 
     <scm>

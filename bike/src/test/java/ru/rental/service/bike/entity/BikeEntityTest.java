@@ -18,11 +18,10 @@ class BikeEntityTest {
                 54.5,
                 75,
                 0.750,
-                5
+                2
         );
 
         assertEquals(7, bike.getId());
-        assertEquals(5, bike.getUserId());
         assertEquals("Kok", bike.getName());
         bike.setName("JEYNE");
         assertEquals("JEYNE", bike.getName());

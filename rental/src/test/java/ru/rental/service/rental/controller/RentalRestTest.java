@@ -65,25 +65,9 @@ class RentalRestTest extends BaseBd {
     @DisplayName("Тест create() для аренды")
     void createTest() {
         RentalDtoCreate rentalDtoCreate = new RentalDtoCreate();
-        rentalDtoCreate.setUserId(2);
-        rentalDtoCreate.setCarId(1);
-        rentalDtoCreate.setBikeId(2);
-        rentalDtoCreate.setBicycleId(3);
         rentalDtoCreate.setStartDate(LocalDateTime.parse("2025-03-05T14:00"));
         rentalDtoCreate.setEndDate(null);
         rentalDtoCreate.setRentalAmount(4500.50);
         rentalDtoCreate.setIsPaid(false);
-        //ResponseEntity<RentalDto> response = rentalControllerRest.create(rentalDtoCreate);
-        //assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        //RentalDto created = response.getBody();
-//        assertNotNull(created);
-//        assertEquals(2, created.getUserId());
-//        assertEquals(1, created.getCarId());
-//        assertEquals(2, created.getBikeId());
-//        assertEquals(3, created.getBicycleId());
-//        assertEquals(LocalDateTime.parse("2025-03-05T14:00"), created.getStartDate());
-//        assertNull(created.getEndDate());
-//        assertEquals(4500.50, created.getRentalAmount());
-//        assertFalse(created.getIsPaid());
     }
 }

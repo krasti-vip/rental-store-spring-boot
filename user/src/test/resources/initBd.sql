@@ -19,7 +19,7 @@ VALUES ('bill', 'Ivanov', 'Dima', 456987123, null),
        ('eminem', 'Pugachev', 'Genya', 85297418, null);
 
 --- Удаление таблицы bikes
-DROP TABLE IF EXISTS bikes CASCADE;
+DROP TABLE IF EXISTS bikes;
 --- Создание таблицы bikes
 CREATE TABLE IF NOT EXISTS bikes
 (
@@ -38,7 +38,7 @@ VALUES ('BMW', 2000, 200, 1.0, null),
        ('URAL', 2000, 200, 1.0, 1),
        ('HONDA', 2000, 200, 1.0, null);
 --- Удаление таблицы bicycles
-DROP TABLE IF EXISTS bicycles CASCADE;
+DROP TABLE IF EXISTS bicycles;
 --- Создание таблицы bicycles
 CREATE TABLE IF NOT EXISTS bicycles
 (
@@ -56,7 +56,7 @@ VALUES ('Mongust', 2000, 'blue', 1),
        ('BMX', 2500, 'blue', null),
        ('Mochina', 1200, 'red', null);
 --- Удаление таблицы cars
-DROP TABLE IF EXISTS cars CASCADE;
+DROP TABLE IF EXISTS cars;
 --- Создание таблицы cars
 CREATE TABLE IF NOT EXISTS cars
 (
@@ -76,15 +76,15 @@ VALUES ('MERCEDES', 655.30, 250, 3.5, 'black', null),
        ('BMW', 640.50, 450, 5.0, 'blue', null),
        ('OPEL', 210.90, 110, 1.8, 'gold', null);
 --- Удаление таблицы rental
-DROP TABLE IF EXISTS rentals CASCADE;
+DROP TABLE IF EXISTS rentals;
 --- Создание таблицы rental
 CREATE TABLE IF NOT EXISTS rentals
 (
     id            SERIAL PRIMARY KEY,
-    user_id       INT      REFERENCES users (id) ON DELETE CASCADE,
-    car_id        INT REFERENCES cars (id) ON DELETE CASCADE,
-    bike_id       INT REFERENCES bikes (id) ON DELETE CASCADE,
-    bicycle_id    INT REFERENCES bicycles (id) ON DELETE CASCADE,
+    user_id       INT,
+    car_id        INT,
+    bike_id       INT,
+    bicycle_id    INT,
     start_date    TIMESTAMP        NOT NULL,
     end_date      TIMESTAMP,
     rental_amount DOUBLE PRECISION NOT NULL,
@@ -102,7 +102,7 @@ DROP TABLE IF EXISTS bank_cards CASCADE;
 CREATE TABLE IF NOT EXISTS bank_cards
 (
     id            SERIAL PRIMARY KEY,
-    user_id     INT REFERENCES users (id) ON DELETE CASCADE,
+    user_id     INT,
     number_card VARCHAR(20) NOT NULL,
     expiration_date VARCHAR(20) NOT NULL,
     secret_code INT NOT NULL

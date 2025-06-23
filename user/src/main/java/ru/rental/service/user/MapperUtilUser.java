@@ -2,9 +2,9 @@ package ru.rental.service.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.rental.service.common.dto.UserDto;
-import ru.rental.service.common.dto.UserDtoCreate;
+import ru.rental.service.common.dto.*;
 import ru.rental.service.user.entity.User;
+import java.util.function.Function;
 
 import java.util.List;
 
@@ -12,27 +12,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MapperUtilUser {
 
+    private final BankcardTemplate bankcardTemplate;
+    private final BikeTemplate bikeTemplate;
+    private final CarTemplate carTemplate;
+    private final BicycleTemplate bicycleTemplate;
+
     public UserDto toDto(User user) {
-
-        List<Integer> bikeDtos = null;
-        if (user.getBikeId() != null) {
-            bikeDtos = user.getBikeId();
-        }
-
-        List<Integer> carDtos = null;
-        if (user.getCarsId() != null) {
-            carDtos = user.getCarsId();
-        }
-
-        List<Integer> bicycleDtos = null;
-        if (user.getBicyclesId() != null) {
-            bicycleDtos = user.getBicyclesId();
-        }
-
-        List<Integer> bankcardDtos = null;
-        if (user.getBankCardId() != null) {
-            bankcardDtos = user.getBankCardId();
-        }
+        List<BankCardDto> bankCardDtos = convertIdsToDtos(user.getBankCardDtoId(), bankcardTemplate::findById);
+        List<BikeDto> bikeDtos = convertIdsToDtos(user.getBikeDtoId(), bikeTemplate::findById);
+        List<CarDto> carDtos = convertIdsToDtos(user.getCarDtoId(), carTemplate::findById);
+        List<BicycleDto> bicycleDtos = convertIdsToDtos(user.getBicycleDtoId(), bicycleTemplate::findById);
 
         return UserDto.builder()
                 .id(user.getId())
@@ -41,7 +30,7 @@ public class MapperUtilUser {
                 .lastName(user.getLastName())
                 .passport(user.getPassport())
                 .email(user.getEmail())
-                .bankCards(bankcardDtos)
+                .bankCards(bankCardDtos)
                 .bikes(bikeDtos)
                 .cars(carDtos)
                 .bicycles(bicycleDtos)
@@ -55,10 +44,19 @@ public class MapperUtilUser {
                 .lastName(userDtoCreate.getLastName())
                 .passport(userDtoCreate.getPassport())
                 .email(userDtoCreate.getEmail())
-                .bankCardId(null)
-                .bikeId(null)
-                .carsId(null)
-                .bicyclesId(null)
+                .bankCardDtoId(null)
+                .bikeDtoId(null)
+                .carDtoId(null)
+                .bicycleDtoId(null)
                 .build();
+    }
+
+    private <T> List<T> convertIdsToDtos(List<Integer> ids, Function<Integer, T> converter) {
+        if (ids == null) {
+            return null;
+        }
+        return ids.stream()
+                .map(converter)
+                .toList();
     }
 }
