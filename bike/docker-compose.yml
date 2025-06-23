@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+  bike:
+    image: bike:1.0.0
+    ports:
+      - "7877:7877"
+    networks:
+      - app-network
+    depends_on:
+      - postgres-bike
+    environment:
+      BIKE_DATASOURCE_URL: jdbc:postgresql://postgres-bike:5432/postgres
+      BIKE_DATASOURSE_USERNAME: admin
+      BIKE_DATASOURSE_PASSWORD: admin
+      USER_URL: http://user:7873/api/users
+
+  postgres-bike:
+    image: postgres:17.4
+    container_name: postgres_bike
+    ports:
+      - "7774:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: postgres
+    networks:
+     - app-network
+
+networks:
+  app-network:
+    external: true

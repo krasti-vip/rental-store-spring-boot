@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function loadBike(bikeId) {
     try {
-        const response = await fetch(`/api/bikes/${bikeId}`);
+        const response = await fetch(`http://localhost:7877/api/bikes/${bikeId}`);
 
         if (!response.ok) {
             throw new Error('Мотоцикл не найден');
@@ -92,7 +92,7 @@ async function saveBike(e, bikeId) {
             userId: document.getElementById('userId').value || null
         };
 
-        const response = await fetch(`/api/bikes/${bikeId}`, {
+        const response = await fetch(`http://localhost:7877/api/bikes/${bikeId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'

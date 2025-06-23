@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function loadRentalDetails(rentalId) {
     try {
-        const response = await fetch(`/api/rentals/${rentalId}`);
+        const response = await fetch(`http://localhost:7874/api/rentals/${rentalId}`);
 
         if (!response.ok) {
             throw new Error('Аренда не найдена');
@@ -98,7 +98,7 @@ async function deleteRental(rentalId) {
     deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Удаление...';
 
     try {
-        const response = await fetch(`/api/rentals/${rentalId}`, {
+        const response = await fetch(`http://localhost:7874/api/rentals/${rentalId}`, {
             method: 'DELETE'
         });
 
@@ -128,7 +128,7 @@ async function payRental(rentalId) {
     payBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Оплата...';
 
     try {
-        const response = await fetch(`/api/rentals/${rentalId}/pay`, {
+        const response = await fetch(`http://localhost:7874/api/rentals/${rentalId}/pay`, {
             method: 'POST'
         });
 

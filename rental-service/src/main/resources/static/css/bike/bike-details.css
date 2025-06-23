@@ -56,6 +56,19 @@ header {
     font-size: 1.1rem;
 }
 
+.color-value {
+    display: flex;
+    align-items: center;
+}
+
+.color-sample {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin-left: 10px;
+    border: 1px solid #ddd;
+}
+
 .bike-actions {
     display: flex;
     gap: 15px;

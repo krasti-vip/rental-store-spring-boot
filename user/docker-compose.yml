@@ -1,0 +1,36 @@
+version: "3.8"
+
+services:
+  user:
+    image: user:1.0.0
+    ports:
+      - "7873:7873"
+    networks:
+      - app-network
+    depends_on:
+      - postgres-user
+    environment:
+      USER_DATASOURSE_URL: jdbc:postgresql://postgres-user:5432/postgres
+      USER_DATASOURSE_USERNAME: admin
+      USER_DATASOURSE_PASSWORD: admin
+      BICYCLE_URL: http://bicycle:7878/api/bicycles
+      CAR_URL: http://car:7876/api/cars
+      BIKE_URL: http://bike:7877/api/bikes
+      BANKCARD_URL: http://bankcard:7875/api/bankcards
+
+
+  postgres-user:
+    image: postgres:17.4
+    container_name: postgres_user
+    ports:
+      - "7771:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: postgres
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    external: true

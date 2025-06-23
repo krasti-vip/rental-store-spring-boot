@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function loadCarDetails(carId) {
     try {
-        const response = await fetch(`/api/cars/${carId}`);
+        const response = await fetch(`http://localhost:7876/api/cars/${carId}`);
 
         if (!response.ok) {
             throw new Error('Автомобиль не найден');
@@ -98,7 +98,7 @@ async function deleteCar(carId) {
     deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Удаление...';
 
     try {
-        const response = await fetch(`/api/cars/${carId}`, {
+        const response = await fetch(`http://localhost:7876/api/cars/${carId}`, {
             method: 'DELETE'
         });
 

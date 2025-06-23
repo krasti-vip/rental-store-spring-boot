@@ -81,10 +81,10 @@ DROP TABLE IF EXISTS rentals CASCADE;
 CREATE TABLE IF NOT EXISTS rentals
 (
     id            SERIAL PRIMARY KEY,
-    user_id       INT      REFERENCES users (id) ON DELETE RESTRICT,
-    car_id        INT REFERENCES cars (id) ON DELETE RESTRICT,
-    bike_id       INT REFERENCES bikes (id) ON DELETE RESTRICT,
-    bicycle_id    INT REFERENCES bicycles (id) ON DELETE RESTRICT,
+    user_id       INT,
+    car_id        INT,
+    bike_id       INT,
+    bicycle_id    INT,
     start_date    TIMESTAMP        NOT NULL,
     end_date      TIMESTAMP,
     rental_amount DOUBLE PRECISION NOT NULL,
@@ -102,7 +102,7 @@ DROP TABLE IF EXISTS bank_cards CASCADE;
 CREATE TABLE IF NOT EXISTS bank_cards
 (
     id            SERIAL PRIMARY KEY,
-    user_id     INT REFERENCES users (id) ON DELETE RESTRICT,
+    user_id     INT,
     number_card VARCHAR(20) NOT NULL,
     expiration_date VARCHAR(20) NOT NULL,
     secret_code INT NOT NULL

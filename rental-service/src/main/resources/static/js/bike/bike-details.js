@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function loadBikeDetails(bikeId) {
     try {
-        const response = await fetch(`/api/bikes/${bikeId}`);
+        const response = await fetch(`http://localhost:7877/api/bikes/${bikeId}`);
 
         if (!response.ok) {
             throw new Error('Мотоцикл не найден');
@@ -30,7 +30,7 @@ function renderBikeDetails(bike) {
     const container = document.getElementById('bike-details-container');
     container.innerHTML = `
         <div class="bike-details">
-            <img src="https://wallpaper-house.com/data/out/6/wallpaper2you_91755.jpg" 
+            <img src="https://i.pinimg.com/736x/8f/4e/cd/8f4ecd938b8fdd349dddd9c9cfa80633.jpg" 
                  alt="${bike.name}" class="bike-image">
             
             <div class="detail-row">
@@ -90,7 +90,7 @@ async function deleteBike(bikeId) {
     deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Удаление...';
 
     try {
-        const response = await fetch(`/api/bikes/${bikeId}`, {
+        const response = await fetch(`http://localhost:7877/api/bikes/${bikeId}`, {
             method: 'DELETE'
         });
 

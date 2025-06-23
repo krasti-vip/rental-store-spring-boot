@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function loadBicycles() {
     try {
-        const response = await fetch('/api/bicycles');
+        const response = await fetch('http://localhost:7878/api/bicycles');
         const bicycles = await response.json();
         renderBicycles(bicycles);
     } catch (error) {
@@ -57,7 +57,7 @@ async function deleteBicycle(bicycleId) {
     }
 
     try {
-        const response = await fetch(`/api/bicycles/${bicycleId}`, {
+        const response = await fetch(`http://localhost:7878/api/bicycles/${bicycleId}`, {
             method: 'DELETE'
         });
 

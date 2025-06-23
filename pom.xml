@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.3</version>
+        <version>3.5.0</version>
         <relativePath/>
     </parent>
     <groupId>com.example</groupId>
@@ -17,6 +17,13 @@
 
     <modules>
         <module>rental-service</module>
+        <module>bankcard</module>
+        <module>bicycle</module>
+        <module>bike</module>
+        <module>car</module>
+        <module>common</module>
+        <module>rental</module>
+        <module>user</module>
     </modules>
 
     <scm>
@@ -67,15 +74,4 @@
             </plugin>
         </plugins>
     </build>
-    <distributionManagement>
-        <repository>
-            <id>maven-releases</id>
-            <url>http://localhost:8081/repository/maven-releases</url>
-        </repository>
-        <snapshotRepository>
-            <id>maven-snapshots</id>
-            <url>http://localhost:8081/repository/maven-snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
-
 </project>

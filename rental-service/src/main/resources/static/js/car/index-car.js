@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function loadCars() {
     try {
-        const response = await fetch('/api/cars');
+        const response = await fetch('http://localhost:7876/api/cars');
         const cars = await response.json();
         renderCars(cars);
     } catch (error) {
@@ -65,7 +65,7 @@ async function deleteCar(carId) {
     }
 
     try {
-        const response = await fetch(`/api/cars/${carId}`, {
+        const response = await fetch(`http://localhost:7876/api/cars/api/cars/${carId}`, {
             method: 'DELETE'
         });
 

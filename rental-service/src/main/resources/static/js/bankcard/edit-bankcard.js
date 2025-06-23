@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function loadBankCard(cardId) {
     try {
-        const response = await fetch(`/api/bankcards/${cardId}`);
+        const response = await fetch(`http://localhost:7875/api/bankcards/${cardId}`);
 
         if (!response.ok) {
             throw new Error('Карта не найдена');
@@ -86,7 +86,7 @@ async function saveCard(e, cardId) {
             secretCode: document.getElementById('secretCode').value
         };
 
-        const response = await fetch(`/api/bankcards/${cardId}`, {
+        const response = await fetch(`http://localhost:7875/api/bankcards/${cardId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
@@ -121,7 +121,7 @@ async function deleteCard(cardId) {
     deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Удаление...';
 
     try {
-        const response = await fetch(`/api/bankcards/${cardId}`, {
+        const response = await fetch(`http://localhost:7875/api/bankcards/${cardId}`, {
             method: 'DELETE'
         });
 

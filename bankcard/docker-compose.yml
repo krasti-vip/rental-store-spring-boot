@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  bankcard:
+    image: bankcard:1.0.0
+    ports:
+      - "7875:7875"
+    networks:
+      - app-network
+    depends_on:
+      - postgres-bankcard
+    environment:
+      BANKCARD_DATASOURCE_URL: jdbc:postgresql://postgres-bankcard:5432/postgres
+      BANKCARD_DATASOURSE_USERNAME: admin
+      BANKCARD_DATASOURSE_PASSWORD: admin
+      USER_URL: http://user:7873/api/users
+
+  postgres-bankcard:
+    image: postgres:17.4
+    container_name: postgres_bankcard
+    ports:
+      - "7776:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: postgres
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    external: true

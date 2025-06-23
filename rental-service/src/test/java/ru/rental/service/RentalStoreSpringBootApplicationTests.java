@@ -6,7 +6,7 @@ import org.springframework.test.context.ContextConfiguration;
 
 @SpringBootTest
 @ContextConfiguration(classes = RentalStoreSpringBootApplication.class)
-class RentalStoreSpringBootApplicationTests extends BaseBd {
+class RentalStoreSpringBootApplicationTests{
 
     @Test
     void contextLoads() {

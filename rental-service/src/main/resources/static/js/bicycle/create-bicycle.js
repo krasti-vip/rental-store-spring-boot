@@ -63,7 +63,7 @@ async function createBicycle(e) {
             userId: document.getElementById('userId').value || null
         };
 
-        const response = await fetch('/api/bicycles', {
+        const response = await fetch('http://localhost:7878/api/bicycles', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

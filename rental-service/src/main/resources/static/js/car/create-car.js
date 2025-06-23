@@ -75,7 +75,7 @@ async function createCar(e) {
             userId: document.getElementById('userId').value || null
         };
 
-        const response = await fetch('/api/cars', {
+        const response = await fetch('http://localhost:7876/api/cars', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

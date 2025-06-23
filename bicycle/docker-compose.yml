@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  bicycle:
+    image: bicycle:1.0.0
+    ports:
+      - "7878:7878"
+    networks:
+      - app-network
+    depends_on:
+      - postgres-bicycle
+    environment:
+      BICYCLE_DATASOURCE_URL: jdbc:postgresql://postgres-bicycle:5432/postgres
+      BICYCLE_DATASOURSE_USERNAME: admin
+      BICYCLE_DATASOURSE_PASSWORD: admin
+      USER_URL: http://user:7873/api/users
+
+
+  postgres-bicycle:
+    image: postgres:17.4
+    container_name: postgres_bicycle
+    ports:
+      - "7775:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: postgres
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    external: true

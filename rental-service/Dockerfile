@@ -1,12 +1,5 @@
-#app нужная штука сейчас версия 0.3
-FROM openjdk:17-ea-17-slim-buster
+FROM bitnami/java:21
 
-LABEL authors="dmitriyboyko"
+COPY ./target/rental-service-0.2.0.jar app/rental-service.jar
 
-WORKDIR /app
-
-COPY target/rental-service-0.2.0.jar .
-
-EXPOSE 8080
-
-CMD ["java", "-jar", "rental-service-0.2.0.jar"]
+CMD ["java", "-jar", "app/rental-service.jar"]

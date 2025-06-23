@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  car:
+    image: car:1.0.1
+    ports:
+      - "7876:7876"
+    networks:
+      - app-network
+    depends_on:
+      - postgres-car
+    environment:
+      CAR_DATASOURCE_URL: jdbc:postgresql://postgres-car:5432/postgres
+      CAR_DATASOURSE_USERNAME: admin
+      CAR_DATASOURSE_PASSWORD: admin
+      USER_URL: http://user:7873/api/users
+
+  postgres-car:
+    image: postgres:17.4
+    container_name: postgres_car
+    ports:
+      - "7777:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: postgres
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    external: true
